@@ -1,14 +1,13 @@
-# Sistem Pendaftaran & Verifikasi Rusunawa
+# Sistem Pendaftaran Rusunawa
 
-Fitur:
-- Form pendaftaran online
-- Verifikasi admin (DITERIMA / DITOLAK / PERBAIKI)
-- Tracking status realtime
-- Anti bot reCAPTCHA
-- Auto unit & lock
-- Progress tracking UI
-- Download bukti pendaftaran
+Frontend:
+- daftar.html (Form)
+- tracking.html (Cek status)
 
-Frontend: HTML + Tailwind  
-Backend: Google Apps Script  
-Database: Google Sheet
+Backend:
+- Google Apps Script
+
+Deploy:
+1. Deploy GAS → Web App
+2. Paste URL ke config.js
+3. Upload frontend ke GitHub Pages / hosting
