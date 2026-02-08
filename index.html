@@ -181,9 +181,9 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Umur</label>
 <input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
-<textarea id="Alamat sekarang" placeholder="Jalan.. RT/RW.. Kelurahan.. Kota.." class="input"></textarea>
+<textarea id="Alamat sekarang" placeholder="Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Nomor Telepon / HP / WA</label>
-<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telepon" class="input">
+<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telepon (wa aktif)" class="input">
 <label class="block text-slate-300 text-sm mb-1">Email</label>
 <input id="Email" placeholder="Email" class="input">
 </div>
@@ -200,6 +200,7 @@ style="position:absolute;left:-9999px;">
 <input id="Penghasilan perbulan" inputmode="numeric" pattern="[0-9]*" placeholder="Penghasilan" class="input">
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
+<p class="text-xs text-slate-400 mt-1">jika tidak bekerja tulis "mengurus rumah tangga"</p>
 <label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja Pasangan</label>
 <input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
@@ -212,6 +213,9 @@ style="position:absolute;left:-9999px;">
 <div class="page hidden space-y-4">
 <label class="block text-slate-300 text-sm mb-1">Nama Penjamin</label>
 <input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
+<label class="block text-slate-300 text-sm mb-1">Alamat Penjamin</label>
+<input id="Alamat Penjamin" placeholder="Alamat Penjamin" class="input">
+<p class="text-xs text-slate-400 mt-1">Penjamin wajib domisili di Kota Banjarmasin</p>
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Penjamin</label>
 <input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
 <label class="block text-slate-300 text-sm mb-1">Status Hubungan dengan Pemohon</label>
@@ -303,7 +307,6 @@ function validatePage(){
 const inputs=pages[page].querySelectorAll("input,textarea,select");
 
 const optionalIds = [
-  "Pekerjaan Pasangan",
   "Nama Perusahaan/Tempat Kerja 2",
   "Alamat Pekerjaan Pasangan",
   "Penghasilan perbulan Pasangan"
@@ -311,14 +314,21 @@ const optionalIds = [
 
 for(const x of inputs){
 
+  x.classList.remove("err");
+
   if(x.classList.contains("hp")) continue;
 
   /* skip field opsional */
   if(optionalIds.includes(x.id)) continue;
 
   if(!x.value || !x.value.trim()){
-    msg.innerText="Semua field wajib diisi";
+    msg.innerText="Field belum diisi: " + x.id;
     msg.className="text-red-400";
+
+    x.scrollIntoView({behavior:"smooth",block:"center"});
+    x.focus();
+    x.classList.add("err");
+
     return false;
   }
 }
@@ -329,6 +339,31 @@ if(nik && page===1){
   if(!/^\d{16}$/.test(nik.value)){
     msg.innerText="NIK harus 16 digit angka";
     msg.className="text-red-400";
+    nik.scrollIntoView({behavior:"smooth",block:"center"});
+    nik.focus();
+    nik.classList.add("err");
+    return false;
+  }
+}
+
+/* VALIDASI ANGKA PENGHASILAN (ANTI HURUF) */
+const fieldsAngka = [
+  "Penghasilan perbulan",
+  "Penghasilan perbulan Pasangan"
+];
+
+for(const id of fieldsAngka){
+  const el=document.getElementById(id);
+  if(!el) continue;
+
+  if(!el.value) continue; // kosong boleh jika opsional
+
+  if(!/^[0-9]+$/.test(el.value)){
+    msg.innerText="Field harus angka: " + id;
+    msg.className="text-red-400";
+    el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.focus();
+    el.classList.add("err");
     return false;
   }
 }
