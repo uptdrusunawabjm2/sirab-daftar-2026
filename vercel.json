@@ -1,6 +1,9 @@
 {
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/tracking", "dest": "/tracking.html" }
+  "redirects": [
+    { "source": "/tracking.html", "destination": "/tracking", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/tracking", "destination": "/tracking.html" }
   ]
 }
