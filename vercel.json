@@ -1,7 +1,5 @@
 {
-  "redirects": [
-    { "source": "/tracking.html", "destination": "/tracking", "permanent": true }
-  ],
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/tracking", "destination": "/tracking.html" }
