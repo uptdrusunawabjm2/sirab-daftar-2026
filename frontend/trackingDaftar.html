@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tracking Verifikasi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white min-h-screen flex items-center justify-center p-3">
+
+<div class="w-full max-w-2xl bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl shadow-xl p-5">
+
+<h1 class="text-2xl font-bold text-center mb-1">Tracking Verifikasi</h1>
+<p class="text-center text-slate-400 text-sm mb-5">Pantau status verifikasi pendaftaran Anda</p>
+
+<div class="flex gap-2 mb-4">
+  <input id="nik" type="text" placeholder="Masukkan NIK"
+  class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring focus:ring-blue-600">
+  <button onclick="cek()" class="bg-blue-600 px-5 rounded-xl font-semibold hover:bg-blue-700">Cek</button>
+</div>
+
+<!-- STATUS BOX -->
+<div id="statusBox" class="hidden mb-4 p-3 rounded-xl text-center font-bold text-lg"></div>
+
+<!-- PROGRESS -->
+<div id="progress" class="hidden mb-4">
+  <div class="w-full bg-slate-800 rounded-full h-3">
+    <div id="bar" class="h-3 rounded-full bg-blue-500 transition-all"></div>
+  </div>
+  <div class="flex justify-between text-xs mt-1 text-slate-400">
+    <span>MENUNGGU</span>
+    <span>DIPROSES</span>
+    <span>SELESAI</span>
+  </div>
+</div>
+
+<div id="hasil" class="hidden"></div>
+<div id="msg" class="text-center text-red-400 text-sm mt-3"></div>
+
+</div>
+
+<script>
+const API="PASTE_URL_GAS_KAMU";
+
+/* ===== AUTO LOAD FROM LINK ===== */
+window.addEventListener("load",()=>{
+  const p=new URLSearchParams(location.search);
+  const n=p.get("nik");
+  if(n){
+    nik.value=n;
+    cek();
+  }
+});
+
+/* ===== MASKING NIK ===== */
+function maskNik(n){
+  if(!n) return "";
+  n=String(n);
+  if(n.length<8) return n;
+  return n.slice(0,4)+"********"+n.slice(-4);
+}
+
+/* ===== STATUS BOX ===== */
+function setStatusBox(status){
+  statusBox.className="mb-4 p-3 rounded-xl text-center font-bold text-lg";
+  status=(status||"").toUpperCase();
+
+  if(status.includes("DITERIMA")){
+    statusBox.textContent="STATUS : DITERIMA";
+    statusBox.classList.add("bg-green-600");
+    setProgress(100);
+  }else if(status.includes("DITOLAK")){
+    statusBox.textContent="STATUS : DITOLAK";
+    statusBox.classList.add("bg-red-600");
+    setProgress(100);
+  }else if(status.includes("PERBAIKI")){
+    statusBox.textContent="STATUS : PERBAIKI DATA";
+    statusBox.classList.add("bg-yellow-400","text-black");
+    setProgress(50);
+  }else{
+    statusBox.textContent="STATUS : MENUNGGU VERIFIKASI";
+    statusBox.classList.add("bg-blue-600");
+    setProgress(20);
+  }
+  statusBox.classList.remove("hidden");
+}
+
+/* ===== PROGRESS BAR ===== */
+function setProgress(val){
+  progress.classList.remove("hidden");
+  bar.style.width=val+"%";
+}
+
+/* ===== FETCH ===== */
+async function cek(){
+
+  const nikVal=nik.value.trim();
+  hasil.classList.add("hidden");
+  statusBox.classList.add("hidden");
+  msg.textContent="Memuat data...";
+
+  if(!nikVal){
+    msg.textContent="NIK wajib diisi";
+    return;
+  }
+
+  try{
+    const r=await fetch(API+"?action=track&nik="+encodeURIComponent(nikVal));
+    const j=await r.json();
+
+    if(!j.status){
+      msg.textContent=j.message||"Data tidak ditemukan";
+      return;
+    }
+
+    msg.textContent="";
+    setStatusBox(j.verifikasi);
+    renderUI(j);
+    hasil.classList.remove("hidden");
+
+  }catch{
+    msg.textContent="Server tidak merespon";
+  }
+}
+
+/* ===== UI CARD ===== */
+function block(label,val){
+  if(!val || val==="-" ) return "";
+  return `<div><b class="text-blue-400">${label}</b><br>${val}</div>`;
+}
+
+function renderUI(d){
+
+  hasil.innerHTML=`
+  <div class="bg-slate-800 rounded-xl p-4 space-y-2">
+
+    ${block("Nama Pemohon",d.nama)}
+    ${block("NIK",maskNik(d.nik))}
+    ${block("Rusunawa",d.rusun)}
+    ${block("Tipe Kamar",d.tipe)}
+    ${block("Lantai",d.lantai)}
+
+    <hr class="border-slate-700 my-2">
+
+    ${block("Status Verifikasi",d.verifikasi)}
+    ${block("Tanggal Verifikasi",d.tanggal)}
+    ${block("Catatan Verifikasi",d.catatan)}
+
+    <button onclick="downloadBukti()" 
+    class="mt-3 bg-emerald-600 px-4 py-2 rounded-xl font-semibold w-full">
+    ⬇ Download Bukti Pendaftaran
+    </button>
+
+  </div>`;
+
+  window._data=d;
+}
+
+/* ===== DOWNLOAD BUKTI ===== */
+function downloadBukti(){
+
+  if(!window._data) return;
+
+  let t="BUKTI PENDAFTARAN RUSUNAWA\n\n";
+  t+="Nama : "+(_data.nama||"")+"\n";
+  t+="NIK  : "+maskNik(_data.nik)+"\n";
+  t+="Rusun: "+(_data.rusun||"")+"\n";
+  t+="Tipe : "+(_data.tipe||"")+"\n";
+  t+="Lantai : "+(_data.lantai||"")+"\n";
+  t+="Status : "+(_data.verifikasi||"")+"\n";
+  t+="Tanggal Verifikasi : "+(_data.tanggal||"")+"\n";
+  t+="Catatan : "+(_data.catatan||"")+"\n";
+
+  const blob=new Blob([t],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="Bukti_Pendaftaran.txt";
+  a.click();
+}
+</script>
+
+</body>
+</html>
