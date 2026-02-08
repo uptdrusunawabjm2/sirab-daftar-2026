@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pendaftaran Rusunawa</title>
-<script src="https://cdn.tailwindcss.com">
+<script src="https://cdn.tailwindcss.com"></script>
 
+<script>
 /* === PATCH: wajib baca box + auto scroll error === */
 let pasalSudahDibaca=false;
 
@@ -67,6 +68,8 @@ padding:10px;
 #formWrapper{display:none;}
 /* honeypot bot */
 .hp{display:none;}
+</style>
+
 
 <script>
 /* === PATCH: focus + error highlight === */
@@ -77,70 +80,10 @@ box-shadow:0 0 0 2px #3b82f6;
 .err{
 box-shadow:0 0 0 2px #ef4444 !important;
 }
-
-</style>
-<script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"><
-
-/* === PATCH: wajib baca box + auto scroll error === */
-let pasalSudahDibaca=false;
-
-/* override togglePasal */
-const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
-togglePasal = function(){
-  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
-  pasalSudahDibaca=true;
-  if(typeof checkAgree==="function") checkAgree();
-};
-
-/* override checkAgree */
-const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
-checkAgree = function(){
-  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
-};
-
-/* override validatePage for auto scroll */
-const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
-validatePage = function(){
-
-  const inputs = pages[page].querySelectorAll("input,textarea,select");
-
-  for(const x of inputs){
-
-    x.classList.remove("err");
-
-    if(x.classList.contains("hp")) continue;
-    if(x.type==="hidden" || x.disabled) continue;
-
-    const val = (x.value || "").trim();
-
-    if(val===""){
-      msg.innerText="Semua field wajib diisi";
-      msg.className="text-red-400";
-      x.scrollIntoView({behavior:"smooth",block:"center"});
-      x.focus();
-      x.classList.add("err");
-      return false;
-    }
-  }
-
-  const nik=document.getElementById("NIK Pemohon");
-  if(nik && page===1){
-    if(!/^\d{16}$/.test(nik.value)){
-      msg.innerText="NIK harus 16 digit angka";
-      msg.className="text-red-400";
-      nik.scrollIntoView({behavior:"smooth",block:"center"});
-      nik.focus();
-      nik.classList.add("err");
-      return false;
-    }
-  }
-
-  msg.innerText="";
-  return true;
-};
 </script>
 
-</script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
+
 </head>
 
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -247,7 +190,10 @@ Pendaftaran Calon Penghuni Rusunawa
 <input id="Tanggal Formulir" type="date" class="input">
 
 <!-- honeypot bot -->
-<input class="hp" id="website" name="company" autocomplete="off" inputmode="none" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;">
+<input class="hp" id="website" name="company"
+autocomplete="new-password"
+tabindex="-1"
+style="position:absolute;left:-9999px;">
 
 </div>
 
@@ -431,7 +377,7 @@ return;
 
 /* honeypot bot */
 const hp=document.getElementById("website");
-if(hp && typeof hp.value==="string" && hp.value.trim()!==""){
+if(hp && hp.value && hp.value.trim()!==""){
   msg.className="text-red-400";
   msg.innerText="Aktivitas tidak valid terdeteksi";
   return;
@@ -448,6 +394,26 @@ const data={};
 document.querySelectorAll("input,textarea,select").forEach(x=>{
 if(x.id&&!x.classList.contains("hp"))data[x.id]=x.value;
 });
+
+/* ===== RECAPTCHA TOKEN ===== */
+let captchaToken="";
+
+try{
+  await new Promise(r=>grecaptcha.ready(r));
+
+  captchaToken = await grecaptcha.execute(
+    "6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r",
+    {action:"submit"}
+  );
+}catch(e){
+  msg.className="text-red-400";
+  msg.innerText="Captcha gagal. Refresh halaman.";
+  next.disabled=false;
+  return;
+}
+
+/* kirim token */
+data._captcha=captchaToken;
 
 try{
 const r=await fetch(URL+"?action=daftar",{
@@ -473,92 +439,7 @@ msg.innerText="Server tidak merespon";
 next.disabled=false;
 }
 
-/* === PATCH: wajib baca box + auto scroll error === */
-let pasalSudahDibaca=false;
-
-/* override togglePasal */
-const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
-togglePasal = function(){
-  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
-  pasalSudahDibaca=true;
-  if(typeof checkAgree==="function") checkAgree();
-};
-
-/* override checkAgree */
-const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
-checkAgree = function(){
-  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
-};
-
-/* override validatePage for auto scroll */
-const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
-validatePage = function(){
-  const inputs = pages[page].querySelectorAll("input,textarea,select");
-  for(const x of inputs){
-    x.classList.remove("err");
-    if(x.classList.contains("hp")) continue;
-    if(!x.value){
-      msg.innerText="Semua field wajib diisi";
-      msg.className="text-red-400";
-      x.scrollIntoView({behavior:"smooth",block:"center"});
-      x.focus();
-      x.classList.add("err");
-      return false;
-    }
-  }
-  const nik=document.getElementById("NIK Pemohon");
-  if(nik && page===1){
-    if(!/^\d{16}$/.test(nik.value)){
-      msg.innerText="NIK harus 16 digit angka";
-      msg.className="text-red-400";
-      nik.scrollIntoView({behavior:"smooth",block:"center"});
-      nik.focus();
-      nik.classList.add("err");
-      return false;
-    }
-  }
-  msg.innerText="";
-  return true;
-};
-
 </script>
 
 </body>
 </html>
-
-<script>
-/* === PRESERVE STABILIZER (append-only, no line removed) === */
-try{
-  if(typeof day === "undefined"){
-    const _now_fix = new Date();
-    window.day = _now_fix.getDay();
-  }
-  if(typeof jam === "undefined"){
-    const _now_fix2 = new Date();
-    window.jam = _now_fix2.getHours();
-  }
-}catch(e){}
-
-/* strengthen validator trim without altering original */
-try{
-  if(typeof validatePage === "function"){
-    const _old_validate = validatePage;
-    validatePage = function(){
-      const ok = _old_validate();
-      if(!ok) return false;
-      const inputs = document.querySelectorAll(".page:not(.hidden) input, .page:not(.hidden) textarea, .page:not(.hidden) select");
-      for(const x of inputs){
-        if(x.classList && x.classList.contains("hp")) continue;
-        if((x.value||"").trim()===""){
-          if(typeof msg!=="undefined"){
-            msg.className="text-red-400";
-            msg.innerText="Semua field wajib diisi";
-          }
-          return false;
-        }
-      }
-      return true;
-    };
-  }
-}catch(e){}
-</script>
