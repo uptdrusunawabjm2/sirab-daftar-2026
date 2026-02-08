@@ -247,10 +247,7 @@ Pendaftaran Calon Penghuni Rusunawa
 <input id="Tanggal Formulir" type="date" class="input">
 
 <!-- honeypot bot -->
-<input class="hp" id="website" name="company"
-autocomplete="new-password"
-tabindex="-1"
-style="position:absolute;left:-9999px;">
+<input class="hp" id="website" name="company" autocomplete="off" inputmode="none" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;">
 
 </div>
 
@@ -434,7 +431,7 @@ return;
 
 /* honeypot bot */
 const hp=document.getElementById("website");
-if(hp && hp.value && hp.value.trim()!==""){
+if(hp && typeof hp.value==="string" && hp.value.trim()!==""){
   msg.className="text-red-400";
   msg.innerText="Aktivitas tidak valid terdeteksi";
   return;
