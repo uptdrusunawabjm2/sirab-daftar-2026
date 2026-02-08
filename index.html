@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pendaftaran Rusunawa</title>
-<script src="https://cdn.tailwindcss.com">
+<script src="https://cdn.tailwindcss.com"></script>
+
 /* === PATCH: wajib baca box + auto scroll error === */
 let pasalSudahDibaca=false;
 
@@ -77,7 +78,8 @@ box-shadow:0 0 0 2px #ef4444 !important;
 }
 
 </style>
-    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY">
+<script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
+
 /* === PATCH: wajib baca box + auto scroll error === */
 let pasalSudahDibaca=false;
 
@@ -135,7 +137,6 @@ validatePage = function(){
   msg.innerText="";
   return true;
 };
-
 
 </script>
 </head>
@@ -244,7 +245,8 @@ Pendaftaran Calon Penghuni Rusunawa
 <input id="Tanggal Formulir" type="date" class="input">
 
 <!-- honeypot bot -->
-<input class="hp" id="website">
+<input class="hp" id="website" autocomplete="off" tabindex="-1">
+
 </div>
 
 <!-- PAGE 2 -->
@@ -426,9 +428,13 @@ return;
 }
 
 /* honeypot bot */
-if(document.getElementById("website").value){
-return;
+const hp=document.getElementById("website");
+if(hp && hp.value && hp.value.trim()!==""){
+  msg.className="text-red-400";
+  msg.innerText="Aktivitas tidak valid terdeteksi";
+  return;
 }
+
 
 if(!validatePage())return;
 
