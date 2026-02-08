@@ -184,13 +184,13 @@ tglInput.readOnly=true;
 /* blok sabtu minggu */
 const day=now.getDay();
 if(day===0||day===6){
-lockForm("Pendaftaran tutup hari Sabtu & Minggu");
+lockForm("Pelayanan tidak beroperasi pada hari libur nasional dan hari besar keagamaan");
 }
 
 /* lock jam WIB 08:00-16:00 */
 const jam=now.getHours();
 if(jam<8||jam>=16){
-lockForm("Pendaftaran hanya buka 08:00 - 16:00 WIB");
+lockForm("Pendaftaran hanya buka 08:00 - 16:00 WITA");
 }
 
 function lockForm(text){
