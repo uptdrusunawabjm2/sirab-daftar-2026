@@ -1,0 +1,14 @@
+# Sistem Pendaftaran & Verifikasi Rusunawa
+
+Fitur:
+- Form pendaftaran online
+- Verifikasi admin (DITERIMA / DITOLAK / PERBAIKI)
+- Tracking status realtime
+- Anti bot reCAPTCHA
+- Auto unit & lock
+- Progress tracking UI
+- Download bukti pendaftaran
+
+Frontend: HTML + Tailwind  
+Backend: Google Apps Script  
+Database: Google Sheet
