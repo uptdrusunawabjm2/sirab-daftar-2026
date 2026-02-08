@@ -60,29 +60,43 @@ Baca pernyataan lengkap
 <!-- ===== BOX 1 ===== -->
 <div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
 
-<h3 class="text-left font-semibold mb-3">Persyaratan:</h3>
+<h3 class="text-left font-semibold mb-3">Informasi:</h3>
 
-<div class="space-y-1 text-left max-w-md mx-auto">
-<p>a. Penghasilan maksimal 2x UMP.</p>
-<p>b. Memiliki identitas kependudukan.</p>
-<p>c. Sudah berkeluarga/menikah.</p>
-<p>d. Anggota keluarga maksimal 4 orang.</p>
-<p>e. Belum memiliki rumah/tempat tinggal sendiri.</p>
-<p>f. Sanggup membayar sewa dan biaya lainnya.</p>
-</div>
+<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
+<li>pengumpulan data melalui formulir ini dimaksudkan untuk memudahkan Pemohon dalam melengkapi persyaratan.</li>
+<li>data yang dikumpulkan selanjutnya akan digunakan untuk keperluan pengumpulan, pengolahan, dan penganalisisan terbatas sebagai bagian dari proses verifikasi awal.</li>
+</ol>
 </div>
 
-<!-- ===== BOX 2 BARU ===== -->
+<!-- ===== BOX 2 ===== -->
 <div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
 
-<h3 class="text-left font-semibold mb-3">Ketentuan Tambahan:</h3>
+<h3 class="text-left font-semibold mb-3">Persyaratan:</h3>
 
-<div class="space-y-1 text-left max-w-md mx-auto">
-<p>a. Wajib menjaga ketertiban dan kebersihan lingkungan.</p>
-<p>b. Tidak diperbolehkan menyewakan atau memindahtangankan unit.</p>
-<p>c. Wajib mematuhi seluruh peraturan pengelola rusunawa.</p>
-<p>d. Bersedia dilakukan verifikasi data sewaktu-waktu.</p>
+<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
+<li>Penghasilan maksimal 2x UMP.</li>
+<li>Memiliki identitas kependudukan.</li>
+<li>Sudah berkeluarga/menikah.</li>
+<li>Anggota keluarga maksimal 4 orang.</li>
+<li>Belum memiliki rumah/tempat tinggal sendiri.</li>
+<li>Sanggup membayar sewa dan biaya lainnya.</li>
+</ol>
 </div>
+
+<!-- ===== BOX 3 BARU ===== -->
+<div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
+
+<h3 class="text-left font-semibold mb-3">Tata Tertib:</h3>
+
+<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
+<li>Sarusunawa hanya diperkenankan dihuni maksimal 4 (Empat) orang.</li>
+<li>Penghuni wajib melapor kepada RT/RW dan/atau petugas keamanan apabila ada tamu yang akan bermalam lebih dari 1 x 24 jam.</li>
+<li>Menjaga kebersihan, kerapihan, keamanan, dan keindahan Sarusunawa dan lingkungan Rusunawa.</li>
+<li>Menjaga toleransi dan memelihara ikatan sosial yang baik sesama Penghuni.</li>
+<li>Mematikan listrik, air, dan gas rumah tangga saat meninggalkan Sarusunawa.</li>
+<li>Pemeliharaan dan perawatan Sarusunawa yang dilakukan oleh Penghuni wajib dilaporkan kepada UPTD.</li>
+<li>Menempatkan kendaraan bermotor pada tempat parkir/lokasi yang telah ditetapkan UPTD.</li>
+</ol>
 </div>
 
 <button id="btnIntroNext" disabled
@@ -123,17 +137,29 @@ Pendaftaran Calon Penghuni Rusunawa
 <option>Penduduk Non Permanen</option>
 </select>
 <input id="Umur" placeholder="Umur" class="input">
-<textarea id="Alamat sekarang" placeholder="Alamat sekarang" class="input"></textarea>
+<textarea id="Alamat sekarang" placeholder="Jalan.. RT/RW.. Kelurahan.. Kota.." class="input"></textarea>
 <input id="Nomor Telepon/HP/WA" placeholder="Nomor Telepon" class="input">
 <input id="Email" placeholder="Email" class="input">
 </div>
 
 <!-- PAGE 3 -->
-<div class="page hidden space-y-3">
+<div class="page hidden space-y-4">
 <input id="Pekerjaan Pemohon" placeholder="Pekerjaan Pemohon" class="input">
+<input id="Nama Perusahaan/Tempat Kerja" placeholder="Nama Perusahaan/Tempat Kerja" class="input">
+<input id="Alamat Pekerjaan" placeholder="Alamat Tempat Kerja" class="input">
 <input id="Penghasilan perbulan" placeholder="Penghasilan" class="input">
+<input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
+<input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
+<input id="Alamat Pekerjaan Pasangan" placeholder="Alamat Tempat Kerja Pasangan" class="input">
+<input id="Penghasilan perbulan Pasangan" placeholder="Penghasilan perbulan Pasangan" class="input">
+
+
+<!-- PAGE 4 -->
+<div class="page hidden space-y-4">
 <input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
-<input id="NIK Penjamin" placeholder="NIK Penjamin" class="input">
+<input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
+<input id="Status Hubungan dengan Pemohon" placeholder="Status Hubungan dengan Pemohon" class="input">
+
 </div>
 
 </div>
@@ -192,15 +218,15 @@ tglInput.value=`${yyyy}-${mm}-${dd}`;
 tglInput.readOnly=true;
 
 /* blok sabtu minggu */
-const day=now.getDay();
+//const day=now.getDay();
 if(day===0||day===6){
 lockForm("Pelayanan tidak beroperasi pada hari libur nasional dan hari besar keagamaan");
 }
 
 /* lock jam WIB 08:00-16:00 */
-const jam=now.getHours();
+//const jam=now.getHours();
 if(jam<8||jam>=16){
-lockForm("Pendaftaran hanya buka 08:00 - 16:00 WITA");
+lockForm("Pendaftaran: 08:00 - 16:00 WITA");
 }
 
 function lockForm(text){
