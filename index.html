@@ -247,7 +247,10 @@ Pendaftaran Calon Penghuni Rusunawa
 <input id="Tanggal Formulir" type="date" class="input">
 
 <!-- honeypot bot -->
-<input class="hp" id="website" autocomplete="off" tabindex="-1">
+<input class="hp" id="website" name="company"
+autocomplete="new-password"
+tabindex="-1"
+style="position:absolute;left:-9999px;">
 
 </div>
 
@@ -525,3 +528,40 @@ validatePage = function(){
 
 </body>
 </html>
+
+<script>
+/* === PRESERVE STABILIZER (append-only, no line removed) === */
+try{
+  if(typeof day === "undefined"){
+    const _now_fix = new Date();
+    window.day = _now_fix.getDay();
+  }
+  if(typeof jam === "undefined"){
+    const _now_fix2 = new Date();
+    window.jam = _now_fix2.getHours();
+  }
+}catch(e){}
+
+/* strengthen validator trim without altering original */
+try{
+  if(typeof validatePage === "function"){
+    const _old_validate = validatePage;
+    validatePage = function(){
+      const ok = _old_validate();
+      if(!ok) return false;
+      const inputs = document.querySelectorAll(".page:not(.hidden) input, .page:not(.hidden) textarea, .page:not(.hidden) select");
+      for(const x of inputs){
+        if(x.classList && x.classList.contains("hp")) continue;
+        if((x.value||"").trim()===""){
+          if(typeof msg!=="undefined"){
+            msg.className="text-red-400";
+            msg.innerText="Semua field wajib diisi";
+          }
+          return false;
+        }
+      }
+      return true;
+    };
+  }
+}catch(e){}
+</script>
