@@ -24,37 +24,6 @@ checkAgree = function(){
   btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
 };
 
-/* override validatePage for auto scroll */
-const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
-validatePage = function(){
-  const inputs = pages[page].querySelectorAll("input,textarea,select");
-  for(const x of inputs){
-    x.classList.remove("err");
-    if(x.classList.contains("hp")) continue;
-    if(!x.value){
-      msg.innerText="Semua field wajib diisi";
-      msg.className="text-red-400";
-      x.scrollIntoView({behavior:"smooth",block:"center"});
-      x.focus();
-      x.classList.add("err");
-      return false;
-    }
-  }
-  const nik=document.getElementById("NIK Pemohon");
-  if(nik && page===1){
-    if(!/^\d{16}$/.test(nik.value)){
-      msg.innerText="NIK harus 16 digit angka";
-      msg.className="text-red-400";
-      nik.scrollIntoView({behavior:"smooth",block:"center"});
-      nik.focus();
-      nik.classList.add("err");
-      return false;
-    }
-  }
-  msg.innerText="";
-  return true;
-};
-
 </script>
 
 <style>
@@ -332,23 +301,36 @@ showPage();
 
 function validatePage(){
 const inputs=pages[page].querySelectorAll("input,textarea,select");
+
+const optionalIds = [
+  "Pekerjaan Pasangan",
+  "Nama Perusahaan/Tempat Kerja 2",
+  "Alamat Pekerjaan Pasangan",
+  "Penghasilan perbulan Pasangan"
+];
+
 for(const x of inputs){
-if(x.classList.contains("hp")) continue;
-if(!x.value || !x.value.trim()){
-msg.innerText="Semua field wajib diisi";
-msg.className="text-red-400";
-return false;
-}
+
+  if(x.classList.contains("hp")) continue;
+
+  /* skip field opsional */
+  if(optionalIds.includes(x.id)) continue;
+
+  if(!x.value || !x.value.trim()){
+    msg.innerText="Semua field wajib diisi";
+    msg.className="text-red-400";
+    return false;
+  }
 }
 
 /* VALIDASI NIK 16 DIGIT */
 const nik=document.getElementById("NIK Pemohon");
-if(nik&&page===1){
-if(!/^\d{16}$/.test(nik.value)){
-msg.innerText="NIK harus 16 digit angka";
-msg.className="text-red-400";
-return false;
-}
+if(nik && page===1){
+  if(!/^\d{16}$/.test(nik.value)){
+    msg.innerText="NIK harus 16 digit angka";
+    msg.className="text-red-400";
+    return false;
+  }
 }
 
 msg.innerText="";
@@ -356,9 +338,9 @@ return true;
 }
 
 function nextPage(){
-if(!validatePage())return;
-if(page<pages.length-1){page++;showPage();}
-else kirim();
+  if(!validatePage())return;
+  if(page<pages.length-1){page++;showPage();}
+  else kirim();
 }
 
 function prevPage(){
