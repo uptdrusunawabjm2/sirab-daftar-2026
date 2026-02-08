@@ -4,7 +4,56 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pendaftaran Rusunawa</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com">
+/* === PATCH: wajib baca box + auto scroll error === */
+let pasalSudahDibaca=false;
+
+/* override togglePasal */
+const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
+togglePasal = function(){
+  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
+  pasalSudahDibaca=true;
+  if(typeof checkAgree==="function") checkAgree();
+};
+
+/* override checkAgree */
+const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
+checkAgree = function(){
+  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
+};
+
+/* override validatePage for auto scroll */
+const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
+validatePage = function(){
+  const inputs = pages[page].querySelectorAll("input,textarea,select");
+  for(const x of inputs){
+    x.classList.remove("err");
+    if(x.classList.contains("hp")) continue;
+    if(!x.value){
+      msg.innerText="Semua field wajib diisi";
+      msg.className="text-red-400";
+      x.scrollIntoView({behavior:"smooth",block:"center"});
+      x.focus();
+      x.classList.add("err");
+      return false;
+    }
+  }
+  const nik=document.getElementById("NIK Pemohon");
+  if(nik && page===1){
+    if(!/^\d{16}$/.test(nik.value)){
+      msg.innerText="NIK harus 16 digit angka";
+      msg.className="text-red-400";
+      nik.scrollIntoView({behavior:"smooth",block:"center"});
+      nik.focus();
+      nik.classList.add("err");
+      return false;
+    }
+  }
+  msg.innerText="";
+  return true;
+};
+
+</script>
 
 <style>
 .input{
@@ -17,8 +66,78 @@ padding:10px;
 #formWrapper{display:none;}
 /* honeypot bot */
 .hp{display:none;}
+
+/* === PATCH: focus + error highlight === */
+.input:focus{
+outline:none;
+box-shadow:0 0 0 2px #3b82f6;
+}
+.err{
+box-shadow:0 0 0 2px #ef4444 !important;
+}
+
 </style>
-    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY">
+/* === PATCH: wajib baca box + auto scroll error === */
+let pasalSudahDibaca=false;
+
+/* override togglePasal */
+const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
+togglePasal = function(){
+  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
+  pasalSudahDibaca=true;
+  if(typeof checkAgree==="function") checkAgree();
+};
+
+/* override checkAgree */
+const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
+checkAgree = function(){
+  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
+};
+
+/* override validatePage for auto scroll */
+const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
+validatePage = function(){
+
+  const inputs = pages[page].querySelectorAll("input,textarea,select");
+
+  for(const x of inputs){
+
+    x.classList.remove("err");
+
+    if(x.classList.contains("hp")) continue;
+    if(x.type==="hidden" || x.disabled) continue;
+
+    const val = (x.value || "").trim();
+
+    if(val===""){
+      msg.innerText="Semua field wajib diisi";
+      msg.className="text-red-400";
+      x.scrollIntoView({behavior:"smooth",block:"center"});
+      x.focus();
+      x.classList.add("err");
+      return false;
+    }
+  }
+
+  const nik=document.getElementById("NIK Pemohon");
+  if(nik && page===1){
+    if(!/^\d{16}$/.test(nik.value)){
+      msg.innerText="NIK harus 16 digit angka";
+      msg.className="text-red-400";
+      nik.scrollIntoView({behavior:"smooth",block:"center"});
+      nik.focus();
+      nik.classList.add("err");
+      return false;
+    }
+  }
+
+  msg.innerText="";
+  return true;
+};
+
+
+</script>
 </head>
 
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -121,6 +240,7 @@ Pendaftaran Calon Penghuni Rusunawa
 <!-- PAGE 1 -->
 <div class="page space-y-4">
 <label>Tanggal Formulir</label>
+<label class="block text-slate-300 text-sm mb-1">Tanggal Formulir</label>
 <input id="Tanggal Formulir" type="date" class="input">
 
 <!-- honeypot bot -->
@@ -129,37 +249,54 @@ Pendaftaran Calon Penghuni Rusunawa
 
 <!-- PAGE 2 -->
 <div class="page hidden space-y-3">
+<label class="block text-slate-300 text-sm mb-1">Nama Pemohon</label>
 <input id="Nama Pemohon" placeholder="Nama Pemohon" class="input">
-<input id="NIK Pemohon" placeholder="NIK Pemohon" class="input">
+<label class="block text-slate-300 text-sm mb-1">NIK Pemohon</label>
+<input id="NIK Pemohon" inputmode="numeric" pattern="[0-9]*" placeholder="NIK Pemohon" class="input">
+<label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
 <select id="Status Kependudukan" class="input">
 <option value="">Status Kependudukan</option>
 <option>Kota Banjarmasin</option>
 <option>Penduduk Non Permanen</option>
 </select>
-<input id="Umur" placeholder="Umur" class="input">
+<label class="block text-slate-300 text-sm mb-1">Umur</label>
+<input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
+<label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
 <textarea id="Alamat sekarang" placeholder="Jalan.. RT/RW.. Kelurahan.. Kota.." class="input"></textarea>
-<input id="Nomor Telepon/HP/WA" placeholder="Nomor Telepon" class="input">
+<label class="block text-slate-300 text-sm mb-1">Nomor Telepon / HP / WA</label>
+<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telepon" class="input">
+<label class="block text-slate-300 text-sm mb-1">Email</label>
 <input id="Email" placeholder="Email" class="input">
 </div>
 
 <!-- PAGE 3 -->
 <div class="page hidden space-y-4">
+<label class="block text-slate-300 text-sm mb-1">Pekerjaan Pemohon</label>
 <input id="Pekerjaan Pemohon" placeholder="Pekerjaan Pemohon" class="input">
+<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja</label>
 <input id="Nama Perusahaan/Tempat Kerja" placeholder="Nama Perusahaan/Tempat Kerja" class="input">
+<label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
 <input id="Alamat Pekerjaan" placeholder="Alamat Tempat Kerja" class="input">
-<input id="Penghasilan perbulan" placeholder="Penghasilan" class="input">
+<label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
+<input id="Penghasilan perbulan" inputmode="numeric" pattern="[0-9]*" placeholder="Penghasilan" class="input">
+<label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
+<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja Pasangan</label>
 <input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
+<label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
 <input id="Alamat Pekerjaan Pasangan" placeholder="Alamat Tempat Kerja Pasangan" class="input">
-<input id="Penghasilan perbulan Pasangan" placeholder="Penghasilan perbulan Pasangan" class="input">
-
+<label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
+<input id="Penghasilan perbulan Pasangan" inputmode="numeric" pattern="[0-9]*" placeholder="Penghasilan perbulan Pasangan" class="input">
+</div>
 
 <!-- PAGE 4 -->
 <div class="page hidden space-y-4">
+<label class="block text-slate-300 text-sm mb-1">Nama Penjamin</label>
 <input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
+<label class="block text-slate-300 text-sm mb-1">Pekerjaan Penjamin</label>
 <input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
+<label class="block text-slate-300 text-sm mb-1">Status Hubungan dengan Pemohon</label>
 <input id="Status Hubungan dengan Pemohon" placeholder="Status Hubungan dengan Pemohon" class="input">
-
 </div>
 
 </div>
@@ -247,7 +384,7 @@ function validatePage(){
 const inputs=pages[page].querySelectorAll("input,textarea,select");
 for(const x of inputs){
 if(x.classList.contains("hp")) continue;
-if(!x.value){
+if(!x.value || !x.value.trim()){
 msg.innerText="Semua field wajib diisi";
 msg.className="text-red-400";
 return false;
@@ -327,6 +464,55 @@ msg.innerText="Server tidak merespon";
 
 next.disabled=false;
 }
+
+/* === PATCH: wajib baca box + auto scroll error === */
+let pasalSudahDibaca=false;
+
+/* override togglePasal */
+const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
+togglePasal = function(){
+  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
+  pasalSudahDibaca=true;
+  if(typeof checkAgree==="function") checkAgree();
+};
+
+/* override checkAgree */
+const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
+checkAgree = function(){
+  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
+};
+
+/* override validatePage for auto scroll */
+const _validatePage_original = typeof validatePage === "function" ? validatePage : null;
+validatePage = function(){
+  const inputs = pages[page].querySelectorAll("input,textarea,select");
+  for(const x of inputs){
+    x.classList.remove("err");
+    if(x.classList.contains("hp")) continue;
+    if(!x.value){
+      msg.innerText="Semua field wajib diisi";
+      msg.className="text-red-400";
+      x.scrollIntoView({behavior:"smooth",block:"center"});
+      x.focus();
+      x.classList.add("err");
+      return false;
+    }
+  }
+  const nik=document.getElementById("NIK Pemohon");
+  if(nik && page===1){
+    if(!/^\d{16}$/.test(nik.value)){
+      msg.innerText="NIK harus 16 digit angka";
+      msg.className="text-red-400";
+      nik.scrollIntoView({behavior:"smooth",block:"center"});
+      nik.focus();
+      nik.classList.add("err");
+      return false;
+    }
+  }
+  msg.innerText="";
+  return true;
+};
+
 </script>
 
 </body>
