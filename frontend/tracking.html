@@ -67,25 +67,30 @@ function setStatusBox(status){
   statusBox.className="mb-4 p-3 rounded-xl text-center font-bold text-lg";
   status=(status||"").toUpperCase();
 
-  if(status.includes("DITERIMA") || status.includes("SELESAI")){
+  if(status.includes("DITERIMA")){
     statusBox.textContent="STATUS : DITERIMA";
     statusBox.classList.add("bg-green-600");
-    setProgress(100);
+    showNextLink(true);
 
   }else if(status.includes("DITOLAK")){
     statusBox.textContent="STATUS : DITOLAK";
     statusBox.classList.add("bg-red-600");
-    setProgress(100);
+    showNextLink(false);
 
   }else if(status.includes("DIPROSES")){
     statusBox.textContent="STATUS : DIPROSES";
+    statusBox.classList.add("bg-amber-500","text-black");
+    showNextLink(false);
+
+  }else if(status.includes("VERIFIKASI")){
+    statusBox.textContent="STATUS : VERIFIKASI";
     statusBox.classList.add("bg-yellow-500","text-black");
-    setProgress(60);
+    showNextLink(false);
 
   }else{
-    statusBox.textContent="STATUS : MENUNGGU VERIFIKASI";
+    statusBox.textContent="STATUS : MENUNGGU";
     statusBox.classList.add("bg-blue-600");
-    setProgress(20);
+    showNextLink(false);
   }
 
   statusBox.classList.remove("hidden");
@@ -151,7 +156,7 @@ function renderUI(d){
 
     ${block("Status Verifikasi",d.verifikasi)}
     ${block("Tanggal Verifikasi",d.tanggal)}
-    ${block("Catatan Verifikasi",d.catatan)}
+    ${block("Catatan Verifikasi",d.catatan || "-")}
     ${block("No Pendaftaran",d.no)}
 
     <button onclick="downloadBukti()" 
@@ -185,6 +190,20 @@ function downloadBukti(){
   a.download="Bukti_Pendaftaran.txt";
   a.click();
 }
+
+<a id="linkLanjut"
+   href="https://docs.google.com/forms/d/e/1FAIpQLSf2LjzX-sbv3ZtGic3nz4ptqBChoTB6Zho0WR3s9_2CpnvAIA/closedform"
+   target="_blank"
+   class="hidden block mt-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl text-center">
+   Lanjut ke Tahap Berikutnya
+</a>
+
+function showNextLink(show){
+  const el = document.getElementById("linkLanjut");
+  if(!el) return;
+  el.classList.toggle("hidden", !show);
+}
+
 </script>
 
 </body>
