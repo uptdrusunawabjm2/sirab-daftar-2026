@@ -23,18 +23,6 @@
 <!-- STATUS BOX -->
 <div id="statusBox" class="hidden mb-4 p-3 rounded-xl text-center font-bold text-lg"></div>
 
-<!-- PROGRESS -->
-<div id="progress" class="hidden mb-4">
-  <div class="w-full bg-slate-800 rounded-full h-3">
-    <div id="bar" class="h-3 rounded-full bg-blue-500 transition-all"></div>
-  </div>
-  <div class="flex justify-between text-xs mt-1 text-slate-400">
-    <span>MENUNGGU</span>
-    <span>DIPROSES</span>
-    <span>SELESAI</span>
-  </div>
-</div>
-
 <div id="hasil" class="hidden"></div>
 <div id="msg" class="text-center text-red-400 text-sm mt-3"></div>
 
@@ -103,19 +91,13 @@ function setStatusBox(status){
   statusBox.classList.remove("hidden");
 }
 
-
-/* ===== PROGRESS BAR ===== */
-function setProgress(val){
-  progress.classList.remove("hidden");
-  bar.style.width=val+"%";
-}
-
 /* ===== FETCH ===== */
 async function cek(){
 
   const nikVal=nik.value.trim();
   hasil.classList.add("hidden");
   statusBox.classList.add("hidden");
+  showNextLink(false);
   msg.textContent="Memuat data...";
 
   if(!nikVal){
@@ -162,8 +144,8 @@ function renderUI(d){
     <hr class="border-slate-700 my-2">
 
     ${block("Status Verifikasi",d.verifikasi)}
-    ${block("Tanggal Verifikasi",d.tanggal)}
     ${block("Catatan Verifikasi",d.catatan || "-")}
+    ${block("Tanggal Verifikasi",d.tanggal)}
     ${block("No Pendaftaran",d.no)}
 
     <button onclick="downloadBukti()" 
