@@ -38,6 +38,13 @@
 <div id="hasil" class="hidden"></div>
 <div id="msg" class="text-center text-red-400 text-sm mt-3"></div>
 
+<a id="linkLanjut"
+   href="https://docs.google.com/forms/d/e/1FAIpQLSf2LjzX-sbv3ZtGic3nz4ptqBChoTB6Zho0WR3s9_2CpnvAIA/closedform"
+   target="_blank"
+   class="hidden block mt-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl text-center">
+   Lanjut ke Tahap Berikutnya
+</a>
+
 </div>
 
 <script>
@@ -190,13 +197,6 @@ function downloadBukti(){
   a.download="Bukti_Pendaftaran.txt";
   a.click();
 }
-
-<a id="linkLanjut"
-   href="https://docs.google.com/forms/d/e/1FAIpQLSf2LjzX-sbv3ZtGic3nz4ptqBChoTB6Zho0WR3s9_2CpnvAIA/closedform"
-   target="_blank"
-   class="hidden block mt-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl text-center">
-   Lanjut ke Tahap Berikutnya
-</a>
 
 function showNextLink(show){
   const el = document.getElementById("linkLanjut");
