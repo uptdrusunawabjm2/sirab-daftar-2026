@@ -265,6 +265,73 @@ const msg=document.getElementById("msg");
 let _unit="";
 let _token="";
 
+/* ===== AUTO LOAD DROPDOWN DARI GAP ===== */
+
+const selRusun=document.getElementById("Rusunawa");
+const selTipe=document.getElementById("Tipe Kamar");
+const selLantai=document.getElementById("Lantai");
+
+let GAP_DATA={};
+
+window.addEventListener("load",loadOptions);
+
+async function loadOptions(){
+
+  try{
+
+    const r=await fetch(URL+"?action=options");
+    const j=await r.json();
+
+    if(!j.status) throw "Gagal load";
+
+    GAP_DATA=j.data;
+
+    selRusun.innerHTML='<option value="">Pilih Rusunawa</option>';
+
+    Object.keys(GAP_DATA).forEach(rusun=>{
+      selRusun.innerHTML+=`<option value="${rusun}">${rusun}</option>`;
+    });
+
+  }catch{
+    msg.className="text-red-400";
+    msg.innerText="Gagal memuat daftar unit";
+  }
+}
+
+/* RUSUN → TIPE */
+selRusun.onchange=()=>{
+  const rusun=selRusun.value;
+  selTipe.innerHTML='<option value="">Pilih Tipe</option>';
+  selLantai.innerHTML='<option value="">Pilih Lantai</option>';
+
+  if(!rusun) return;
+
+  Object.keys(GAP_DATA[rusun]).forEach(tipe=>{
+    selTipe.innerHTML+=`<option value="${tipe}">${tipe}</option>`;
+  });
+
+  cekUnit();
+};
+
+/* TIPE → LANTAI */
+selTipe.onchange=()=>{
+  const rusun=selRusun.value;
+  const tipe=selTipe.value;
+
+  selLantai.innerHTML='<option value="">Pilih Lantai</option>';
+  if(!rusun||!tipe) return;
+
+  GAP_DATA[rusun][tipe].forEach(l=>{
+    selLantai.innerHTML+=`<option value="${l}">${l}</option>`;
+  });
+
+  cekUnit();
+};
+
+/* LANTAI → CEK UNIT */
+selLantai.onchange=cekUnit;
+
+
 document.getElementById("Rusunawa").onchange=cekUnit;
 document.getElementById("Tipe Kamar").onchange=cekUnit;
 document.getElementById("Lantai").onchange=cekUnit;
