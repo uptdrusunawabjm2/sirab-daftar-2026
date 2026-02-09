@@ -90,36 +90,6 @@ textarea{
   }
 }
 
-.field{
-  position:relative;
-}
-
-.field input,
-.field textarea{
-  padding:14px 12px 6px;
-}
-
-.field label{
-  position:absolute;
-  left:12px;
-  top:10px;
-  font-size:13px;
-  color:#94a3b8;
-  transition:.18s;
-  pointer-events:none;
-}
-
-.field input:focus + label,
-.field input:not(:placeholder-shown) + label,
-.field textarea:focus + label,
-.field textarea:not(:placeholder-shown) + label{
-  top:-7px;
-  font-size:11px;
-  color:#60a5fa;
-  background:#0b1220;
-  padding:0 4px;
-}
-
 /* ===== PERBAIKI DROPDOWN ===== */
 select{
   width:100%;
@@ -255,14 +225,17 @@ style="position:absolute;left:-9999px;">
 <!-- PAGE 2 -->
 <div class="page hidden space-y-3">
 
-<div class="field">
-  <input id="Nama Pemohon" class="input" placeholder=" ">
-  <label>Nama Pemohon</label>
-</div>
-
+<label class="block text-slate-300 text-sm mb-1">Nama Pemohon</label>
+<input id="Nama Pemohon"
+       placeholder="Nama Lengkap"
+       class="input">
 <label class="block text-slate-300 text-sm mb-1">NIK Pemohon</label>
-<input id="NIK Pemohon" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Handphone" class="input">
-<p class="text-xs text-slate-400 mt-1">untuk sementara masukan no handphone"</p>
+<input id="NIK Pemohon"
+       inputmode="numeric"
+       pattern="[0-9]*"
+       placeholder="Input Nomor Handphone"
+       class="input">
+<p class="text-xs text-slate-400 mt-1">catatan: untuk sementara masukan no handphone</p>
 <label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
 <select id="Status Kependudukan" class="input">
 <option value="">Status Kependudukan</option>
@@ -288,21 +261,16 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja</label>
 <input id="Nama Perusahaan/Tempat Kerja" placeholder="Nama Perusahaan/Tempat Kerja" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
-<input id="Alamat Pekerjaan" placeholder="Alamat Tempat Kerja" class="input">
-<p class="text-xs text-slate-400 mt-1">Jalan... No.Telp... Kab/Kota..."</p>
-
+<textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
 <input id="Penghasilan perbulan" class="input rupiah" placeholder="Penghasilan per bulan">
-
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
-<p class="text-xs text-slate-400 mt-1">jika tidak bekerja tulis "mengurus rumah tangga"</p>
+<p class="text-xs text-slate-400 mt-2">catatan: jika tidak bekerja tulis "mengurus rumah tangga"</p>
 <label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja Pasangan</label>
 <input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
-<input id="Alamat Pekerjaan Pasangan" placeholder="Alamat Tempat Kerja Pasangan" class="input">
-<p class="text-xs text-slate-400 mt-1">Jalan... No.Telp... Kab/Kota..."</p>
-
+<textarea id="Alamat Tempat Kerja Pasangan" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
 <input id="Penghasilan perbulan Pasangan" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
 
@@ -313,8 +281,7 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Nama Penjamin</label>
 <input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Penjamin</label>
-<input id="Alamat Penjamin" placeholder="Alamat Penjamin" class="input">
-<p class="text-xs text-slate-400 mt-1">Penjamin wajib domisili di Kota Banjarmasin</p>
+<textarea id="Alamat Penjamin" placeholder="Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Penjamin</label>
 <input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
 <label class="block text-slate-300 text-sm mb-1">Status Hubungan dengan Pemohon</label>
