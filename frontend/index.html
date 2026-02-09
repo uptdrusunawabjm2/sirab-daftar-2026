@@ -361,7 +361,7 @@ for(const x of inputs){
 /* VALIDASI NIK 16 DIGIT */
 const nik=document.getElementById("NIK Pemohon");
 if(nik && page===1){
-  if(!/^\d{16}$/.test(nik.value)){
+  if(!/^[0-9]+$/.test(nik.value)){
     msg.innerText="NIK harus 16 digit angka";
     msg.className="text-red-400";
     nik.scrollIntoView({behavior:"smooth",block:"center"});
