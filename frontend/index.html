@@ -171,7 +171,8 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Nama Pemohon</label>
 <input id="Nama Pemohon" placeholder="Nama Pemohon" class="input">
 <label class="block text-slate-300 text-sm mb-1">NIK Pemohon</label>
-<input id="NIK Pemohon" inputmode="numeric" pattern="[0-9]*" placeholder="NIK Pemohon" class="input">
+<input id="NIK Pemohon" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Handphone" class="input">
+<p class="text-xs text-slate-400 mt-1">untuk sementara masukan no handphone"</p>
 <label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
 <select id="Status Kependudukan" class="input">
 <option value="">Status Kependudukan</option>
@@ -180,8 +181,10 @@ style="position:absolute;left:-9999px;">
 </select>
 <label class="block text-slate-300 text-sm mb-1">Umur</label>
 <input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
+
 <label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
 <textarea id="Alamat sekarang" placeholder="Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
+
 <label class="block text-slate-300 text-sm mb-1">Nomor Telepon / HP / WA</label>
 <input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telepon (wa aktif)" class="input">
 <label class="block text-slate-300 text-sm mb-1">Email</label>
@@ -273,7 +276,7 @@ const selLantai=document.getElementById("Lantai");
 
 let GAP_DATA={};
 
-window.addEventListener("load",loadOptions);
+document.addEventListener("DOMContentLoaded",loadOptions);
 
 async function loadOptions(){
 
@@ -330,11 +333,6 @@ selTipe.onchange=()=>{
 
 /* LANTAI → CEK UNIT */
 selLantai.onchange=cekUnit;
-
-
-document.getElementById("Rusunawa").onchange=cekUnit;
-document.getElementById("Tipe Kamar").onchange=cekUnit;
-document.getElementById("Lantai").onchange=cekUnit;
 
 async function cekUnit(){
 
@@ -471,7 +469,7 @@ for(const x of inputs){
 const nik=document.getElementById("NIK Pemohon");
 if(nik && page===1){
   if(!/^[0-9]+$/.test(nik.value)){
-    msg.innerText="NIK harus 16 digit angka";
+    msg.innerText="NIK harus angka";
     msg.className="text-red-400";
     nik.scrollIntoView({behavior:"smooth",block:"center"});
     nik.focus();
