@@ -39,6 +39,87 @@ padding:10px;
 .hp{display:none;
 }
 
+/* focus input */
+.input:focus{
+  outline:none;
+  box-shadow:0 0 0 2px #3b82f6;
+}
+
+/* highlight error */
+.err{
+  box-shadow:0 0 0 2px #ef4444 !important;
+}
+
+/* label lebih proporsional */
+label{
+  font-size:13px;
+  color:#cbd5e1;
+  font-weight:500;
+}
+
+/* placeholder lebih kecil */
+.input::placeholder,
+textarea::placeholder{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+/* jarak label lebih rapi */
+.page label{
+  margin-bottom:2px;
+}
+
+.page{
+  max-width:540px;
+  margin:auto;
+}
+
+.page .input,
+.page textarea,
+.page select{
+  margin-bottom:8px;
+}
+
+textarea{
+  min-height:80px;
+}
+
+@media (max-width:640px){
+  .page{
+    padding:14px;
+  }
+}
+
+.field{
+  position:relative;
+}
+
+.field input,
+.field textarea{
+  padding:14px 12px 6px;
+}
+
+.field label{
+  position:absolute;
+  left:12px;
+  top:10px;
+  font-size:13px;
+  color:#94a3b8;
+  transition:.18s;
+  pointer-events:none;
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label,
+.field textarea:focus + label,
+.field textarea:not(:placeholder-shown) + label{
+  top:-7px;
+  font-size:11px;
+  color:#60a5fa;
+  background:#0b1220;
+  padding:0 4px;
+}
+
 /* ===== PERBAIKI DROPDOWN ===== */
 select{
   width:100%;
@@ -56,18 +137,6 @@ select:focus{
   box-shadow:0 0 0 1px #3b82f6;
 }
 </style>
-
-
-<script>
-/* === PATCH: focus + error highlight === */
-.input:focus{
-outline:none;
-box-shadow:0 0 0 2px #3b82f6;
-}
-.err{
-box-shadow:0 0 0 2px #ef4444 !important;
-}
-</script>
 
 <script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
 
@@ -172,8 +241,8 @@ Pendaftaran Calon Penghuni Rusunawa
 
 <!-- PAGE 1 -->
 <div class="page space-y-4">
-<label>Tanggal Formulir</label>
-<input id="Tanggal Formulir" type="date" class="input">
+<label class="block text-slate-300 text-sm mb-1">Tanggal Formulir</label>
+<input id="Tanggal Formulir" class="input" type="date">
 
 <!-- honeypot bot -->
 <input class="hp" id="website" name="company"
@@ -185,8 +254,12 @@ style="position:absolute;left:-9999px;">
 
 <!-- PAGE 2 -->
 <div class="page hidden space-y-3">
-<label class="block text-slate-300 text-sm mb-1">Nama Pemohon</label>
-<input id="Nama Pemohon" placeholder="Nama Pemohon" class="input">
+
+<div class="field">
+  <input id="Nama Pemohon" class="input" placeholder=" ">
+  <label>Nama Pemohon</label>
+</div>
+
 <label class="block text-slate-300 text-sm mb-1">NIK Pemohon</label>
 <input id="NIK Pemohon" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Handphone" class="input">
 <p class="text-xs text-slate-400 mt-1">untuk sementara masukan no handphone"</p>
@@ -217,8 +290,10 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
 <input id="Alamat Pekerjaan" placeholder="Alamat Tempat Kerja" class="input">
 <p class="text-xs text-slate-400 mt-1">Jalan... No.Telp... Kab/Kota..."</p>
+
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
-<input id="Penghasilan perbulan" inputmode="numeric" pattern="[0-9]*" placeholder="Penghasilan" class="input">
+<input id="Penghasilan perbulan" class="input rupiah" placeholder="Penghasilan per bulan">
+
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
 <p class="text-xs text-slate-400 mt-1">jika tidak bekerja tulis "mengurus rumah tangga"</p>
@@ -227,8 +302,10 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
 <input id="Alamat Pekerjaan Pasangan" placeholder="Alamat Tempat Kerja Pasangan" class="input">
 <p class="text-xs text-slate-400 mt-1">Jalan... No.Telp... Kab/Kota..."</p>
+
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
-<input id="Penghasilan perbulan Pasangan" inputmode="numeric" pattern="[0-9]*" placeholder="Penghasilan perbulan Pasangan" class="input">
+<input id="Penghasilan perbulan Pasangan" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
+
 </div>
 
 <!-- PAGE 4 -->
@@ -492,7 +569,9 @@ for(const x of inputs){
 /* VALIDASI NIK 16 DIGIT */
 const nik=document.getElementById("NIK Pemohon");
 if(nik && page===1){
-  if(!/^[0-9]+$/.test(nik.value)){
+const angka = nik.value.replace(/[^\d]/g,"");   // ✔ pakai nik
+  if(!angka){
+
     msg.innerText="NIK harus angka";
     msg.className="text-red-400";
     nik.scrollIntoView({behavior:"smooth",block:"center"});
@@ -514,7 +593,8 @@ for(const id of fieldsAngka){
 
   if(!el.value) continue; // kosong boleh jika opsional
 
-  if(!/^[0-9]+$/.test(el.value)){
+  const angka = el.value.replace(/[^\d]/g,"");
+  if(!angka){
     msg.innerText="Field harus angka: " + id;
     msg.className="text-red-400";
     el.scrollIntoView({behavior:"smooth",block:"center"});
@@ -571,8 +651,15 @@ msg.innerText="Mengirim...";
 
 const data={};
 document.querySelectorAll("input,textarea,select").forEach(x=>{
-if(x.id&&!x.classList.contains("hp"))data[x.id]=x.value;
+  if(!x.id || x.classList.contains("hp")) return;
+
+  if(x.classList.contains("rupiah")){
+    data[x.id] = x.value.replace(/[^\d]/g,"");  // kirim angka saja
+  }else{
+    data[x.id] = x.value;
+  }
 });
+
 
 /* ===== RECAPTCHA TOKEN ===== */
 let captchaToken="";
@@ -619,6 +706,25 @@ msg.innerText="Server tidak merespon";
 
 next.disabled=false;
 }
+
+/* format rupiah */
+document.querySelectorAll(".rupiah").forEach(el=>{
+
+  el.addEventListener("input",function(){
+    let v=this.value.replace(/\D/g,"");
+    if(!v){ this.value=""; return; }
+    this.value=new Intl.NumberFormat("id-ID").format(v);
+  });
+
+  el.addEventListener("focus",function(){
+    this.value=this.value.replace(/[^\d]/g,"");
+  });
+
+  el.addEventListener("blur",function(){
+    if(this.value) this.value="Rp "+this.value;
+  });
+
+});
 
 </script>
 
