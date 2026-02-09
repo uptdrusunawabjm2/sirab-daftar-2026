@@ -63,28 +63,34 @@ function maskNik(n){
 
 /* ===== STATUS BOX ===== */
 function setStatusBox(status){
+
   statusBox.className="mb-4 p-3 rounded-xl text-center font-bold text-lg";
   status=(status||"").toUpperCase();
 
-  if(status.includes("DITERIMA")){
+  if(status.includes("DITERIMA") || status.includes("SELESAI")){
     statusBox.textContent="STATUS : DITERIMA";
     statusBox.classList.add("bg-green-600");
     setProgress(100);
+
   }else if(status.includes("DITOLAK")){
     statusBox.textContent="STATUS : DITOLAK";
     statusBox.classList.add("bg-red-600");
     setProgress(100);
-  }else if(status.includes("PERBAIKI")){
-    statusBox.textContent="STATUS : PERBAIKI DATA";
-    statusBox.classList.add("bg-yellow-400","text-black");
-    setProgress(50);
+
+  }else if(status.includes("DIPROSES")){
+    statusBox.textContent="STATUS : DIPROSES";
+    statusBox.classList.add("bg-yellow-500","text-black");
+    setProgress(60);
+
   }else{
     statusBox.textContent="STATUS : MENUNGGU VERIFIKASI";
     statusBox.classList.add("bg-blue-600");
     setProgress(20);
   }
+
   statusBox.classList.remove("hidden");
 }
+
 
 /* ===== PROGRESS BAR ===== */
 function setProgress(val){
@@ -146,6 +152,7 @@ function renderUI(d){
     ${block("Status Verifikasi",d.verifikasi)}
     ${block("Tanggal Verifikasi",d.tanggal)}
     ${block("Catatan Verifikasi",d.catatan)}
+    ${block("No Pendaftaran",d.no)}
 
     <button onclick="downloadBukti()" 
     class="mt-3 bg-emerald-600 px-4 py-2 rounded-xl font-semibold w-full">
@@ -182,5 +189,4 @@ function downloadBukti(){
 
 </body>
 </html>
-
 
