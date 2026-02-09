@@ -504,6 +504,8 @@ try{
 
 /* kirim token */
 data._captcha=captchaToken;
+data._unit=_unit;
+data._token=_token;
 
 try{
 const r=await fetch(URL+"?action=daftar",{
