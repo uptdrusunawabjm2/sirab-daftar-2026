@@ -261,6 +261,58 @@ let lastSubmit=0;
 const pages=document.querySelectorAll(".page");
 const msg=document.getElementById("msg");
 
+/* VARIABLE LOCK UNIT */
+let _unit="";
+let _token="";
+
+document.getElementById("Rusunawa").onchange=cekUnit;
+document.getElementById("Tipe Kamar").onchange=cekUnit;
+document.getElementById("Lantai").onchange=cekUnit;
+
+async function cekUnit(){
+
+  const rusun=document.getElementById("Rusunawa").value;
+  const tipe=document.getElementById("Tipe Kamar").value;
+  const lantai=document.getElementById("Lantai").value;
+  const nik=document.getElementById("NIK Pemohon").value||"temp";
+
+  if(!rusun||!tipe||!lantai) return;
+
+  msg.className="text-yellow-400";
+  msg.innerText="Mengecek ketersediaan unit...";
+
+  try{
+
+    const r=await fetch(
+      URL+"?action=get_unit"
+      +"&rusun="+encodeURIComponent(rusun)
+      +"&tipe="+encodeURIComponent(tipe)
+      +"&lantai="+encodeURIComponent(lantai)
+      +"&nik="+encodeURIComponent(nik)
+    );
+
+    const j=await r.json();
+
+    if(j.waiting){
+      _unit="";
+      _token="";
+      msg.className="text-red-400";
+      msg.innerText="Unit penuh — masuk daftar tunggu";
+      return;
+    }
+
+    _unit=j.unit;
+    _token=j.token;
+
+    msg.className="text-green-400";
+    msg.innerText="Unit tersedia: "+_unit;
+
+  }catch{
+    msg.className="text-red-400";
+    msg.innerText="Gagal cek unit";
+  }
+}
+  
 /* ===== TOGGLE PASAL ===== */
 function togglePasal(){
   document.querySelectorAll(".pasalItem")
@@ -417,6 +469,12 @@ if(hp && hp.value && hp.value.trim()!==""){
 
 
 if(!validatePage())return;
+
+if(!_unit || !_token){
+  msg.className="text-red-400";
+  msg.innerText="Pilih unit terlebih dahulu";
+  return;
+}
 
 lastSubmit=Date.now();
 next.disabled=true;
