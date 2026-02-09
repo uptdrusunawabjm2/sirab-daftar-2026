@@ -276,7 +276,7 @@ const selLantai=document.getElementById("Lantai");
 
 let GAP_DATA={};
 
-document.addEventListener("DOMContentLoaded",loadOptions);
+window.addEventListener("load", loadOptions);
 
 async function loadOptions(){
 
@@ -307,13 +307,12 @@ selRusun.onchange=()=>{
   selTipe.innerHTML='<option value="">Pilih Tipe</option>';
   selLantai.innerHTML='<option value="">Pilih Lantai</option>';
 
-  if(!rusun) return;
+  if(!rusun || !GAP_DATA[rusun]) return;
 
   Object.keys(GAP_DATA[rusun]).forEach(tipe=>{
     selTipe.innerHTML+=`<option value="${tipe}">${tipe}</option>`;
   });
 
-  cekUnit();
 };
 
 /* TIPE → LANTAI */
@@ -322,17 +321,17 @@ selTipe.onchange=()=>{
   const tipe=selTipe.value;
 
   selLantai.innerHTML='<option value="">Pilih Lantai</option>';
-  if(!rusun||!tipe) return;
+  
+  if(!rusun || !tipe || !GAP_DATA[rusun] || !GAP_DATA[rusun][tipe]) return;
 
   GAP_DATA[rusun][tipe].forEach(l=>{
     selLantai.innerHTML+=`<option value="${l}">${l}</option>`;
   });
 
-  cekUnit();
 };
 
-/* LANTAI → CEK UNIT */
-selLantai.onchange=cekUnit;
+/* ===== LANTAI → CEK UNIT ===== */
+selLantai.onchange = cekUnit;
 
 async function cekUnit(){
 
