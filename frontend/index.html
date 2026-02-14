@@ -834,20 +834,16 @@ function validatePekerjaanPasangan(){
         return;
       }
 
-      /* jika belum diawali 62 */
-      if(!v.startsWith("62")){
+    /* jika belum diawali 62 */
+    if(!v.startsWith("62")){
 
-        /* 08xxxx → 628xxxx */
-        if(v.startsWith("0")){
-          v = "62" + v.slice(1);
-        }
-
-        /* 8xxxx → 628xxxx */
-        else if(v.startsWith("8")){
-          v = "62" + v;
-        }
-      }
-
+    if(v.startsWith("0")){
+      v = "62" + v.slice(1);
+    }
+    else if(v.startsWith("8")){
+      v = "62" + v;
+    }
+  }
       this.value = v;
     });
 
