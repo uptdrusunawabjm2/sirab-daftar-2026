@@ -640,7 +640,6 @@ if(hp && hp.value && hp.value.trim()!==""){
   return;
 }
 
-
 if(!validatePage())return;
 
 if(!_unit || !_token){
@@ -673,8 +672,6 @@ if(pj && pj.value === "Lainnya" && pjManual && pjManual.value.trim()){
   data["Pekerjaan Pasangan"] = pjManual.value.trim();
 }
 
-
-
 /* ===== RECAPTCHA TOKEN ===== */
 let captchaToken="";
 
@@ -705,20 +702,26 @@ body:JSON.stringify(data)
 const j=await r.json();
 
 if(j.status){
-msg.className="text-green-400";
-msg.innerText="Pendaftaran berhasil. No: "+j.no;
-document.querySelectorAll("input,textarea,select").forEach(x=>x.value="");
-page=0;showPage();
+
+  const nik = data["NIK Pemohon"] || "";
+  msg.className="text-green-400";
+  msg.innerText="Pendaftaran berhasil. Mengalihkan ke halaman tracking...";
+
+  setTimeout(()=>{
+    window.location.href =
+      "https://sirab-daftar-2026.vercel.app/tracking.html?nik="
+      + encodeURIComponent(nik);
+  },1200);
+
 }else{
-msg.className="text-red-400";
-msg.innerText=j.message||"Gagal";
-}
-}catch{
-msg.className="text-red-400";
-msg.innerText="Server tidak merespon";
+  msg.className="text-red-400";
+  msg.innerText=j.message||"Gagal";
 }
 
-next.disabled=false;
+}catch(e){
+  msg.className="text-red-400";
+  msg.innerText="Gagal mengirim. Coba lagi.";
+}
 }
 
 /* format rupiah */
