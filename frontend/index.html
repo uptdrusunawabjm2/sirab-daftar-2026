@@ -264,9 +264,17 @@ style="position:absolute;left:-9999px;">
 <textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
 <input id="Penghasilan perbulan" class="input rupiah" placeholder="Penghasilan per bulan">
+
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
-<input id="Pekerjaan Pasangan" placeholder="Pekerjaan Pasangan" class="input">
-<p class="text-xs text-slate-400 mt-2">catatan: jika tidak bekerja tulis "mengurus rumah tangga"</p>
+<select id="Pekerjaan Pasangan" class="input">
+  <option value="">Pilih Pekerjaan Pasangan</option>
+  <option value="Mengurus Rumah Tangga">Mengurus Rumah Tangga</option>
+  <option value="Lainnya">Lainnya</option>
+</select>
+<input id="Pekerjaan Pasangan Manual"
+       placeholder="Isi pekerjaan pasangan"
+       class="input hidden">
+
 <label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja Pasangan</label>
 <input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
@@ -507,8 +515,9 @@ function validatePage(){
 const inputs=pages[page].querySelectorAll("input,textarea,select");
 
 const optionalIds = [
+  "Pekerjaan Pasangan Manual",
   "Nama Perusahaan/Tempat Kerja 2",
-  "Alamat Pekerjaan Pasangan",
+  "Alamat Tempat Kerja Pasangan",
   "Penghasilan perbulan Pasangan"
 ];
 
@@ -522,15 +531,15 @@ for(const x of inputs){
   if(optionalIds.includes(x.id)) continue;
 
   if(!x.value || !x.value.trim()){
-    msg.innerText="Field belum diisi: " + x.id;
-    msg.className="text-red-400";
+  msg.innerText="Field belum diisi: " + x.id;
+  msg.className="text-red-400";
 
-    x.scrollIntoView({behavior:"smooth",block:"center"});
-    x.focus();
-    x.classList.add("err");
+  x.scrollIntoView({behavior:"smooth",block:"center"});
+  x.focus();
+  x.classList.add("err");
 
-    return false;
-  }
+  return false;
+}
 }
 
 /* VALIDASI NIK 16 DIGIT */
@@ -546,6 +555,32 @@ const angka = nik.value.replace(/[^\d]/g,"");   // ✔ pakai nik
     nik.classList.add("err");
     return false;
   }
+}
+
+/* ===== VALIDASI ANGKA WAJIB ===== */
+const wajibAngka = [
+  "Umur",
+  "Nomor Telepon/HP/WA"
+];
+
+if(page===1){
+for(const id of wajibAngka){
+  const el = document.getElementById(id);
+  if(!el) continue;
+
+  const angka = el.value.replace(/[^\d]/g,"");
+
+  if(!angka){
+    msg.innerText = "Field harus berupa angka: " + id;
+    msg.className = "text-red-400";
+
+    el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.focus();
+    el.classList.add("err");
+
+    return false;
+  }
+}
 }
 
 /* VALIDASI ANGKA PENGHASILAN (ANTI HURUF) */
@@ -572,6 +607,8 @@ for(const id of fieldsAngka){
 }
 
 msg.innerText="";
+/* VALIDASI DINAMIS PEKERJAAN PASANGAN */
+if(!validatePekerjaanPasangan()) return false;
 return true;
 }
 
@@ -626,6 +663,16 @@ document.querySelectorAll("input,textarea,select").forEach(x=>{
     data[x.id] = x.value;
   }
 });
+
+
+/* ===== GABUNG PEKERJAAN PASANGAN ===== */
+const pj = document.getElementById("Pekerjaan Pasangan");
+const pjManual = document.getElementById("Pekerjaan Pasangan Manual");
+
+if(pj && pj.value === "Lainnya" && pjManual && pjManual.value.trim()){
+  data["Pekerjaan Pasangan"] = pjManual.value.trim();
+}
+
 
 
 /* ===== RECAPTCHA TOKEN ===== */
@@ -691,6 +738,75 @@ document.querySelectorAll(".rupiah").forEach(el=>{
     if(this.value) this.value="Rp "+this.value;
   });
 
+});
+
+/* ===== TOGGLE PEKERJAAN PASANGAN ===== */
+document.addEventListener("DOMContentLoaded", function(){
+
+  const select = document.getElementById("Pekerjaan Pasangan");
+  const manual = document.getElementById("Pekerjaan Pasangan Manual");
+
+  if(!select || !manual) return;
+
+  select.addEventListener("change", function(){
+
+    if(this.value === "Lainnya"){
+      manual.classList.remove("hidden");
+      manual.style.display = "block";
+      manual.focus();
+    }else{
+      manual.classList.add("hidden");
+      manual.style.display = "none";
+      manual.value = "";
+    }
+
+  });
+
+});
+
+/* ===== VALIDASI DINAMIS PEKERJAAN PASANGAN ===== */
+function validatePekerjaanPasangan(){
+
+  const pj = document.getElementById("Pekerjaan Pasangan");
+  if(!pj) return true;
+
+  const wajib = pj.value === "Lainnya";
+
+  const f1 = document.getElementById("Nama Perusahaan/Tempat Kerja 2");
+  const f2 = document.getElementById("Alamat Tempat Kerja Pasangan");
+  const f3 = document.getElementById("Penghasilan perbulan Pasangan");
+
+  const fields = [f1,f2,f3];
+
+  for(const el of fields){
+    if(!el) continue;
+
+    el.classList.remove("err");
+
+    if(wajib){
+      if(!el.value || !el.value.trim()){
+        msg.className="text-red-400";
+        msg.innerText="Wajib diisi karena Pekerjaan Pasangan = Lainnya";
+
+        el.scrollIntoView({behavior:"smooth",block:"center"});
+        el.focus();
+        el.classList.add("err");
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+/* ===== BLOK INPUT NON ANGKA ===== */
+["Umur","Nomor Telepon/HP/WA"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el) return;
+
+  el.addEventListener("input",function(){
+    this.value=this.value.replace(/[^\d]/g,"");
+  });
 });
 
 </script>
