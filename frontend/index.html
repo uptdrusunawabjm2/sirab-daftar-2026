@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pendaftaran Rusunawa</title>
 <script src="https://cdn.tailwindcss.com"></script>
+
 <script>
 /* === PATCH: wajib baca box + auto scroll error === */
 let pasalSudahDibaca=false;
@@ -24,6 +25,7 @@ checkAgree = function(){
 };
 
 </script>
+
 <style>
 .input{
 width:100%;
@@ -105,9 +107,13 @@ select:focus{
   box-shadow:0 0 0 1px #3b82f6;
 }
 </style>
+
 <script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
+
 </head>
+
 <body class="bg-gray-950 text-gray-100 min-h-screen">
+
 <div class="max-w-3xl mx-auto p-6">
 
 <!-- ================= INTRO ================= -->
@@ -332,6 +338,7 @@ let _unit="";
 let _token="";
 
 /* ===== AUTO LOAD DROPDOWN DARI GAP ===== */
+
 const selRusun=document.getElementById("Rusunawa");
 const selTipe=document.getElementById("Tipe Kamar");
 const selLantai=document.getElementById("Lantai");
@@ -341,7 +348,9 @@ let GAP_DATA={};
 window.addEventListener("load", loadOptions);
 
 async function loadOptions(){
+
   try{
+
     const r=await fetch(URL+"?action=options");
     const j=await r.json();
 
@@ -372,6 +381,7 @@ selRusun.onchange=()=>{
   Object.keys(GAP_DATA[rusun]).forEach(tipe=>{
     selTipe.innerHTML+=`<option value="${tipe}">${tipe}</option>`;
   });
+
 };
 
 /* TIPE → LANTAI */
@@ -386,6 +396,7 @@ selTipe.onchange=()=>{
   GAP_DATA[rusun][tipe].forEach(l=>{
     selLantai.innerHTML+=`<option value="${l}">${l}</option>`;
   });
+
 };
 
 /* ===== LANTAI → CEK UNIT ===== */
@@ -652,6 +663,7 @@ document.querySelectorAll("input,textarea,select").forEach(x=>{
   }
 });
 
+
 /* ===== GABUNG PEKERJAAN PASANGAN ===== */
 const pj = document.getElementById("Pekerjaan Pasangan");
 const pjManual = document.getElementById("Pekerjaan Pasangan Manual");
@@ -803,7 +815,7 @@ function validatePekerjaanPasangan(){
 /* ===== FORMAT OTOMATIS NOMOR HP → 62xx ===== */
 (function(){
 
-  const el = document.getElementById("Nomor Telepon/HP/WA");
+  const el = document.getElementById("Nomor Telepon/HP/WA","NIK Pemohon");
   if(!el) return;
 
   el.addEventListener("input", function(){
@@ -833,6 +845,8 @@ function validatePekerjaanPasangan(){
   });
 
 })();
+
 </script>
+
 </body>
 </html>
