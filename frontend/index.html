@@ -734,11 +734,13 @@ if(j.status){
 }else{
   msg.className="text-red-400";
   msg.innerText=j.message||"Gagal";
+  next.disabled=false;
 }
 
 }catch(e){
   msg.className="text-red-400";
   msg.innerText="Gagal mengirim. Coba lagi.";
+  next.disabled=false;
 }
 }
 
