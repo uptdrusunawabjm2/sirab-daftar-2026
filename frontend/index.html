@@ -812,40 +812,48 @@ function validatePekerjaanPasangan(){
   });
 });
 
-/* ===== FORMAT OTOMATIS NOMOR HP → 62xx ===== */
+/* ===== FORMAT OTOMATIS → 62xx (HP + NIK sementara) ===== */
 (function(){
 
-  const el = document.getElementById("Nomor Telepon/HP/WA","NIK Pemohon");
-  if(!el) return;
+  const fields = [
+    "Nomor Telepon/HP/WA",
+    "NIK Pemohon"   // sementara ikut format 62xx
+  ];
 
-  el.addEventListener("input", function(){
+  fields.forEach(id=>{
 
-    let v = this.value.replace(/\D/g,"");   // hanya angka
+    const el = document.getElementById(id);
+    if(!el) return;
 
-    if(!v){
-      this.value="";
-      return;
-    }
+    el.addEventListener("input", function(){
 
-    /* hapus +62 → 62 */
-    if(v.startsWith("62") === false){
+      let v = this.value.replace(/\D/g,"");   // hanya angka
 
-      /* 08xxxx → 628xxxx */
-      if(v.startsWith("0")){
-        v = "62" + v.slice(1);
+      if(!v){
+        this.value="";
+        return;
       }
 
-      /* 8xxxx → 628xxxx */
-      else if(v.startsWith("8")){
-        v = "62" + v;
-      }
-    }
+      /* jika belum diawali 62 */
+      if(!v.startsWith("62")){
 
-    this.value = v;
+        /* 08xxxx → 628xxxx */
+        if(v.startsWith("0")){
+          v = "62" + v.slice(1);
+        }
+
+        /* 8xxxx → 628xxxx */
+        else if(v.startsWith("8")){
+          v = "62" + v;
+        }
+      }
+
+      this.value = v;
+    });
+
   });
 
 })();
-
 </script>
 
 </body>
