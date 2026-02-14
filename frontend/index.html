@@ -233,23 +233,43 @@ style="position:absolute;left:-9999px;">
 <input id="NIK Pemohon"
        inputmode="numeric"
        pattern="[0-9]*"
-       placeholder="Input Nomor Handphone"
+       placeholder="Nomor Telp/HP (wa aktif)"
        class="input">
 <p class="text-xs text-slate-400 mt-1">catatan: untuk sementara masukan no handphone</p>
 <label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
 <select id="Status Kependudukan" class="input">
-<option value="">Status Kependudukan</option>
 <option>Kota Banjarmasin</option>
 <option>Penduduk Non Permanen</option>
 </select>
 <label class="block text-slate-300 text-sm mb-1">Umur</label>
 <input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
-
+<label class="block text-slate-300 text-sm mb-1">Agama</label>
+<select id="Agama" class="input">
+<option>Islam</option>
+<option>Kristen</option>
+<option>Katolik</option>
+<option>Hindu</option>
+<option>Buddha</option>
+<option>Konghucu</option>
+</select>
+<label class="block text-slate-300 text-sm mb-1">Status Perkawinan</label>
+<select id="Status Perkawinan" class="input">
+<option>Kawin Tercatat</option>
+<option>Kawin Belum Tercatat</option>
+<option>Cerai Hidup</option>
+<option>Cerai Mati</option>
+</select>
 <label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
-<textarea id="Alamat sekarang" placeholder="Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
-
+<textarea id="Alamat sekarang" placeholder="(tulis lengkap) Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
+<label class="block text-slate-300 text-sm mb-1">Status Tempat Tinggal</label>
+<select id="Status Tempat Tinggal Sekarang" class="input">
+<option>Sewa</option>
+<option>Kontrak</option>
+<option>Numpang</option>
+<option>Fasilitas Perusahaan/Tempat Kerja</option>
+</select>
 <label class="block text-slate-300 text-sm mb-1">Nomor Telepon / HP / WA</label>
-<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telepon (wa aktif)" class="input">
+<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telp/HP (wa aktif)" class="input">
 <label class="block text-slate-300 text-sm mb-1">Email</label>
 <input id="Email" placeholder="Email" class="input">
 </div>
@@ -264,7 +284,6 @@ style="position:absolute;left:-9999px;">
 <textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
 <input id="Penghasilan perbulan" class="input rupiah" placeholder="Penghasilan per bulan">
-
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <select id="Pekerjaan Pasangan" class="input">
   <option value="">Pilih Pekerjaan Pasangan</option>
@@ -281,21 +300,20 @@ style="position:absolute;left:-9999px;">
 <textarea id="Alamat Tempat Kerja Pasangan" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
 <input id="Penghasilan perbulan Pasangan" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
-
 </div>
 
 <!-- PAGE 4 -->
 <div class="page hidden space-y-5">
 <label class="block text-slate-300 text-sm mb-1">Nama Penjamin</label>
 <input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
-<label class="block text-slate-300 text-sm mb-1">Alamat Penjamin</label>
-<textarea id="Alamat Penjamin" placeholder="Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
+<label class="block text-slate-300 text-sm mb-1">Alamat Penjamin (wajib domisili di Kota Banjarmasin)</label>
+<textarea id="Alamat Penjamin" placeholder="(tulis lengkap) Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Penjamin</label>
 <input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
 <label class="block text-slate-300 text-sm mb-1">Status Hubungan dengan Pemohon</label>
 <input id="Status Hubungan dengan Pemohon" placeholder="Status Hubungan dengan Pemohon" class="input">
 </div>
-  
+
 <!-- PAGE 5 -->
 <div class="page hidden space-y-4">
 <label class="block text-slate-300 text-sm mb-1">Rusunawa</label>
