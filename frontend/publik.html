@@ -45,11 +45,20 @@ let DATA=[];
 
 function fmtTanggal(x){
   if(!x) return "";
-  const d=new Date(x);
+
+  const d = new Date(x);
   if(isNaN(d)) return x;
-  return d.toLocaleDateString("id-ID")+" "+
-         d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+
+  const bulan = [
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  return d.getDate() + " " +
+         bulan[d.getMonth()] + " " +
+         d.getFullYear();
 }
+
 
 /* ===== SENSOR NOMOR ===== */
 function sensorHP(no){
@@ -100,7 +109,7 @@ function render(){
 
   let h=`<tr class="bg-slate-800">
   <th class="p-2 border">Tanggal</th>
-  <th class="p-2 border">Nama</th>
+  <th class="p-2 border">Nama Pemohon</th>
   <th class="p-2 border">No HP</th>
   <th class="p-2 border">Pekerjaan</th>
   <th class="p-2 border">Rusunawa</th>
