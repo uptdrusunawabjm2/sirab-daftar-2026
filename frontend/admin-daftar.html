@@ -8,11 +8,11 @@
 <script src="config.js"></script>
 </head>
 
-<body class="bg-slate-950 text-white min-h-screen flex">
+<body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
 
 <!-- SIDEBAR -->
 <div id="sidebar"
-class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col transition-all duration-300">
+class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col transition-all duration-300 -translate-x-full md:translate-x-0">
 
 <div class="p-4 border-b border-slate-800">
 <div class="text-xl font-bold">Admin Panel</div>
@@ -30,7 +30,7 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 <div class="flex-1 flex flex-col">
 
 <!-- HEADER -->
-<div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3">
+<div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3 sticky top-0 z-30">
 <button onclick="toggleSidebar()" class="bg-slate-800 px-3 py-1 rounded">☰</button>
 <div class="font-semibold flex-1 text-center">Dashboard Admin Pendaftaran</div>
 <div class="text-xs text-slate-400">Realtime aktif</div>
@@ -39,7 +39,7 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 <div class="p-4 space-y-4">
 
 <!-- STATISTIK -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 <div class="text-slate-400 text-sm">Total Data</div>
@@ -78,7 +78,7 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 </div>
 
 <!-- TABLE -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-auto max-h-[65vh]">
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-auto max-h-[70vh] text-xs md:text-sm">
 <table class="w-full text-sm" id="table"></table>
 </div>
 
@@ -87,7 +87,7 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 
 <!-- MODAL -->
 <div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4">
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md space-y-2">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md space-y-2 max-h-[90vh] overflow-auto">
 
 <h2 class="font-bold">Update Verifikasi</h2>
 
@@ -107,7 +107,7 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 <input id="mUnit" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Unit">
 
 <div class="flex gap-2 pt-2">
-<button onclick="simpan()" class="flex-1 bg-blue-600 p-2 rounded">Simpan</button>
+<button onclick="simpan()" class="flex-1 bg-blue-600 p-2 rounded active:scale-95 transition">Simpan</button>
 <button onclick="closeModal()" class="flex-1 bg-slate-700 p-2 rounded">Batal</button>
 </div>
 
@@ -254,7 +254,7 @@ function prevPage(){if(page>1)page--;render();}
 rowsPerPage.onchange=()=>{page=1;render();};
 
 function toggleSidebar(){
-  sidebar.classList.toggle("hidden");
+  sidebar.classList.toggle("-translate-x-full");
 }
 
 load();
