@@ -287,7 +287,7 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
 <textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
-<input id="Penghasilan perbulan" class="input rupiah" placeholder="Penghasilan per bulan">
+<input id="Penghasilan perbulan" inputmode="numeric" pattern="[0-9]*" class="input rupiah" placeholder="Penghasilan per bulan">
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
 <select id="Pekerjaan Pasangan" class="input">
   <option value="">Pilih Pekerjaan Pasangan</option>
@@ -302,7 +302,7 @@ style="position:absolute;left:-9999px;">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
 <textarea id="Alamat Tempat Kerja Pasangan" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
-<input id="Penghasilan perbulan Pasangan" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
+<input id="Penghasilan perbulan Pasangan" inputmode="numeric" pattern="[0-9]*" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
 </div>
 
 <!-- PAGE 4 -->
@@ -641,6 +641,32 @@ for(const id of fieldsAngka){
   }
 }
 
+/* ===== VALIDASI BATAS PENGHASILAN (GABUNGAN) ===== */
+if(page === 2){   // halaman penghasilan
+
+  const g1 = document.getElementById("Penghasilan perbulan");
+  const g2 = document.getElementById("Penghasilan perbulan Pasangan");
+
+  const n1 = g1 ? parseInt(g1.value.replace(/[^\d]/g,"")||"0",10) : 0;
+  const n2 = g2 ? parseInt(g2.value.replace(/[^\d]/g,"")||"0",10) : 0;
+
+  const total = n1 + n2;
+
+  const BATAS_PENGHASILAN = 7450000;   // ← GANTI jika UMP berubah
+
+  if(total > BATAS_PENGHASILAN){
+
+    msg.className="text-red-400";
+    msg.innerText="Penghasilan melebihi persyaratan";
+
+    if(g1) g1.classList.add("err");
+    if(g2) g2.classList.add("err");
+
+    (g2||g1).scrollIntoView({behavior:"smooth",block:"center"});
+    return false;
+  }
+}
+
 /* ===== VALIDASI DROPDOWN WAJIB ===== */
 if(page === 1){
 const wajibSelect = [
@@ -954,6 +980,5 @@ function validatePekerjaanPasangan(){
 
 })();
 </script>
-
 </body>
 </html>
