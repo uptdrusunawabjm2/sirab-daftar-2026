@@ -21,6 +21,7 @@
   box-shadow: 0 2px 0 rgba(0,0,0,.5);
 }
 </style>
+<meta name="robots" content="noindex,nofollow">
 </head>
 
 <body class="bg-slate-950 text-white min-h-screen">
@@ -40,6 +41,7 @@ class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
 <select id="filterStatus" class="bg-slate-900 border border-slate-700 rounded p-2 text-sm">
 <option value="">Semua Status</option>
 <option>MENUNGGU</option>
+<option>DIPROSES</option>
 <option>DITERIMA</option>
 <option>DITOLAK</option>
 <option>WAITING</option>
@@ -93,14 +95,14 @@ async function load(){
   return {
     tanggal: row[0],
     nama: row[1],
-    hp: sensorHP(row[9]),
-    kerja: row[12],
-    rusun: row[24],
-    tipe: row[25],
-    lantai: row[26],
-    status: row[27],
-    catatan: row[28],
-    tglver: row[29]
+    hp: row[2],        // sudah disensor di server
+    kerja: row[3],
+    rusun: row[4],
+    tipe: row[5],
+    lantai: row[6],
+    status: row[7],
+    catatan: row[8],
+    tglver: row[9]
   };
 });
   render();
