@@ -6,6 +6,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="config.js"></script>
+<script>
+(async ()=>{
+
+  const token = localStorage.getItem("RUSUN_TOKEN");
+  if(!token){
+    location.href="login.html";
+    return;
+  }
+
+  const fd = new URLSearchParams();
+  fd.append("action","cek_token");
+  fd.append("token",token);
+
+  const r = await fetch(CONFIG.API,{method:"POST",body:fd});
+  const j = await r.json();
+
+  if(!j.status){
+    localStorage.removeItem("RUSUN_TOKEN");
+    location.href="login.html";
+  }
+})();
+</script>
+
+<button onclick="logout()" class="text-sm bg-red-600 px-3 py-1 rounded">Logout</button>
+
+<script>
+function logout(){
+  localStorage.removeItem("RUSUN_TOKEN");
+  localStorage.removeItem("RUSUN_USER");
+  location.href="login.html";
+}
+</script>
+
 </head>
 
 <body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
