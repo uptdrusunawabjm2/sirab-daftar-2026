@@ -99,8 +99,8 @@ class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
 </div>
 
 <script>
-const API = CONFIG.API;
-const KEY = CONFIG.INTERNAL_KEY;
+const API = "https://script.google.com/macros/s/AKfycbySr6QhyH72b4aAU6Xv6mltljm_ft07ysWb40J45QivoXYix8Xh9M1kJ8zLe4PzQ5i8/exec";
+const KEY = "rusun2026";
 
 let HEAD=[], DATA=[];
 let page=1;
@@ -178,7 +178,9 @@ function openModal(i){
   const idxCat = HEAD.indexOf("Catatan Verifikasi");
   const idxTgl = HEAD.indexOf("Tanggal Verifikasi");
   const idxNo = HEAD.indexOf("No Pendaftaran");
-  const idxUnit = HEAD.indexOf("_unit");
+ 
+  let idxUnit = HEAD.indexOf("_unit");
+  if(idxUnit === -1) idxUnit = HEAD.indexOf("Unit");
 
   mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
   mCatatan.value = DATA[i][idxCat] || "";
