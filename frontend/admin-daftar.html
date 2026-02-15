@@ -10,6 +10,24 @@
 
 <body class="bg-slate-950 text-white min-h-screen flex">
 
+<!-- SIDEBAR -->
+<div id="sidebar"
+class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
+
+<div class="p-4 border-b border-slate-800">
+<div class="text-xl font-bold">Admin Panel</div>
+<div class="text-xs text-slate-400">Pendaftaran Rusunawa</div>
+</div>
+
+<div class="flex-1 p-4 space-y-2 text-sm">
+<a class="block p-2 rounded bg-slate-800">📋 Data Pendaftaran</a>
+<a href="tracking.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">🔎 Tracking</a>
+<a href="index.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">📝 Form</a>
+</div>
+
+</div>
+
+<!-- MAIN -->
 <div class="flex-1 flex flex-col">
 
 <div class="bg-slate-900 border-b border-slate-800 p-3 text-center font-semibold">
@@ -18,11 +36,11 @@ Dashboard Admin Pendaftaran (Realtime)
 
 <div class="p-4 space-y-3">
 
-<!-- PAGINATION CONTROL -->
+<!-- PAGINATION -->
 <div class="flex flex-wrap gap-2 items-center">
 <select id="rowsPerPage" class="bg-slate-800 border border-slate-700 p-1 rounded">
 <option value="10">10</option>
-<option value="25">25</option>
+<option value="25" selected>25</option>
 <option value="50">50</option>
 <option value="100">100</option>
 </select>
@@ -43,6 +61,43 @@ Realtime aktif (refresh tiap 5 detik)
 </div>
 </div>
 
+<!-- MODAL EDIT -->
+<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md">
+
+<h2 class="font-bold mb-2">Update Verifikasi</h2>
+
+<select id="mStatus" class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+<option>MENUNGGU</option>
+<option>DITERIMA</option>
+<option>DITOLAK</option>
+<option>WAITING</option>
+</select>
+
+<textarea id="mCatatan"
+class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2"
+placeholder="Catatan Verifikasi"></textarea>
+
+<label class="text-xs">Tanggal Verifikasi</label>
+<input type="datetime-local" id="mTanggal"
+class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+
+<label class="text-xs">No Pendaftaran</label>
+<input id="mNo"
+class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+
+<label class="text-xs">Unit</label>
+<input id="mUnit"
+class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+
+<div class="flex gap-2">
+<button onclick="simpan()" class="flex-1 bg-blue-600 p-2 rounded">Simpan</button>
+<button onclick="closeModal()" class="flex-1 bg-slate-700 p-2 rounded">Batal</button>
+</div>
+
+</div>
+</div>
+
 <script>
 const API = CONFIG.API;
 const KEY = CONFIG.INTERNAL_KEY;
@@ -51,8 +106,9 @@ let HEAD=[], DATA=[];
 let page=1;
 let rows=25;
 let lastHash="";
+let ROW=null;
 
-/* ===== LOAD DATA ===== */
+/* ===== LOAD REALTIME ===== */
 async function load(){
 
   const r = await fetch(API+"?action=daftar_all&key="+KEY);
@@ -62,19 +118,19 @@ async function load(){
 
   if(newHash !== lastHash){
     HEAD=j.header;
-const oldLen = DATA.length;
-DATA=j.data;
+    const oldLen = DATA.length;
+    DATA=j.data;
 
-if(DATA.length !== oldLen){
-  page = 1;
+    if(DATA.length !== oldLen){
+      page = 1;
+    }
+
+    lastHash = newHash;
+    render();
+  }
 }
 
-lastHash = newHash;
-render();
-}
-}
-
-/* ===== RENDER ===== */
+/* ===== RENDER TABLE ===== */
 function render(){
 
   rows=parseInt(rowsPerPage.value);
@@ -84,20 +140,22 @@ function render(){
 
   let h="<tr class='bg-slate-800 sticky top-0'>";
   HEAD.forEach(c=>h+=`<th class="p-2 border border-slate-700">${c}</th>`);
-  h+="</tr>";
+  h+="<th class='p-2 border'>Aksi</th></tr>";
 
-  slice.forEach(r=>{
+  slice.forEach((r,i)=>{
     h+="<tr class='hover:bg-slate-800'>";
     r.forEach(v=>{
       h+=`<td class="p-2 border border-slate-800">${v||""}</td>`;
     });
-    h+="</tr>";
+    h+=`<td class="p-2 border border-slate-800">
+    <button onclick="openModal(${start+i})"
+    class="bg-blue-600 px-2 py-1 rounded text-xs">Update</button></td></tr>`;
   });
 
   table.innerHTML=h;
 
   const totalPages=Math.ceil(DATA.length/rows)||1;
-  pageInfo.textContent=`Page ${page} / ${totalPages}`;
+  pageInfo.textContent=`Page ${page} / ${totalPages} | Total ${DATA.length} baris`;
 }
 
 /* ===== PAGINATION ===== */
@@ -112,7 +170,59 @@ function prevPage(){
 
 rowsPerPage.onchange=()=>{ page=1; render(); };
 
-/* ===== REALTIME LOOP ===== */
+/* ===== MODAL ===== */
+function openModal(i){
+  ROW=i;
+
+  const idxStatus = HEAD.indexOf("Status Verifikasi");
+  const idxCat = HEAD.indexOf("Catatan Verifikasi");
+  const idxTgl = HEAD.indexOf("Tanggal Verifikasi");
+  const idxNo = HEAD.indexOf("No Pendaftaran");
+  const idxUnit = HEAD.indexOf("_unit");
+
+  mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
+  mCatatan.value = DATA[i][idxCat] || "";
+  mNo.value = DATA[i][idxNo] || "";
+  mUnit.value = DATA[i][idxUnit] || "";
+
+  if(DATA[i][idxTgl]){
+    const d=new Date(DATA[i][idxTgl]);
+    mTanggal.value = d.toISOString().slice(0,16);
+  }else{
+    mTanggal.value="";
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function closeModal(){
+  modal.classList.add("hidden");
+}
+
+async function simpan(){
+
+  const noIdx=HEAD.indexOf("No Pendaftaran");
+  const noLama=DATA[ROW][noIdx];
+
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"daftar_update",
+      key:KEY,
+      no_lama:noLama,
+      status:mStatus.value,
+      catatan:mCatatan.value,
+      tanggal:mTanggal.value,
+      no_baru:mNo.value,
+      unit:mUnit.value
+    })
+  });
+
+  closeModal();
+  load();
+}
+
+/* ===== START ===== */
 load();
 setInterval(load,5000);
 </script>
