@@ -217,25 +217,21 @@ async function simpan(){
   const noIdx = HEAD.indexOf("No Pendaftaran");
   const noLama = DATA[ROW][noIdx];
 
-  const payload = {
-    action: "daftar_update",
-    key: KEY,
-    no_lama: noLama,
-    status: mStatus.value,
-    catatan: mCatatan.value,
-    tanggal: mTanggal.value,
-    no_baru: mNo.value,
-    unit: mUnit.value
-  };
-
   try{
+
+    const fd = new URLSearchParams();
+    fd.append("action","daftar_update");
+    fd.append("key",KEY);
+    fd.append("no_lama",noLama);
+    fd.append("status",mStatus.value);
+    fd.append("catatan",mCatatan.value);
+    fd.append("tanggal",mTanggal.value);
+    fd.append("no_baru",mNo.value);
+    fd.append("unit",mUnit.value);
 
     const r = await fetch(API,{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify(payload)
+      body:fd
     });
 
     const j = await r.json();
