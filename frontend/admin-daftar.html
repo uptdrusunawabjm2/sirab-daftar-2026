@@ -93,6 +93,8 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col t
 
 <select id="mStatus" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
 <option>MENUNGGU</option>
+<option>VERIFIKASI</option>
+<option>DIPROSES</option>
 <option>DITERIMA</option>
 <option>DITOLAK</option>
 </select>
@@ -172,11 +174,34 @@ function render(){
 
 /* MODAL */
 function openModal(i){
+
   ROW=i;
-  const idxNo=HEAD.indexOf("No Pendaftaran");
-  let idxUnit=HEAD.indexOf("_unit"); if(idxUnit==-1) idxUnit=HEAD.indexOf("Unit");
-  mNo.value=DATA[i][idxNo]||"";
-  mUnit.value=DATA[i][idxUnit]||"";
+
+  const idxStatus = HEAD.indexOf("Status Verifikasi");
+  const idxCatatan = HEAD.indexOf("Catatan Verifikasi");
+  const idxTanggal = HEAD.indexOf("Tanggal Verifikasi");
+  const idxNo = HEAD.indexOf("No Pendaftaran");
+
+  let idxUnit = HEAD.indexOf("_unit");
+  if(idxUnit===-1) idxUnit = HEAD.indexOf("Unit");
+
+  /* ===== AMBIL DATA DARI DATABASE ===== */
+  mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
+  mCatatan.value = DATA[i][idxCatatan] || "";
+
+  /* FORMAT datetime-local */
+  const tgl = DATA[i][idxTanggal];
+  if(tgl){
+    const d = new Date(tgl);
+    const iso = d.toISOString().slice(0,16);
+    mTanggal.value = iso;
+  }else{
+    mTanggal.value = "";
+  }
+
+  mNo.value = DATA[i][idxNo] || "";
+  mUnit.value = DATA[i][idxUnit] || "";
+
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 }
