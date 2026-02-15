@@ -67,19 +67,19 @@ async function load(){
   if(!j.data) return;
 
   DATA = j.data.map(row=>{
-    return {
-      tanggal: row[0],
-      nama: row[1],
-      hp: sensorHP(row[10]),
-      kerja: row[13],
-      rusun: row[25],
-      tipe: row[26],
-      lantai: row[27],
-      status: row[28],
-      catatan: row[29],
-      tglver: row[30]
-    };
-  });
+  return {
+    tanggal: row[0],
+    nama: row[1],
+    hp: sensorHP(row[2]),
+    kerja: row[3],
+    rusun: row[4],
+    tipe: row[5],
+    lantai: row[6],
+    status: row[7],
+    catatan: row[8],
+    tglver: row[9]
+  };
+});
 
   render();
 }
