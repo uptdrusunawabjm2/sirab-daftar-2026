@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Admin Pendaftaran</title>
+<title>Dashboard Admin Pendaftaran</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="config.js"></script>
@@ -12,7 +12,7 @@
 
 <!-- SIDEBAR -->
 <div id="sidebar"
-class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
+class="w-64 bg-slate-900 border-r border-slate-800 flex-shrink-0 flex flex-col transition-all duration-300">
 
 <div class="p-4 border-b border-slate-800">
 <div class="text-xl font-bold">Admin Panel</div>
@@ -24,17 +24,44 @@ class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col">
 <a href="tracking.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">🔎 Tracking</a>
 <a href="index.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">📝 Form</a>
 </div>
-
 </div>
 
 <!-- MAIN -->
 <div class="flex-1 flex flex-col">
 
-<div class="bg-slate-900 border-b border-slate-800 p-3 text-center font-semibold">
-Dashboard Admin Pendaftaran (Realtime)
+<!-- HEADER -->
+<div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3">
+<button onclick="toggleSidebar()" class="bg-slate-800 px-3 py-1 rounded">☰</button>
+<div class="font-semibold flex-1 text-center">Dashboard Admin Pendaftaran</div>
+<div class="text-xs text-slate-400">Realtime aktif</div>
 </div>
 
-<div class="p-4 space-y-3">
+<div class="p-4 space-y-4">
+
+<!-- STATISTIK -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+<div class="text-slate-400 text-sm">Total Data</div>
+<div id="rTotal" class="text-2xl font-bold">0</div>
+</div>
+
+<div class="bg-yellow-500/20 border border-yellow-500 rounded-xl p-4">
+<div class="text-yellow-300 text-sm">Menunggu</div>
+<div id="rPending" class="text-2xl font-bold text-yellow-400">0</div>
+</div>
+
+<div class="bg-green-600/20 border border-green-600 rounded-xl p-4">
+<div class="text-green-300 text-sm">Diterima</div>
+<div id="rAcc" class="text-2xl font-bold text-green-400">0</div>
+</div>
+
+<div class="bg-red-600/20 border border-red-600 rounded-xl p-4">
+<div class="text-red-300 text-sm">Ditolak</div>
+<div id="rReject" class="text-2xl font-bold text-red-400">0</div>
+</div>
+
+</div>
 
 <!-- PAGINATION -->
 <div class="flex flex-wrap gap-2 items-center">
@@ -48,49 +75,36 @@ Dashboard Admin Pendaftaran (Realtime)
 <button onclick="prevPage()" class="bg-slate-700 px-3 py-1 rounded">Prev</button>
 <span id="pageInfo"></span>
 <button onclick="nextPage()" class="bg-slate-700 px-3 py-1 rounded">Next</button>
-
-<span class="ml-auto text-xs text-slate-400">
-Realtime aktif (refresh tiap 5 detik)
-</span>
 </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-auto max-h-[75vh]">
+<!-- TABLE -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-auto max-h-[65vh]">
 <table class="w-full text-sm" id="table"></table>
 </div>
 
 </div>
 </div>
 
-<!-- MODAL EDIT -->
-<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center">
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md">
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md space-y-2">
 
-<h2 class="font-bold mb-2">Update Verifikasi</h2>
+<h2 class="font-bold">Update Verifikasi</h2>
 
-<select id="mStatus" class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+<select id="mStatus" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
 <option>MENUNGGU</option>
 <option>DITERIMA</option>
 <option>DITOLAK</option>
-<option>WAITING</option>
 </select>
 
-<textarea id="mCatatan"
-class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2"
-placeholder="Catatan Verifikasi"></textarea>
+<textarea id="mCatatan" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Catatan"></textarea>
 
-<label class="text-xs">Tanggal Verifikasi</label>
-<input type="datetime-local" id="mTanggal"
-class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+<input type="datetime-local" id="mTanggal" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
 
-<label class="text-xs">No Pendaftaran</label>
-<input id="mNo"
-class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
+<input id="mNo" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="No Pendaftaran">
+<input id="mUnit" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Unit">
 
-<label class="text-xs">Unit</label>
-<input id="mUnit"
-class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
-
-<div class="flex gap-2">
+<div class="flex gap-2 pt-2">
 <button onclick="simpan()" class="flex-1 bg-blue-600 p-2 rounded">Simpan</button>
 <button onclick="closeModal()" class="flex-1 bg-slate-700 p-2 rounded">Batal</button>
 </div>
@@ -99,132 +113,102 @@ class="w-full p-2 rounded bg-slate-800 border border-slate-700 mb-2">
 </div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbySr6QhyH72b4aAU6Xv6mltljm_ft07ysWb40J45QivoXYix8Xh9M1kJ8zLe4PzQ5i8/exec";
-const KEY = "rusun2026";
+const API = CONFIG.API;
+const KEY = CONFIG.INTERNAL_KEY;
 
 let HEAD=[], DATA=[];
-let page=1;
-let rows=25;
-let lastHash="";
-let ROW=null;
+let page=1, rows=25, lastHash="", ROW=null;
 
-/* ===== LOAD REALTIME ===== */
+/* LOAD */
 async function load(){
-
   const r = await fetch(API+"?action=daftar_all&key="+KEY);
   const j = await r.json();
 
-  const newHash = j.data.length + "_" + (j.data[0]?.join("|") || "");
+  const newHash = j.data.length + "_" + (j.data[0]?.join("|")||"");
 
-  if(newHash !== lastHash){
+  if(newHash!==lastHash){
     HEAD=j.header;
-    const oldLen = DATA.length;
     DATA=j.data;
-
-    if(DATA.length !== oldLen){
-      page = 1;
-    }
-
-    lastHash = newHash;
+    lastHash=newHash;
+    hitung();
     render();
   }
 }
 
-/* ===== RENDER TABLE ===== */
-function render(){
+/* STATISTIK */
+function hitung(){
+  const idx=HEAD.indexOf("Status Verifikasi");
+  let p=0,a=0,rj=0;
+  DATA.forEach(d=>{
+    if(d[idx]==="DITERIMA") a++;
+    else if(d[idx]==="DITOLAK") rj++;
+    else p++;
+  });
+  rTotal.textContent=DATA.length;
+  rPending.textContent=p;
+  rAcc.textContent=a;
+  rReject.textContent=rj;
+}
 
+/* TABLE */
+function render(){
   rows=parseInt(rowsPerPage.value);
   const start=(page-1)*rows;
-  const end=start+rows;
-  const slice=DATA.slice(start,end);
+  const slice=DATA.slice(start,start+rows);
 
   let h="<tr class='bg-slate-800 sticky top-0'>";
-  HEAD.forEach(c=>h+=`<th class="p-2 border border-slate-700">${c}</th>`);
+  HEAD.forEach(c=>h+=`<th class='p-2 border'>${c}</th>`);
   h+="<th class='p-2 border'>Aksi</th></tr>";
 
   slice.forEach((r,i)=>{
     h+="<tr class='hover:bg-slate-800'>";
-    r.forEach(v=>{
-      h+=`<td class="p-2 border border-slate-800">${v||""}</td>`;
-    });
-    h+=`<td class="p-2 border border-slate-800">
-    <button onclick="openModal(${start+i})"
-    class="bg-blue-600 px-2 py-1 rounded text-xs">Update</button></td></tr>`;
+    r.forEach(v=>h+=`<td class='p-2 border'>${v||""}</td>`);
+    h+=`<td class='p-2 border'><button onclick='openModal(${start+i})' class='bg-blue-600 px-2 py-1 rounded text-xs'>Update</button></td></tr>`;
   });
 
   table.innerHTML=h;
-
-  const totalPages=Math.ceil(DATA.length/rows)||1;
-  pageInfo.textContent=`Page ${page} / ${totalPages} | Total ${DATA.length} baris`;
+  pageInfo.textContent=`Page ${page} | Total ${DATA.length}`;
 }
 
-/* ===== PAGINATION ===== */
-function nextPage(){
-  const totalPages=Math.ceil(DATA.length/rows)||1;
-  if(page<totalPages){ page++; render(); }
-}
-
-function prevPage(){
-  if(page>1){ page--; render(); }
-}
-
-rowsPerPage.onchange=()=>{ page=1; render(); };
-
-/* ===== MODAL ===== */
+/* MODAL */
 function openModal(i){
   ROW=i;
-
-  const idxStatus = HEAD.indexOf("Status Verifikasi");
-  const idxCat = HEAD.indexOf("Catatan Verifikasi");
-  const idxTgl = HEAD.indexOf("Tanggal Verifikasi");
-  const idxNo = HEAD.indexOf("No Pendaftaran");
- 
-  let idxUnit = HEAD.indexOf("_unit");
-  if(idxUnit === -1) idxUnit = HEAD.indexOf("Unit");
-
-  mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
-  mCatatan.value = DATA[i][idxCat] || "";
-  mNo.value = DATA[i][idxNo] || "";
-  mUnit.value = DATA[i][idxUnit] || "";
-
-  if(DATA[i][idxTgl]){
-    const d=new Date(DATA[i][idxTgl]);
-    mTanggal.value = d.toISOString().slice(0,16);
-  }else{
-    mTanggal.value="";
-  }
-
+  const idxNo=HEAD.indexOf("No Pendaftaran");
+  let idxUnit=HEAD.indexOf("_unit"); if(idxUnit==-1) idxUnit=HEAD.indexOf("Unit");
+  mNo.value=DATA[i][idxNo]||"";
+  mUnit.value=DATA[i][idxUnit]||"";
   modal.classList.remove("hidden");
+  modal.classList.add("flex");
 }
 
 function closeModal(){
   modal.classList.add("hidden");
+  modal.classList.remove("flex");
 }
 
+/* UPDATE */
 async function simpan(){
-
   const noIdx=HEAD.indexOf("No Pendaftaran");
   const noLama=DATA[ROW][noIdx];
 
-  await fetch(API,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"daftar_update",
-      key:KEY,
-      no_lama:noLama,
-      status:mStatus.value,
-      catatan:mCatatan.value,
-      tanggal:mTanggal.value,
-      no_baru:mNo.value,
-      unit:mUnit.value
-    })
-  });
+  await fetch(API,{method:"POST",body:JSON.stringify({
+    action:"daftar_update", key:KEY, no_lama:noLama,
+    status:mStatus.value, catatan:mCatatan.value,
+    tanggal:mTanggal.value, no_baru:mNo.value, unit:mUnit.value
+  })});
 
   closeModal();
   load();
 }
 
-/* ===== START ===== */
+function nextPage(){page++;render();}
+function prevPage(){if(page>1)page--;render();}
+rowsPerPage.onchange=()=>{page=1;render();};
+
+function toggleSidebar(){
+  sidebar.classList.toggle("hidden");
+}
+
 load();
 setInterval(load,5000);
 </script>
