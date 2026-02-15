@@ -108,7 +108,7 @@ thead th{
   }
 
   #sidebar{
-    position:fixed;
+    position:relative;
     top:0;
     left:0;
     height:100%;
@@ -139,7 +139,7 @@ thead th{
 
 <!-- SIDEBAR -->
 <div id="sidebar"
-class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 -translate-x-full md:translate-x-0">
+class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 -translate-x-full">
 
 <div class="p-4 border-b border-slate-800">
 <div class="text-xl font-bold">Admin Panel</div>
@@ -385,7 +385,12 @@ rowsPerPage.onchange=()=>{page=1;render();};
 
 function toggleSidebar(){
   const s = document.getElementById("sidebar");
-  s.classList.toggle("-translate-x-full");
+
+  if(s.classList.contains("-translate-x-full")){
+    s.classList.remove("-translate-x-full");
+  }else{
+    s.classList.add("-translate-x-full");
+  }
 }
 
 load();
