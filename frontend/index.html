@@ -126,7 +126,7 @@ Permohonan Penghunian Rusunawa
 </h1>
 
 <p class="text-center text-slate-300 text-sm">
-Dengan mengisi formulir ini anda menyatakan setuju seluruh ketentuan.
+Dengan mengisi formulir ini anda menyatakan setuju sebagaimana ketentuan dibawah ini.
 </p>
 
 <hr class="my-6 border-slate-700">
@@ -237,38 +237,42 @@ style="position:absolute;left:-9999px;">
        class="input">
 <p class="text-xs text-slate-400 mt-1">catatan: untuk sementara masukan no handphone</p>
 <label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
-<select id="Status Kependudukan" class="input">
-<option>Kota Banjarmasin</option>
-<option>Penduduk Non Permanen</option>
+<select id="Status Kependudukan" class="input" required>
+  <option value="">Pilih Status Kependudukan</option>
+  <option value="Kota Banjarmasin">Kota Banjarmasin</option>
+  <option value="Penduduk Non Permanen">Penduduk Non Permanen</option>
 </select>
 <label class="block text-slate-300 text-sm mb-1">Umur</label>
 <input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
 <label class="block text-slate-300 text-sm mb-1">Agama</label>
-<select id="Agama" class="input">
-<option>Islam</option>
-<option>Kristen</option>
-<option>Katolik</option>
-<option>Hindu</option>
-<option>Buddha</option>
-<option>Konghucu</option>
+<select id="Agama" class="input" required>
+  <option value="">Pilih Agama</option>
+  <option value="Islam">Islam</option>
+  <option value="Kristen">Kristen</option>
+  <option value="Katolik">Katolik</option>
+  <option value="Hindu">Hindu</option>
+  <option value="Buddha">Buddha</option>
+  <option value="Konghucu">Konghucu</option>
 </select>
 <label class="block text-slate-300 text-sm mb-1">Status Perkawinan</label>
-<select id="Status Perkawinan" class="input">
-<option>Kawin Tercatat</option>
-<option>Kawin Belum Tercatat</option>
-<option>Cerai Hidup</option>
-<option>Cerai Mati</option>
+<select id="Status Perkawinan" class="input" required>
+  <option value="">Pilih Status Perkawinan</option>
+  <option value="Kawin Tercatat">Kawin Tercatat</option>
+  <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
+  <option value="Cerai Hidup">Cerai Hidup</option>
+  <option value="Cerai Mati">Cerai Mati</option>
 </select>
 <label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
 <textarea id="Alamat sekarang" placeholder="(tulis lengkap) Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
 <label class="block text-slate-300 text-sm mb-1">Status Tempat Tinggal</label>
-<select id="Status Tempat Tinggal Sekarang" class="input">
-<option>Sewa</option>
-<option>Kontrak</option>
-<option>Numpang</option>
-<option>Fasilitas Perusahaan/Tempat Kerja</option>
+<select id="Status Tempat Tinggal Sekarang" class="input" required>
+  <option value="">Pilih Status Tempat Tinggal</option>
+  <option value="Sewa">Sewa</option>
+  <option value="Kontrak">Kontrak</option>
+  <option value="Numpang">Numpang</option>
+  <option value="Fasilitas Perusahaan/Tempat Kerja">Fasilitas Perusahaan/Tempat Kerja</option>
 </select>
-<label class="block text-slate-300 text-sm mb-1">Nomor Telepon / HP / WA</label>
+<label class="block text-slate-300 text-sm mb-1">Nomor Telepon/HP/WA</label>
 <input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telp/HP (wa aktif)" class="input">
 <label class="block text-slate-300 text-sm mb-1">Email</label>
 <input id="Email" placeholder="Email" class="input">
@@ -278,7 +282,7 @@ style="position:absolute;left:-9999px;">
 <div class="page hidden space-y-4">
 <label class="block text-slate-300 text-sm mb-1">Pekerjaan Pemohon</label>
 <input id="Pekerjaan Pemohon" placeholder="Pekerjaan Pemohon" class="input">
-<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja</label>
+<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan/Tempat Kerja</label>
 <input id="Nama Perusahaan/Tempat Kerja" placeholder="Nama Perusahaan/Tempat Kerja" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
 <textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
@@ -293,8 +297,7 @@ style="position:absolute;left:-9999px;">
 <input id="Pekerjaan Pasangan Manual"
        placeholder="Isi pekerjaan pasangan"
        class="input hidden">
-
-<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan / Tempat Kerja Pasangan</label>
+<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan/Tempat Kerja Pasangan</label>
 <input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
 <label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
 <textarea id="Alamat Tempat Kerja Pasangan" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
@@ -547,17 +550,31 @@ for(const x of inputs){
 
   /* skip field opsional */
   if(optionalIds.includes(x.id)) continue;
+  
+  /* KHUSUS SELECT */
+  if(x.tagName === "SELECT"){
+    if(!x.value){
+      msg.innerText="Wajib pilih: " + x.id;
+      msg.className="text-red-400";
 
+      x.scrollIntoView({behavior:"smooth",block:"center"});
+      x.focus();
+      x.classList.add("err");
+      return false;
+    }
+    continue;
+  }
+
+  /* INPUT / TEXTAREA */
   if(!x.value || !x.value.trim()){
-  msg.innerText="Field belum diisi: " + x.id;
-  msg.className="text-red-400";
+    msg.innerText="Field belum diisi: " + x.id;
+    msg.className="text-red-400";
 
-  x.scrollIntoView({behavior:"smooth",block:"center"});
-  x.focus();
-  x.classList.add("err");
-
-  return false;
-}
+    x.scrollIntoView({behavior:"smooth",block:"center"});
+    x.focus();
+    x.classList.add("err");
+    return false;
+  }
 }
 
 /* VALIDASI NIK 16 DIGIT */
@@ -624,6 +641,30 @@ for(const id of fieldsAngka){
   }
 }
 
+/* ===== VALIDASI DROPDOWN WAJIB ===== */
+const wajibSelect = [
+  "Status Kependudukan",
+  "Agama",
+  "Status Perkawinan",
+  "Status Tempat Tinggal Sekarang"
+];
+
+for(const id of wajibSelect){
+  const el = document.getElementById(id);
+  if(!el) continue;
+
+  if(!el.value){
+    msg.innerText = "Wajib pilih: " + id;
+    msg.className = "text-red-400";
+
+    el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.focus();
+    el.classList.add("err");
+
+    return false;
+  }
+}
+
 msg.innerText="";
 /* VALIDASI DINAMIS PEKERJAAN PASANGAN */
 if(!validatePekerjaanPasangan()) return false;
@@ -638,6 +679,21 @@ function nextPage(){
 
 function prevPage(){
 if(page>0){page--;showPage();}
+}
+
+/* ===== CEK DUPLIKAT NIK & HP KE SERVER ===== */
+async function cekDuplikatClient(nik, hp){
+
+  try{
+    const r = await fetch(
+      URL+"?action=cek_duplikat"
+      +"&nik="+encodeURIComponent(nik)
+      +"&hp="+encodeURIComponent(hp)
+    );
+    return await r.json();
+  }catch{
+    return {error:true};
+  }
 }
 
 /* ================= SUBMIT ================= */
@@ -660,6 +716,37 @@ if(hp && hp.value && hp.value.trim()!==""){
 
 if(!validatePage())return;
 
+/* ===== CEK DUPLIKAT SEBELUM KIRIM ===== */
+const nikVal = document.getElementById("NIK Pemohon").value.trim();
+const hpVal  = document.getElementById("Nomor Telepon/HP/WA").value.trim();
+
+msg.className="text-yellow-400";
+msg.innerText="Memeriksa duplikasi data...";
+
+const dup = await cekDuplikatClient(nikVal, hpVal);
+
+if(dup.error){
+  msg.className="text-red-400";
+  msg.innerText="Gagal cek duplikasi. Coba lagi.";
+  next.disabled=false;
+  return;
+}
+
+if(dup.nik){
+  msg.className="text-red-400";
+  msg.innerText="NIK sudah terdaftar";
+  next.disabled=false;
+  return;
+}
+
+if(dup.hp){
+  msg.className="text-red-400";
+  msg.innerText="Nomor HP sudah digunakan";
+  next.disabled=false;
+  return;
+}
+
+
 if(!_unit || !_token){
   msg.className="text-red-400";
   msg.innerText="Pilih unit terlebih dahulu";
@@ -680,7 +767,6 @@ document.querySelectorAll("input,textarea,select").forEach(x=>{
     data[x.id] = x.value;
   }
 });
-
 
 /* ===== GABUNG PEKERJAAN PASANGAN ===== */
 const pj = document.getElementById("Pekerjaan Pasangan");
@@ -760,7 +846,6 @@ document.querySelectorAll(".rupiah").forEach(el=>{
   el.addEventListener("blur",function(){
     if(this.value) this.value="Rp "+this.value;
   });
-
 });
 
 /* ===== TOGGLE PEKERJAAN PASANGAN ===== */
@@ -782,9 +867,7 @@ document.addEventListener("DOMContentLoaded", function(){
       manual.style.display = "none";
       manual.value = "";
     }
-
   });
-
 });
 
 /* ===== VALIDASI DINAMIS PEKERJAAN PASANGAN ===== */
@@ -846,9 +929,7 @@ function validatePekerjaanPasangan(){
     if(!el) return;
 
     el.addEventListener("input", function(){
-
       let v = this.value.replace(/\D/g,"");   // hanya angka
-
       if(!v){
         this.value="";
         return;
