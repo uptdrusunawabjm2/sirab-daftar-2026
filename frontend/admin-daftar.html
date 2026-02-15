@@ -213,17 +213,44 @@ function closeModal(){
 
 /* UPDATE */
 async function simpan(){
-  const noIdx=HEAD.indexOf("No Pendaftaran");
-  const noLama=DATA[ROW][noIdx];
 
-  await fetch(API,{method:"POST",body:JSON.stringify({
-    action:"daftar_update", key:KEY, no_lama:noLama,
-    status:mStatus.value, catatan:mCatatan.value,
-    tanggal:mTanggal.value, no_baru:mNo.value, unit:mUnit.value
-  })});
+  const noIdx = HEAD.indexOf("No Pendaftaran");
+  const noLama = DATA[ROW][noIdx];
 
-  closeModal();
-  load();
+  const payload = {
+    action: "daftar_update",
+    key: KEY,
+    no_lama: noLama,
+    status: mStatus.value,
+    catatan: mCatatan.value,
+    tanggal: mTanggal.value,
+    no_baru: mNo.value,
+    unit: mUnit.value
+  };
+
+  try{
+
+    const r = await fetch(API,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const j = await r.json();
+
+    if(!j || j.status!==true){
+      alert("Gagal update ke database!");
+      return;
+    }
+
+    closeModal();
+    await load();
+
+  }catch(err){
+    alert("Koneksi gagal!");
+  }
 }
 
 function nextPage(){page++;render();}
