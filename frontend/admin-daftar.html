@@ -136,6 +136,11 @@ thead th{
   transform:translateX(-100%);
 }
 
+/* Sidebar hidden */
+.sidebar-hide{
+  transform:translateX(-100%);
+}
+
 </style>
 
 </head>
@@ -388,29 +393,14 @@ function nextPage(){page++;render();}
 function prevPage(){if(page>1)page--;render();}
 rowsPerPage.onchange=()=>{page=1;render();};
 
-function toggleSidebar(){
+ffunction toggleSidebar(){
 
-  const s = document.getElementById("sidebar");
-  const m = document.getElementById("main");
+  const sidebar = document.getElementById("sidebar");
 
-  if(!s || !m) return;
+  if(!sidebar) return;
 
-  // DESKTOP COLLAPSE
-  if(window.innerWidth >= 900){
+  sidebar.classList.toggle("sidebar-hide");
 
-    if(s.classList.contains("collapsed")){
-      s.classList.remove("collapsed");
-      m.style.marginLeft = "16rem";
-    }else{
-      s.classList.add("collapsed");
-      m.style.marginLeft = "0";
-    }
-
-  }
-  // MOBILE OVERLAY
-  else{
-    s.classList.toggle("show");
-  }
 }
 
 load();
