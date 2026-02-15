@@ -53,20 +53,6 @@ body{
   transition:all .25s ease;
 }
 
-/* MOBILE SIDEBAR */
-@media(max-width:900px){
-  .sidebar{
-    position:fixed;
-    left:-260px;
-    top:0;
-    height:100%;
-    z-index:50;
-  }
-  .sidebar.show{
-    left:0;
-  }
-}
-
 /* TABLE SWIPE MOBILE */
 .table-wrap{
   overflow-x:auto;
@@ -129,11 +115,6 @@ thead th{
     padding:8px;
     white-space:nowrap;
   }
-}
-
-/* DESKTOP COLLAPSE */
-.sidebar.collapsed{
-  transform:translateX(-100%);
 }
 
 /* Sidebar hidden */
