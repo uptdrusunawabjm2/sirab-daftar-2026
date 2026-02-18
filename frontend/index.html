@@ -934,7 +934,7 @@ if(j.status){
 
 }else{
   msg.className="text-red-400";
-  msg.innerText=j.message||"Gagal";
+  msg.innerText = j.message ? j.message : JSON.stringify(j);
   next.disabled=false;
 }
 
