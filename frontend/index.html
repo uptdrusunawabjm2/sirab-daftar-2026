@@ -467,7 +467,6 @@ async function cekUnit(){
     _unit=j.unit;
     _token=j.token;
 
-  msg.className="text-green-400";
 
 /* ================= TAMPILKAN JUMLAH UNIT KOSONG SAJA ================= */
 
@@ -518,9 +517,33 @@ msg.innerHTML = `
 
 </div>`;
 
+cekWarningLansia();
+
   }catch{
     msg.className="text-red-400";
     msg.innerText="Gagal cek unit";
+  }
+}
+
+/* ===== WARNING LANSIA REALTIME ===== */
+function cekWarningLansia(){
+
+  const umurEl = document.getElementById("Umur");
+  if(!umurEl) return;
+
+  const umurVal = parseInt((umurEl.value||"0").replace(/[^\d]/g,""),10);
+
+  if(!_unit) return;
+
+  const lansiaUnit =
+    _unit.toUpperCase().startsWith("GM-C0") ||
+    _unit.toUpperCase().startsWith("TK-1");
+
+  if(lansiaUnit && umurVal < 60){
+    msg.className="text-amber-400";
+    msg.innerHTML=
+      "⚠️ Unit ini khusus lansia/difabel (≥60 tahun)<br>" +
+      "Jika dilanjutkan, pendaftaran akan ditolak sistem";
   }
 }
   
@@ -829,6 +852,22 @@ if(!_unit || !_token){
   return;
 }
 
+/* ===== VALIDASI UMUR SESUAI GAS (LANSIA/DIFABEL) ===== */
+
+const umurVal = parseInt(
+  (document.getElementById("Umur").value || "0").replace(/[^\d]/g,""),
+  10
+);
+
+if(_unit && (_unit.toUpperCase().startsWith("GM-C0") || _unit.toUpperCase().startsWith("TK-1"))){
+  if(umurVal < 60){
+    msg.className="text-red-400";
+    msg.innerText="tidak memenuhi syarat, unit dipilih untuk lansia (≥60 tahun) / difabel";
+    next.disabled=false;
+    return;
+  }
+}
+
 lastSubmit=Date.now();
 next.disabled=true;
 msg.innerText="Mengirim...";
@@ -988,8 +1027,10 @@ function validatePekerjaanPasangan(){
 
   el.addEventListener("input",function(){
     this.value=this.value.replace(/[^\d]/g,"");
+    cekWarningLansia();   // ← TAMBAHAN
   });
 });
+
 
 /* ===== FORMAT OTOMATIS → 62xx (HP + NIK sementara) ===== */
 (function(){
