@@ -433,7 +433,7 @@ async function cekUnit(){
   if(!rusun||!tipe||!lantai) return;
 
   msg.className="text-yellow-400";
-  msg.innerText="Mengecek ketersediaan unit...";
+  msg.innerText="Menghitung jumlah unit terisi...";
 
   try{
 
@@ -458,16 +458,28 @@ async function cekUnit(){
     _unit=j.unit;
     _token=j.token;
 
-    msg.className="text-green-400";
-    if(Array.isArray(j.unitList) && j.unitList.length){
-  msg.innerHTML = `
-    <div style="color:#22c55e">
-      <b>Unit tersedia:</b><br>
-      ${j.unitList.map(u=>"• "+u).join("<br>")}
-    </div>`;
-}else{
-  msg.innerText="Unit tersedia: "+_unit;
+  msg.className="text-green-400";
+
+let TOTAL_UNIT_PER_LANTAI = 24;
+if(rusun === "Teluk Kelayan") TOTAL_UNIT_PER_LANTAI = 16;
+
+if(!Array.isArray(j.unitList)){
+  msg.className="text-red-400";
+  msg.innerText="Data unit tidak tersedia";
+  return;
 }
+
+const kosong = j.unitList.length;
+
+const terisi = Math.max(0, TOTAL_UNIT_PER_LANTAI - kosong);
+
+msg.innerHTML = `
+  <div style="color:#22c55e">
+    <b>Jumlah Unit Terisi:</b> ${terisi}<br>
+    <span style="opacity:.7;font-size:12px">
+      (Kosong: ${kosong} unit)
+    </span>
+  </div>`;
 
   }catch{
     msg.className="text-red-400";
