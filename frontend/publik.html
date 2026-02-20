@@ -12,25 +12,12 @@
 #table th{
   position: sticky;
   top: 0;
-  z-index: 20;          /* lebih tinggi agar tidak tertutup */
-  background: #1e293b;  /* wajib solid, jangan transparan */
-}
-
-/* shadow tipis agar terlihat mengambang saat scroll */
-#table th{
+  z-index: 20;
+  background: #1e293b;
   box-shadow: 0 2px 0 rgba(0,0,0,.5);
 }
 
-select {
-  background-color: #0f172a;
-  color: white;
-}
-
-select option {
-  color: black;
-}
-
-/* ===== TABLE FIT SCREEN (NO HORIZONTAL SCROLL) ===== */
+/* ===== TABLE FIT SCREEN ===== */
 #table{
   table-layout: fixed;
   width: 100%;
@@ -39,33 +26,52 @@ select option {
 
 #table th,
 #table td{
-  white-space: normal;      /* teks turun baris */
-  word-break: break-word;   /* potong kata panjang */
-  padding: 6px;             /* padatkan */
+  white-space: normal;
+  word-break: break-word;
+  padding: 6px;
   vertical-align: top;
 }
 
-/* perkecil kolom tertentu */
-#table th:nth-child(1),
-#table td:nth-child(1){width:90px;}   /* Tanggal */
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px){
 
-#table th:nth-child(3),
-#table td:nth-child(3){width:90px;}   /* NIK */
+  #table thead{
+    display:none;
+  }
 
-#table th:nth-child(5),
-#table td:nth-child(5){width:50px;}   /* Umur */
+  #table tr{
+    display:block;
+    margin-bottom:12px;
+    border:1px solid #334155;
+    border-radius:8px;
+    background:#0f172a;
+    padding:10px;
+  }
 
-#table th:nth-child(9),
-#table td:nth-child(9){width:60px;}   /* Anggota */
+  #table td{
+    display:flex;
+    justify-content:space-between;
+    border:none !important;
+    padding:4px 0;
+    font-size:12px;
+  }
 
-#table th:nth-child(12),
-#table td:nth-child(12){width:50px;}  /* Tipe */
+  #table td::before{
+    content: attr(data-label);
+    font-weight:600;
+    color:#94a3b8;
+  }
 
-#table th:nth-child(13),
-#table td:nth-child(13){width:50px;}  /* Lantai */
+  #table th{
+    position:static;
+    box-shadow:none;
+  }
+}
 
-#table th:nth-child(14),
-#table td:nth-child(14){width:90px;}  /* Status */
+select{
+  background:#0f172a;
+  color:white;
+}
 
 </style>
 <meta name="robots" content="noindex,nofollow">
@@ -73,7 +79,6 @@ select option {
 
 <body class="bg-slate-950 text-white min-h-screen">
 
-<!-- HEADER -->
 <div class="bg-slate-900 border-b border-slate-800 p-3 text-center font-semibold">
 Daftar Permohonan Rusunawa
 </div>
@@ -86,143 +91,133 @@ Daftar Permohonan Rusunawa
 class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
 
 <select id="filterStatus">
-  <option value="" style="color:whitesmoke;">Semua Status</option>
-  <option value="DIPROSES" style="color:whitesmoke;">DIPROSES</option>
-  <option value="DITERIMA" style="color:whitesmoke;">DITERIMA</option>
-  <option value="DITOLAK" style="color:whitesmoke;">DITOLAK</option>
+  <option value="">Semua Status</option>
+  <option value="DIPROSES">DIPROSES</option>
+  <option value="DITERIMA">DITERIMA</option>
+  <option value="DITOLAK">DITOLAK</option>
 </select>
 </div>
 
 <!-- TABLE -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-y-auto overflow-x-hidden max-h-[70vh]">
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-y-auto max-h-[75vh]">
 <table class="w-full text-xs" id="table"></table>
 </div>
 
-
 <script>
 const API = CONFIG.API;
-
 let DATA=[];
 
 function fmtTanggal(x){
   if(!x) return "";
-
   const d = new Date(x);
   if(isNaN(d)) return x;
 
-  const bulan = [
-    "Januari","Februari","Maret","April","Mei","Juni",
-    "Juli","Agustus","September","Oktober","November","Desember"
-  ];
+  const bulan=[
+  "Januari","Februari","Maret","April","Mei","Juni",
+  "Juli","Agustus","September","Oktober","November","Desember"];
 
-  return d.getDate() + " " +
-         bulan[d.getMonth()] + " " +
-         d.getFullYear();
+  return d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
 }
 
-/* ===== SENSOR NOMOR ===== */
-function sensorHP(no){
-  if(!no) return "";
-  no=String(no);
-  if(no.length<=6) return no;
-  return no.slice(0,4)+"****"+no.slice(-2);
-}
-
-/* ===== LOAD DATA ===== */
 async function load(){
   const r = await fetch(API+"?action=daftar_all&key=public");
   const j = await r.json();
-
   if(!j.data) return;
 
-DATA = j.data.map(row=>{
-  return {
-    tanggal: row[0],
-    nama: row[1],
-    nik: row[2],
-    kependudukan: row[3],
-    umur: row[4],
-    kawin: row[5],
-    tinggal: row[6],
-    hp: row[7],
-    anggota: row[8],
-    kerja: row[9],
-    rusun: row[10],
-    tipe: row[11],
-    lantai: row[12],
-    status: row[13],
-    catatan: row[14],
-    tglver: row[15]
-  };
-});
+  DATA = j.data.map(row=>{
+    return {
+      tanggal: row[0],
+      nama: row[1],
+      nik: row[2],
+      kependudukan: row[3],
+      umur: row[4],
+      kawin: row[5],
+      tinggal: row[6],
+      hp: row[7],
+      anggota: row[8],
+      kerja: row[9],
+      rusun: row[10],
+      tipe: row[11],
+      lantai: row[12],
+      status: row[13],
+      catatan: row[14],
+      tglver: row[15]
+    };
+  });
+
   render();
 }
 
-/* ===== RENDER ===== */
 function render(){
+
   const q=cari.value.toLowerCase();
   const fs=filterStatus.value;
 
   const d=DATA.filter(x=>{
-  if(fs && String(x.status||"").trim().toUpperCase() !== fs.trim().toUpperCase()){
-    return false;
-  }
+    if(fs && (x.status||"").toUpperCase()!==fs) return false;
+    if(!q) return true;
 
-  if(!q) return true;
+    return (
+      (x.nama||"").toLowerCase().includes(q) ||
+      (x.rusun||"").toLowerCase().includes(q) ||
+      (x.status||"").toLowerCase().includes(q)
+    );
+  });
 
-  return (
-    x.nama.toLowerCase().includes(q) ||
-    x.rusun.toLowerCase().includes(q) ||
-    x.status.toLowerCase().includes(q)
-  );
-});
-
-  let h=`<tr class="bg-slate-800">
-    <th class="p-2 border">Tanggal Formulir</th>
-    <th class="p-2 border">Nama Pemohon</th>
-    <th class="p-2 border">NIK</th>
-    <th class="p-2 border">Status Kependudukan</th>
-    <th class="p-2 border">Umur</th>
-    <th class="p-2 border">Status Perkawinan</th>
-    <th class="p-2 border">Status Tempat Tinggal Sekarang</th>
-    <th class="p-2 border">No HP</th>
-    <th class="p-2 border">Jumlah Anggota</th>
-    <th class="p-2 border">Pekerjaan</th>
-    <th class="p-2 border">Rusunawa</th>
-    <th class="p-2 border">Tipe</th>
-    <th class="p-2 border">Lantai</th>
-    <th class="p-2 border">Status</th>
-    <th class="p-2 border">Catatan</th>
-    <th class="p-2 border">Tgl Verifikasi</th>
-    </tr>`;
+  let h=`
+  <thead>
+  <tr class="bg-slate-800">
+  <th>Tanggal</th>
+  <th>Nama</th>
+  <th>NIK</th>
+  <th>Kependudukan</th>
+  <th>Umur</th>
+  <th>Status Kawin</th>
+  <th>Status Tinggal</th>
+  <th>No HP</th>
+  <th>Anggota</th>
+  <th>Pekerjaan</th>
+  <th>Rusun</th>
+  <th>Tipe</th>
+  <th>Lantai</th>
+  <th>Status</th>
+  <th>Catatan</th>
+  <th>Tgl Verifikasi</th>
+  </tr>
+  </thead>
+  <tbody>
+  `;
 
   d.forEach(r=>{
+
     let warna="text-blue-400";
-    if(r.status==="VERIFIKASI") warna="text-yellow-400";
-    else if(r.status==="DIPROSES") warna="text-amber-400";
+    if(r.status==="DIPROSES") warna="text-amber-400";
     else if(r.status==="DITERIMA") warna="text-green-400";
     else if(r.status==="DITOLAK") warna="text-red-400";
 
-    h+=`<tr class="hover:bg-slate-800">
-    <td class="p-2 border">${fmtTanggal(r.tanggal)}</td>
-    <td class="p-2 border">${r.nama||""}</td>
-    <td class="p-2 border">${r.nik||""}</td>
-    <td class="p-2 border">${r.kependudukan||""}</td>
-    <td class="p-2 border">${r.umur||""}</td>
-    <td class="p-2 border">${r.kawin||""}</td>
-    <td class="p-2 border">${r.tinggal||""}</td>
-    <td class="p-2 border">${r.hp||""}</td>
-    <td class="p-2 border">${r.anggota||""}</td>
-    <td class="p-2 border">${r.kerja||""}</td>
-    <td class="p-2 border">${r.rusun||""}</td>
-    <td class="p-2 border">${r.tipe||""}</td>
-    <td class="p-2 border">${r.lantai||""}</td>
-    <td class="p-2 border font-bold ${warna}">${r.status||""}</td>
-    <td class="p-2 border">${r.catatan||""}</td>
-    <td class="p-2 border">${fmtTanggal(r.tglver)}</td>
-    </tr>`;
+    h+=`
+    <tr class="hover:bg-slate-800">
+      <td data-label="Tanggal">${fmtTanggal(r.tanggal)}</td>
+      <td data-label="Nama">${r.nama||""}</td>
+      <td data-label="NIK">${r.nik||""}</td>
+      <td data-label="Kependudukan">${r.kependudukan||""}</td>
+      <td data-label="Umur">${r.umur||""}</td>
+      <td data-label="Status Kawin">${r.kawin||""}</td>
+      <td data-label="Status Tinggal">${r.tinggal||""}</td>
+      <td data-label="No HP">${r.hp||""}</td>
+      <td data-label="Anggota">${r.anggota||""}</td>
+      <td data-label="Pekerjaan">${r.kerja||""}</td>
+      <td data-label="Rusun">${r.rusun||""}</td>
+      <td data-label="Tipe">${r.tipe||""}</td>
+      <td data-label="Lantai">${r.lantai||""}</td>
+      <td data-label="Status" class="font-bold ${warna}">${r.status||""}</td>
+      <td data-label="Catatan">${r.catatan||""}</td>
+      <td data-label="Tgl Verifikasi">${fmtTanggal(r.tglver)}</td>
+    </tr>
+    `;
   });
 
+  h+="</tbody>";
   table.innerHTML=h;
 }
 
