@@ -247,7 +247,7 @@ async function load(){
   const r = await fetch(API+"?action=daftar_all&key="+KEY);
   const j = await r.json();
 
-  const newHash = j.data.length + "_" + (j.data[0]?.join("|")||"");
+  const newHash = JSON.stringify(j.data);
 
   if(newHash!==lastHash){
     HEAD=j.header;
@@ -255,7 +255,7 @@ async function load(){
     lastHash=newHash;
     hitung();
     render();
-  }
+}
 }
 
 /* STATISTIK */
@@ -366,6 +366,7 @@ async function simpan(){
 
     closeModal();
     await load();
+    alert("Berhasil update data!");
 
   }catch(err){
     alert("Koneksi gagal!");
