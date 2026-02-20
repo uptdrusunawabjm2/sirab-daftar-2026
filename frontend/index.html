@@ -146,7 +146,7 @@ Dengan mengisi formulir ini anda menyatakan setuju dengan ketentuan dibawah ini.
 <a href="javascript:void(0)"
 onclick="togglePasal()"
 class="text-xs underline opacity-90 hover:opacity-100 block text-center">
-Baca pernyataan lengkap
+Wajib baca pernyataan lengkap
 </a>
 <!-- ===== BOX 1 ===== -->
 <div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
@@ -470,9 +470,9 @@ async function cekUnit(){
     _token=j.token;
 
 
-/* ================= TAMPILKAN JUMLAH UNIT KOSONG SAJA ================= */
+/* ================= TAMPILAN STATUS KETERSEDIAAN ================= */
 
-if(typeof j.kosong !== "number"){
+if(typeof j.kosong !== "number" && tipe !== "21"){
   msg.className="text-red-400";
   msg.innerText="Data unit tidak tersedia";
   return;
@@ -480,47 +480,82 @@ if(typeof j.kosong !== "number"){
 
 msg.className="";
 
-msg.innerHTML = `
-<div style="
-  background:linear-gradient(180deg,#0f172a,#020617);
-  border:1px solid #1e293b;
-  border-radius:14px;
-  padding:14px 16px;
-  max-width:320px;
-  margin:12px auto;
-  box-shadow:0 4px 14px rgba(0,0,0,.35);
-  text-align:center;
-">
+/* ===== KHUSUS TIPE 21 (BLOK A & B) ===== */
+if(tipe === "21" && typeof j.kosongA === "number" && typeof j.kosongB === "number"){
 
+  msg.innerHTML = `
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+
+    <div style="
+      background:linear-gradient(180deg,#0f172a,#020617);
+      border:1px solid #1e293b;
+      border-radius:14px;
+      padding:14px 16px;
+      width:160px;
+      box-shadow:0 4px 14px rgba(0,0,0,.35);
+      text-align:center;
+    ">
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
+        Blok A
+      </div>
+      <div style="font-size:26px;font-weight:700;color:#38bdf8;">
+        ${j.kosongA}
+      </div>
+      <div style="font-size:12px;color:#94a3b8;">
+        Unit Kosong
+      </div>
+    </div>
+
+    <div style="
+      background:linear-gradient(180deg,#0f172a,#020617);
+      border:1px solid #1e293b;
+      border-radius:14px;
+      padding:14px 16px;
+      width:160px;
+      box-shadow:0 4px 14px rgba(0,0,0,.35);
+      text-align:center;
+    ">
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
+        Blok B
+      </div>
+      <div style="font-size:26px;font-weight:700;color:#38bdf8;">
+        ${j.kosongB}
+      </div>
+      <div style="font-size:12px;color:#94a3b8;">
+        Unit Kosong
+      </div>
+    </div>
+
+  </div>`;
+}
+
+/* ===== TIPE SELAIN 21 ===== */
+else{
+
+  msg.innerHTML = `
   <div style="
-    font-size:13px;
-    color:#94a3b8;
-    margin-bottom:6px;
-    letter-spacing:.3px;
+    background:linear-gradient(180deg,#0f172a,#020617);
+    border:1px solid #1e293b;
+    border-radius:14px;
+    padding:14px 16px;
+    max-width:320px;
+    margin:12px auto;
+    box-shadow:0 4px 14px rgba(0,0,0,.35);
+    text-align:center;
   ">
-    Status Ketersediaan
-  </div>
-
-  <div style="
-    font-size:28px;
-    font-weight:700;
-    color:#38bdf8;
-    margin-bottom:2px;
-  ">
-    ${j.kosong}
-  </div>
-
-  <div style="
-    font-size:13px;
-    color:#94a3b8;
-  ">
-    Unit Kosong / Siap Huni
-  </div>
-
-</div>`;
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
+      Status Ketersediaan
+    </div>
+    <div style="font-size:28px;font-weight:700;color:#38bdf8;margin-bottom:2px;">
+      ${j.kosong}
+    </div>
+    <div style="font-size:13px;color:#94a3b8;">
+      Unit Kosong / Siap Huni
+    </div>
+  </div>`;
+}
 
 cekWarningLansia();
-
   }catch{
     msg.className="text-red-400";
     msg.innerText="Gagal cek unit";
