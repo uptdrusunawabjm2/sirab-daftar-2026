@@ -11,7 +11,7 @@
 
   const token = localStorage.getItem("RUSUN_TOKEN");
   if(!token){
-    location.href="login.html";
+    location.href="login";
     return;
   }
 
@@ -24,7 +24,7 @@
 
   if(!j.status){
     localStorage.removeItem("RUSUN_TOKEN");
-    location.href="login.html";
+    location.href="login";
   }
 })();
 </script>
@@ -33,7 +33,7 @@
 function logout(){
   localStorage.removeItem("RUSUN_TOKEN");
   localStorage.removeItem("RUSUN_USER");
-  location.href="login.html";
+  location.href="login";
 }
 </script>
 
