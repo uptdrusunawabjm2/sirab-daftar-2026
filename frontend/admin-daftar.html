@@ -473,7 +473,8 @@ async function realtime(){
     lastHash=newHash;
     hitung();
 
-    const maxPage = Math.max(1, Math.ceil(DATA.length / rows));
+    const currentRows = parseInt(rowsPerPage.value);
+    const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
     if(oldPage <= maxPage){
       page = oldPage;       // kembali ke halaman sebelumnya
     }else{
@@ -543,8 +544,11 @@ function downloadPDF(){
   win.document.close();
   setTimeout(()=>win.print(),300);
 }
-await load();
-realtime();
+
+(async ()=>{
+  await load();
+  realtime();
+})();
 
 
 </script>
