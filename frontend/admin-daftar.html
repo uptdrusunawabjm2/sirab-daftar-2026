@@ -222,7 +222,7 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 
 <textarea id="mCatatan" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Catatan"></textarea>
 
-<input type="datetime-local" id="mTanggal" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
+<input type="date" id="mTanggal" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
 
 <input id="mNo" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="No Pendaftaran">
 <input id="mUnit" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Unit">
@@ -314,8 +314,10 @@ function openModal(i){
   const tgl = DATA[i][idxTanggal];
   if(tgl){
     const d = new Date(tgl);
-    const iso = d.toISOString().slice(0,16);
-    mTanggal.value = iso;
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    mTanggal.value = `${yyyy}-${mm}-${dd}`;
   }else{
     mTanggal.value = "";
   }
