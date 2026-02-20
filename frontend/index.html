@@ -273,7 +273,7 @@ style="position:absolute;left:-9999px;">
   <option value="Fasilitas Perusahaan/Tempat Kerja">Fasilitas Perusahaan/Tempat Kerja</option>
 </select>
 <label class="block text-slate-300 text-sm mb-1">Jumlah Anggota Keluarga</label>
-<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Maksimal 4 (empat) orang" class="input">
+<input id="Jumlah Anggota Keluarga" inputmode="numeric" pattern="[0-9]*" placeholder="Maksimal 4 (empat) orang" class="input">
 <label class="block text-slate-300 text-sm mb-1">Nomor Telepon/HP/WA</label>
 <input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telp/HP (wa aktif)" class="input">
 <label class="block text-slate-300 text-sm mb-1">Email</label>
@@ -561,8 +561,13 @@ const agree2=document.getElementById("agree2");
 const btnIntroNext=document.getElementById("btnIntroNext");
 
 function checkAgree(){
-btnIntroNext.disabled=!(agree1.checked&&agree2.checked);
+btnIntroNext.disabled = !(
+  agree1.checked &&
+  agree2.checked &&
+  pasalSudahDibaca
+);
 }
+
 agree1.onchange=checkAgree;
 agree2.onchange=checkAgree;
 
@@ -669,9 +674,8 @@ const angka = nik.value.replace(/[^\d]/g,"");   // ✔ pakai nik
 /* ===== VALIDASI ANGKA WAJIB ===== */
 const wajibAngka = [
   "Umur",
-  "Nomor Telepon/HP/WA"
+  "Nomor Telepon/HP/WA",
   "Jumlah Anggota Keluarga"
-
 ];
 
 if(page===1){
