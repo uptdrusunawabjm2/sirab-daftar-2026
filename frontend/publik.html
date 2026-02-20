@@ -131,15 +131,18 @@ function render(){
   const fs=filterStatus.value;
 
   const d=DATA.filter(x=>{
-    if(fs && String(x.status||"").trim().toUpperCase() !== fs.trim().toUpperCase())
-  return false;
-    if(!q) return true;
-    return (
-      x.nama.toLowerCase().includes(q) ||
-      x.rusun.toLowerCase().includes(q) ||
-      x.status.toLowerCase().includes(q)
-    );
-  });
+  if(fs && String(x.status||"").trim().toUpperCase() !== fs.trim().toUpperCase()){
+    return false;
+  }
+
+  if(!q) return true;
+
+  return (
+    x.nama.toLowerCase().includes(q) ||
+    x.rusun.toLowerCase().includes(q) ||
+    x.status.toLowerCase().includes(q)
+  );
+});
 
   let h=`<tr class="bg-slate-800">
       <th class="p-2 border">Tanggal Formulir</th>
