@@ -20,6 +20,16 @@
 #table th{
   box-shadow: 0 2px 0 rgba(0,0,0,.5);
 }
+
+select {
+  background-color: #0f172a;
+  color: white;
+}
+
+select option {
+  color: black;
+}
+
 </style>
 <meta name="robots" content="noindex,nofollow">
 </head>
@@ -39,12 +49,10 @@ Daftar Permohonan Rusunawa
 class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
 
 <select id="filterStatus">
-  <option value="">Semua Status</option>
-  <option>MENUNGGU</option>
-  <option>VERIFIKASI</option>
-  <option>DIPROSES</option>
-  <option>DITERIMA</option>
-  <option>DITOLAK</option>
+  <option value="" style="color:black;">Semua Status</option>
+  <option value="DIPROSES" style="color:black;">DIPROSES</option>
+  <option value="DITERIMA" style="color:black;">DITERIMA</option>
+  <option value="DITOLAK" style="color:black;">DITOLAK</option>
 </select>
 </div>
 
@@ -91,18 +99,27 @@ async function load(){
 
   if(!j.data) return;
 
-  DATA = j.data.map(row=>{
+DATA = j.data.map(row=>{
   return {
     tanggal: row[0],
     nama: row[1],
-    hp: row[2],        // sudah disensor di server
-    kerja: row[3],
-    rusun: row[4],
-    tipe: row[5],
-    lantai: row[6],
-    status: row[7],
-    catatan: row[8],
-    tglver: row[9]
+    nik: row[2],
+    kependudukan: row[3],
+    umur: row[4],
+    agama: row[5],
+    kawin: row[6],
+    alamat: row[7],
+    tinggal: row[8],
+    hp: row[9],
+    anggota: row[10],
+    email: row[11],
+    kerja: row[12],
+    rusun: row[24],
+    tipe: row[25],
+    lantai: row[26],
+    status: row[27],
+    catatan: row[28],
+    tglver: row[29]
   };
 });
   render();
@@ -114,7 +131,8 @@ function render(){
   const fs=filterStatus.value;
 
   const d=DATA.filter(x=>{
-    if(fs && x.status!==fs) return false;
+    if(fs && String(x.status||"").trim().toUpperCase() !== fs.trim().toUpperCase())
+  return false;
     if(!q) return true;
     return (
       x.nama.toLowerCase().includes(q) ||
@@ -124,17 +142,26 @@ function render(){
   });
 
   let h=`<tr class="bg-slate-800">
-  <th class="p-2 border">Tanggal Permohonan</th>
-  <th class="p-2 border">Nama Pemohon</th>
-  <th class="p-2 border">No HP</th>
-  <th class="p-2 border">Pekerjaan</th>
-  <th class="p-2 border">Rusunawa</th>
-  <th class="p-2 border">Tipe</th>
-  <th class="p-2 border">Lantai</th>
-  <th class="p-2 border">Status</th>
-  <th class="p-2 border">Catatan</th>
-  <th class="p-2 border">Tgl Verifikasi</th>
-  </tr>`;
+      <th class="p-2 border">Tanggal Formulir</th>
+      <th class="p-2 border">Nama Pemohon</th>
+      <th class="p-2 border">NIK</th>
+      <th class="p-2 border">Status Kependudukan</th>
+      <th class="p-2 border">Umur</th>
+      <th class="p-2 border">Agama</th>
+      <th class="p-2 border">Status Perkawinan</th>
+      <th class="p-2 border">Alamat Sekarang</th>
+      <th class="p-2 border">Status Tempat Tinggal</th>
+      <th class="p-2 border">No HP</th>
+      <th class="p-2 border">Jumlah Anggota</th>
+      <th class="p-2 border">Email</th>
+      <th class="p-2 border">Pekerjaan</th>
+      <th class="p-2 border">Rusunawa</th>
+      <th class="p-2 border">Tipe</th>
+      <th class="p-2 border">Lantai</th>
+      <th class="p-2 border">Status</th>
+      <th class="p-2 border">Catatan</th>
+      <th class="p-2 border">Tgl Verifikasi</th>
+      </tr>`;
 
   d.forEach(r=>{
     let warna="text-blue-400";
@@ -144,17 +171,26 @@ function render(){
     else if(r.status==="DITOLAK") warna="text-red-400";
 
     h+=`<tr class="hover:bg-slate-800">
-    <td class="p-2 border">${fmtTanggal(r.tanggal)}</td>
-    <td class="p-2 border">${r.nama||""}</td>
-    <td class="p-2 border">${r.hp||""}</td>
-    <td class="p-2 border">${r.kerja||""}</td>
-    <td class="p-2 border">${r.rusun||""}</td>
-    <td class="p-2 border">${r.tipe||""}</td>
-    <td class="p-2 border">${r.lantai||""}</td>
-    <td class="p-2 border font-bold ${warna}">${r.status||""}</td>
-    <td class="p-2 border">${r.catatan||""}</td>
-    <td class="p-2 border">${fmtTanggal(r.tglver)}</td>
-    </tr>`;
+      <td class="p-2 border">${fmtTanggal(r.tanggal)}</td>
+      <td class="p-2 border">${r.nama||""}</td>
+      <td class="p-2 border">${r.nik||""}</td>
+      <td class="p-2 border">${r.kependudukan||""}</td>
+      <td class="p-2 border">${r.umur||""}</td>
+      <td class="p-2 border">${r.agama||""}</td>
+      <td class="p-2 border">${r.kawin||""}</td>
+      <td class="p-2 border">${r.alamat||""}</td>
+      <td class="p-2 border">${r.tinggal||""}</td>
+      <td class="p-2 border">${r.hp||""}</td>
+      <td class="p-2 border">${r.anggota||""}</td>
+      <td class="p-2 border">${r.email||""}</td>
+      <td class="p-2 border">${r.kerja||""}</td>
+      <td class="p-2 border">${r.rusun||""}</td>
+      <td class="p-2 border">${r.tipe||""}</td>
+      <td class="p-2 border">${r.lantai||""}</td>
+      <td class="p-2 border font-bold ${warna}">${r.status||""}</td>
+      <td class="p-2 border">${r.catatan||""}</td>
+      <td class="p-2 border">${fmtTanggal(r.tglver)}</td>
+      </tr>';
   });
 
   table.innerHTML=h;
