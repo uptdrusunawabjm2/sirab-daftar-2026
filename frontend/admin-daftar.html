@@ -70,8 +70,9 @@ body{
 /* STICKY TABLE HEAD */
 thead th{
   position:sticky;
-  top:60px;
-  z-index:20;
+  top:0;
+  z-index:50;
+  background:#1e293b; /* slate-800 */
 }
 
 /* MODAL SMOOTH */
@@ -299,12 +300,17 @@ function render(){
 
     r.forEach(v=>h+=`<td class='p-2 border'>${v||""}</td>`);
 
-    h+=`<td class='p-2 border'>
-          <button onclick='openModal(${idx})'
-          class='bg-blue-600 px-2 py-1 rounded text-xs'>
-          Update
-          </button>
-        </td>`;
+    h+=`<td class='p-2 border space-x-1'>
+      <button onclick='openModal(${idx})'
+        class='bg-blue-600 px-2 py-1 rounded text-xs'>
+        Update
+      </button>
+
+      <button onclick='lihatDetail(${idx})'
+        class='bg-emerald-600 px-2 py-1 rounded text-xs'>
+        Detail
+      </button>
+    </td>`;
 
     h+="</tr>";
   });
@@ -437,8 +443,83 @@ async function realtime(){
 
   setTimeout(realtime,2000);   // refresh 2 detik (lebih cepat & ringan)
 }
-realtime();
-</script>
 
+let CURRENT_DETAIL=null;
+
+function lihatDetail(i){
+
+  CURRENT_DETAIL = DATA[i];
+
+  let html="";
+  HEAD.forEach((h,idx)=>{
+    html+=`<div><strong>${h}</strong> : ${CURRENT_DETAIL[idx]||"-"}</div>`;
+  });
+
+  detailContent.innerHTML=html;
+
+  modalDetail.classList.remove("hidden");
+  modalDetail.classList.add("flex");
+}
+
+function closeDetail(){
+  modalDetail.classList.add("hidden");
+  modalDetail.classList.remove("flex");
+}
+
+function downloadPDF(){
+
+  if(!CURRENT_DETAIL) return;
+
+  const win = window.open("", "_blank");
+
+  let html = `
+  <html>
+  <head>
+    <title>Detail Pendaftaran</title>
+    <style>
+      body{font-family:Arial;padding:30px}
+      h2{text-align:center}
+      table{width:100%;border-collapse:collapse}
+      td{border:1px solid #ccc;padding:6px;font-size:12px}
+      td:first-child{font-weight:bold;width:40%}
+    </style>
+  </head>
+  <body>
+    <h2>Detail Pendaftaran Rusunawa</h2>
+    <table>
+  `;
+
+  HEAD.forEach((h,idx)=>{
+    html+=`<tr><td>${h}</td><td>${CURRENT_DETAIL[idx]||"-"}</td></tr>`;
+  });
+
+  html+=`</table></body></html>`;
+
+  win.document.write(html);
+  win.document.close();
+  setTimeout(()=>win.print(),300);
+}
+realtime();
+
+
+</script>
+<div id="modalDetail" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4">
+  <div class="bg-white text-black rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto">
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-bold text-lg">Detail Pendaftaran</h2>
+      <button onclick="closeDetail()" class="text-red-600 font-bold">X</button>
+    </div>
+
+    <div id="detailContent" class="text-sm space-y-1"></div>
+
+    <div class="mt-4 flex gap-2">
+      <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded">
+        Download PDF
+      </button>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
