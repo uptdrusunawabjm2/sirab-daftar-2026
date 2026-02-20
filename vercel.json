@@ -2,6 +2,9 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/tracking", "destination": "/tracking.html" }
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/admin-daftar", "destination": "/admin-daftar.html" },
+    { "source": "/tracking", "destination": "/tracking.html" },
+    { "source": "/publik", "destination": "/publik.html" }
   ]
 }
