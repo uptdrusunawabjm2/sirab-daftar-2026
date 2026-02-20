@@ -49,10 +49,10 @@ Daftar Permohonan Rusunawa
 class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
 
 <select id="filterStatus">
-  <option value="" style="color:black;">Semua Status</option>
-  <option value="DIPROSES" style="color:black;">DIPROSES</option>
-  <option value="DITERIMA" style="color:black;">DITERIMA</option>
-  <option value="DITOLAK" style="color:black;">DITOLAK</option>
+  <option value="" style="color:whitesmoke;">Semua Status</option>
+  <option value="DIPROSES" style="color:whitesmoke;">DIPROSES</option>
+  <option value="DITERIMA" style="color:whitesmoke;">DITERIMA</option>
+  <option value="DITOLAK" style="color:whitesmoke;">DITOLAK</option>
 </select>
 </div>
 
@@ -105,17 +105,17 @@ DATA = j.data.map(row=>{
     nik: row[2],
     kependudukan: row[3],
     umur: row[4],
-    kawin: row[6],
-    tinggal: row[8],
-    hp: row[9],
-    anggota: row[10],
-    kerja: row[12],
-    rusun: row[24],
-    tipe: row[25],
-    lantai: row[26],
-    status: row[27],
-    catatan: row[28],
-    tglver: row[29]
+    kawin: row[5],
+    tinggal: row[6],
+    hp: row[7],
+    anggota: row[8],
+    kerja: row[9],
+    rusun: row[10],
+    tipe: row[11],
+    lantai: row[12],
+    status: row[13],
+    catatan: row[14],
+    tglver: row[15]
   };
 });
   render();
@@ -147,7 +147,7 @@ function render(){
     <th class="p-2 border">Status Kependudukan</th>
     <th class="p-2 border">Umur</th>
     <th class="p-2 border">Status Perkawinan</th>
-    <th class="p-2 border">Status Tinggal</th
+    <th class="p-2 border">Status Tempat Tinggal Sekarang</th>
     <th class="p-2 border">No HP</th>
     <th class="p-2 border">Jumlah Anggota</th>
     <th class="p-2 border">Pekerjaan</th>
