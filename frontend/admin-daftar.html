@@ -286,7 +286,8 @@ function render(){
 
   rows=parseInt(rowsPerPage.value);
 
-  const maxPage = Math.max(1, Math.ceil(DATA.length / rows));
+  const currentRows = parseInt(rowsPerPage.value);
+  const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
   if(page > maxPage) page = maxPage;
 
   const start=(page-1)*rows;
@@ -409,7 +410,12 @@ async function simpan(){
 }
 
 function nextPage(){
-  const maxPage = Math.max(1, Math.ceil(DATA.length / rows));
+
+  rows = parseInt(rowsPerPage.value);   // ← WAJIB
+
+  const currentRows = parseInt(rowsPerPage.value);
+  const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));;
+
   if(page < maxPage){
     page++;
     render();
@@ -417,11 +423,19 @@ function nextPage(){
 }
 
 function prevPage(){
+
+  rows = parseInt(rowsPerPage.value);   // ← WAJIB
+
   if(page > 1){
     page--;
     render();
   }
 }
+
+rowsPerPage.onchange = ()=>{
+  page = 1;
+  render();
+};
 
 function toggleSidebar(){
 
@@ -451,13 +465,23 @@ async function realtime(){
     const newHash = JSON.stringify(j.data);
 
     if(newHash !== lastHash){
-      HEAD=j.header;
-      DATA=j.data;
-      lastHash=newHash;
-      hitung();
-      render();
-      toast("Data realtime diperbarui");
+
+    const oldPage = page;   // simpan halaman aktif
+
+    HEAD=j.header;
+    DATA=j.data;
+    lastHash=newHash;
+    hitung();
+
+    const maxPage = Math.max(1, Math.ceil(DATA.length / rows));
+    if(oldPage <= maxPage){
+      page = oldPage;       // kembali ke halaman sebelumnya
+    }else{
+      page = maxPage;       // jika page sudah tidak ada → pakai max
     }
+
+    render();
+}
 
   }catch(e){}
 
@@ -519,6 +543,7 @@ function downloadPDF(){
   win.document.close();
   setTimeout(()=>win.print(),300);
 }
+await load();
 realtime();
 
 
