@@ -30,6 +30,43 @@ select option {
   color: black;
 }
 
+/* ===== TABLE FIT SCREEN (NO HORIZONTAL SCROLL) ===== */
+#table{
+  table-layout: fixed;
+  width: 100%;
+  font-size: 12px;
+}
+
+#table th,
+#table td{
+  white-space: normal;      /* teks turun baris */
+  word-break: break-word;   /* potong kata panjang */
+  padding: 6px;             /* padatkan */
+  vertical-align: top;
+}
+
+/* perkecil kolom tertentu */
+#table th:nth-child(1),
+#table td:nth-child(1){width:90px;}   /* Tanggal */
+
+#table th:nth-child(3),
+#table td:nth-child(3){width:90px;}   /* NIK */
+
+#table th:nth-child(5),
+#table td:nth-child(5){width:50px;}   /* Umur */
+
+#table th:nth-child(9),
+#table td:nth-child(9){width:60px;}   /* Anggota */
+
+#table th:nth-child(12),
+#table td:nth-child(12){width:50px;}  /* Tipe */
+
+#table th:nth-child(13),
+#table td:nth-child(13){width:50px;}  /* Lantai */
+
+#table th:nth-child(14),
+#table td:nth-child(14){width:90px;}  /* Status */
+
 </style>
 <meta name="robots" content="noindex,nofollow">
 </head>
@@ -57,8 +94,8 @@ class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
 </div>
 
 <!-- TABLE -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-auto max-h-[70vh]">
-<table class="w-full text-sm" id="table"></table>
+<div class="bg-slate-900 border border-slate-800 rounded-xl overflow-y-auto overflow-x-hidden max-h-[70vh]">
+<table class="w-full text-xs" id="table"></table>
 </div>
 
 
