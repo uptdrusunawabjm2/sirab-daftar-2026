@@ -876,10 +876,26 @@ const data={};
 document.querySelectorAll("input,textarea,select").forEach(x=>{
   if(!x.id || x.classList.contains("hp")) return;
 
-  if(x.classList.contains("rupiah")){
-    data[x.id] = x.value.replace(/[^\d]/g,"");  // kirim angka saja
-  }else{
-    data[x.id] = x.value;
+  let val = x.value;
+
+  /* ===== FIELD ANGKA / NUMERIC (JANGAN UPPERCASE) ===== */
+  const isNumericField =
+    x.classList.contains("rupiah") ||
+    x.inputMode === "numeric" ||
+    x.pattern === "[0-9]*" ||
+    /Penghasilan|Umur|Telepon|NIK/i.test(x.id);
+
+  /* ===== EMAIL JANGAN UPPERCASE ===== */
+  const isEmail = /email/i.test(x.id);
+
+  if(isNumericField){
+    data[x.id] = val.replace(/[^\d]/g,"");
+  }
+  else if(isEmail){
+    data[x.id] = val.trim();
+  }
+  else{
+    data[x.id] = val.toUpperCase().trim();
   }
 });
 
@@ -909,13 +925,13 @@ try{
 }
 
 /* kirim token */
-data.action="daftar";
+data.action="daftar_baru";
 data._captcha=captchaToken;
 data._unit=_unit;
 data._token=_token;
 
 try{
-const r=await fetch(URL+"?action=daftar",{
+const r=await fetch(URL,{
 method:"POST",
 body:JSON.stringify(data)
 });
