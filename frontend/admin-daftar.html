@@ -250,6 +250,9 @@ const KEY = CONFIG.INTERNAL_KEY;
 let HEAD=[], DATA=[];
 let page=1, rows=25, lastHash="", ROW=null;
 
+/* TAMBAHAN ROLE */
+const ROLE = localStorage.getItem("RUSUN_ROLE") || "admin";
+
 /* LOAD */
 async function load(){
   const r = await fetch(API+"?action=daftar_all&key="+KEY);
@@ -307,12 +310,17 @@ function render(){
 
     r.forEach(v=>h+=`<td class='p-2 border'>${v||""}</td>`);
 
-    h+=`<td class='p-2 border space-x-1'>
-      <button onclick='openModal(${idx})'
-        class='bg-blue-600 px-2 py-1 rounded text-xs'>
-        Update
-      </button>
+    h+=`<td class='p-2 border space-x-1'>`;
+    if(ROLE === "super"){
+      h+=`
+        <button onclick='openModal(${idx})'
+          class='bg-blue-600 px-2 py-1 rounded text-xs'>
+          Update
+        </button>
+      `;
+    }
 
+    h+=`
       <button onclick='lihatDetail(${idx})'
         class='bg-emerald-600 px-2 py-1 rounded text-xs'>
         Detail
@@ -372,6 +380,11 @@ function closeModal(){
 
 /* UPDATE */
 async function simpan(){
+
+  if(ROLE !== "super"){
+    alert("Anda tidak memiliki hak akses untuk update.");
+    return;
+  }
 
   const noIdx = HEAD.indexOf("No Pendaftaran");
   const noLama = DATA[ROW][noIdx];

@@ -57,6 +57,7 @@ async function doLogin(){
       // SIMPAN TOKEN LOGIN
       localStorage.setItem("RUSUN_TOKEN",json.token);
       localStorage.setItem("RUSUN_USER",json.user);
+      localStorage.setItem("RUSUN_ROLE",json.user);
 
       // MASUK KE ADMIN
       location.href="admin-daftar";
