@@ -122,6 +122,13 @@ thead th{
   transform:translateX(-100%);
 }
 
+.row-changed{
+  animation:flash 1s ease;
+}
+@keyframes flash{
+  0%{background:#16a34a55}
+  100%{background:transparent}
+}
 </style>
 
 </head>
@@ -138,9 +145,9 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 </div>
 
 <div class="flex-1 p-4 space-y-2 text-sm">
-<a class="block p-2 rounded bg-slate-800">📋 Data Pendaftaran</a>
-<a href="tracking.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">🔎 Tracking</a>
-<a href="index.html" target="_blank" class="block p-2 rounded hover:bg-slate-800">📝 Form</a>
+<a class="block p-2 rounded bg-slate-800">Data Pendaftaran</a>
+<a href="tracking" target="_blank" class="block p-2 rounded hover:bg-slate-800">Tracking</a>
+<a href="index" target="_blank" class="block p-2 rounded hover:bg-slate-800">Form Daftar</a>
 </div>
 </div>
 
@@ -275,6 +282,7 @@ function hitung(){
 
 /* TABLE */
 function render(){
+
   rows=parseInt(rowsPerPage.value);
   const start=(page-1)*rows;
   const slice=DATA.slice(start,start+rows);
@@ -284,9 +292,21 @@ function render(){
   h+="<th class='p-2 border'>Aksi</th></tr>";
 
   slice.forEach((r,i)=>{
+
+    const idx=start+i;
+
     h+="<tr class='hover:bg-slate-800'>";
+
     r.forEach(v=>h+=`<td class='p-2 border'>${v||""}</td>`);
-    h+=`<td class='p-2 border'><button onclick='openModal(${start+i})' class='bg-blue-600 px-2 py-1 rounded text-xs'>Update</button></td></tr>`;
+
+    h+=`<td class='p-2 border'>
+          <button onclick='openModal(${idx})'
+          class='bg-blue-600 px-2 py-1 rounded text-xs'>
+          Update
+          </button>
+        </td>`;
+
+    h+="</tr>";
   });
 
   table.innerHTML=h;
@@ -366,7 +386,7 @@ async function simpan(){
 
     closeModal();
     await load();
-    alert("Berhasil update data!");
+    toast("Berhasil update data");
 
   }catch(err){
     alert("Koneksi gagal!");
@@ -387,8 +407,37 @@ function toggleSidebar(){
 
 }
 
-load();
-setInterval(load,5000);
+function toast(msg,type="ok"){
+  const t=document.createElement("div");
+  t.className="fixed bottom-4 right-4 px-4 py-2 rounded shadow-lg z-50 text-sm "
+    +(type==="ok"?"bg-green-600":"bg-red-600");
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+
+/* REALTIME VIA LONG-POLL */
+async function realtime(){
+  try{
+    const r = await fetch(API+"?action=daftar_all&key="+KEY+"&t="+Date.now());
+    const j = await r.json();
+
+    const newHash = JSON.stringify(j.data);
+
+    if(newHash !== lastHash){
+      HEAD=j.header;
+      DATA=j.data;
+      lastHash=newHash;
+      hitung();
+      render();
+      toast("Data realtime diperbarui");
+    }
+
+  }catch(e){}
+
+  setTimeout(realtime,2000);   // refresh 2 detik (lebih cepat & ringan)
+}
+realtime();
 </script>
 
 </body>
