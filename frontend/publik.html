@@ -103,18 +103,23 @@ DATA = j.data.map(row=>{
   return {
     tanggal: row[0],
     nama: row[1],
-    umur: row[2],
-    kawin: row[7],
-    tinggal: row[9],
-    anggota: row[11],
-    hp: row[10],
-    kerja: row[13],
-    rusun: row[25],
-    tipe: row[26],
-    lantai: row[27],
-    status: row[28],
-    catatan: row[29],
-    tglver: row[30]
+    nik: row[2],
+    kependudukan: row[3],
+    umur: row[4],
+    agama: row[5],
+    kawin: row[6],
+    alamat: row[7],
+    tinggal: row[8],
+    hp: row[9],
+    anggota: row[10],
+    email: row[11],
+    kerja: row[12],
+    rusun: row[24],
+    tipe: row[25],
+    lantai: row[26],
+    status: row[27],
+    catatan: row[28],
+    tglver: row[29]
   };
 });
   render();
@@ -192,4 +197,3 @@ load();
 
 </body>
 </html>
-
