@@ -164,14 +164,25 @@ function downloadBukti(){
   if(!window._data) return;
 
   let t="BUKTI PENDAFTARAN RUSUNAWA\n\n";
+
   t+="Nama : "+(_data.nama||"")+"\n";
   t+="NIK  : "+maskNik(_data.nik)+"\n";
-  t+="Rusun: "+(_data.rusun||"")+"\n";
+  t+="Status Kependudukan : "+(_data.status_kependudukan||"-")+"\n";
+  t+="Umur : "+(_data.umur||"-")+"\n";
+  t+="Status Perkawinan : "+(_data.status_perkawinan||"-")+"\n";
+  t+="Jumlah Anggota Keluarga : "+(_data.anggota||"-")+"\n";
+  t+="Nomor HP/WA : "+(_data.hp||"-")+"\n";
+
+  t+="\n";
+  t+="Rusun : "+(_data.rusun||"")+"\n";
   t+="Tipe : "+(_data.tipe||"")+"\n";
   t+="Lantai : "+(_data.lantai||"")+"\n";
+
+  t+="\n";
   t+="Status : "+(_data.verifikasi||"")+"\n";
   t+="Tanggal Verifikasi : "+(_data.tanggal||"")+"\n";
   t+="Catatan : "+(_data.catatan||"")+"\n";
+  t+="No Pendaftaran : "+(_data.no||"")+"\n";
 
   const blob=new Blob([t],{type:"text/plain"});
   const a=document.createElement("a");
