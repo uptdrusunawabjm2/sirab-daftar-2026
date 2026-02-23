@@ -109,16 +109,26 @@ Daftar Permohonan Rusunawa
 <div class="max-w-7xl mx-auto p-4 space-y-4">
 
 <!-- FILTER -->
-<div class="flex flex-wrap gap-2">
-<input id="cari" placeholder="Cari nama / rusun / status"
-class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1">
+<!-- FILTER -->
+<div class="flex flex-wrap md:flex-nowrap items-center gap-2">
 
-<select id="filterStatus">
+<input id="cari" placeholder="Cari nama / rusun / status"
+class="bg-slate-900 border border-slate-700 rounded p-2 text-sm flex-1 min-w-[200px]">
+
+<select id="filterStatus"
+class="p-2 text-sm min-w-[150px]">
   <option value="">Semua Status</option>
   <option value="DIPROSES">DIPROSES</option>
   <option value="DITERIMA">DITERIMA</option>
   <option value="DITOLAK">DITOLAK</option>
 </select>
+
+<select id="sortTanggal"
+class="p-2 text-sm min-w-[170px]">
+  <option value="desc">Tanggal Terbaru</option>
+  <option value="asc">Tanggal Terlama</option>
+</select>
+
 </div>
 
 <!-- TABLE -->
@@ -187,6 +197,15 @@ function render(){
     );
   });
 
+  // ===== SORTIR BERDASARKAN TANGGAL =====
+const mode = sortTanggal.value || "desc";
+
+d.sort((a,b)=>{
+  const ta = new Date(a.tanggal || 0).getTime();
+  const tb = new Date(b.tanggal || 0).getTime();
+  return mode==="asc" ? ta - tb : tb - ta;
+});
+
   let h=`
   <thead>
   <tr class="bg-slate-800">
@@ -246,6 +265,7 @@ function render(){
 
 cari.oninput=render;
 filterStatus.onchange=render;
+sortTanggal.onchange=render;
 
 load();
 </script>
