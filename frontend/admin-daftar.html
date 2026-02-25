@@ -54,7 +54,11 @@
   #main{ padding-left:0 !important; }
 }
 
-/* ===== TABLE PADAT FINAL ===== */
+/* ===== TABLE FULL WIDTH ===== */
+
+#table{
+  width:100%;
+}
 
 table td, table th{
   padding:3px 5px !important;
@@ -62,7 +66,7 @@ table td, table th{
   line-height:1.25;
 }
 
-/* Card stabil saat resize */
+/* Card stabil */
 .grid > div{
   min-height:48px;
 }
@@ -70,7 +74,7 @@ table td, table th{
 </style>
 </head>
 
-<body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
 <!-- SIDEBAR -->
 <div id="sidebar"
@@ -89,7 +93,7 @@ bg-slate-900 border-r border-slate-800 flex flex-col">
 </div>
 </div>
 
-<!-- OVERLAY (WAJIB UNTUK MOBILE) -->
+<!-- OVERLAY -->
 <div id="sidebarOverlay"
 class="fixed inset-0 bg-black/50 hidden md:hidden z-30"
 onclick="toggleSidebar()"></div>
@@ -97,49 +101,50 @@ onclick="toggleSidebar()"></div>
 <div id="main" class="flex-1 flex flex-col">
 
 <!-- HEADER -->
-<div class="bg-slate-900 border-b border-slate-800 px-3 py-2 flex items-center gap-2 sticky top-0 z-30 text-sm">
+<div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center gap-2 sticky top-0 z-30 text-sm">
 <button onclick="toggleSidebar()" class="bg-slate-800 px-2 py-1 rounded">☰</button>
 <button onclick="logout()" class="text-xs bg-red-600 px-2 py-1 rounded">Logout</button>
 <div class="font-semibold flex-1 text-center">Dashboard Admin Pendaftaran</div>
 <div class="text-[11px] text-slate-400">Realtime aktif</div>
 </div>
 
-<div class="p-3 md:p-4 space-y-3 md:space-y-4 max-w-[1400px] mx-auto w-full">
+<!-- ================= CONTENT FULL WIDTH ================= -->
+<div class="p-3 md:px-6 md:py-4 space-y-4 w-full">
 
-<!-- ================= CARD STAT ================= -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+<!-- CARD -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
 
-<div class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2">
+<div class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2">
 <div class="text-[11px] text-slate-400">Total Data</div>
 <div id="rTotal" class="text-sm font-semibold">0</div>
 </div>
 
-<div class="bg-yellow-500/20 border border-yellow-500 rounded-lg px-3 py-2">
+<div class="bg-yellow-500/20 border border-yellow-500 rounded-lg px-4 py-2">
 <div class="text-[11px] text-yellow-300">Menunggu</div>
 <div id="rPending" class="text-sm font-semibold text-yellow-400">0</div>
 </div>
 
-<div class="bg-green-600/20 border border-green-600 rounded-lg px-3 py-2">
+<div class="bg-green-600/20 border border-green-600 rounded-lg px-4 py-2">
 <div class="text-[11px] text-green-300">Diterima</div>
 <div id="rAcc" class="text-sm font-semibold text-green-400">0</div>
 </div>
 
-<div class="bg-red-600/20 border border-red-600 rounded-lg px-3 py-2">
+<div class="bg-red-600/20 border border-red-600 rounded-lg px-4 py-2">
 <div class="text-[11px] text-red-300">Ditolak</div>
 <div id="rReject" class="text-sm font-semibold text-red-400">0</div>
 </div>
 
 </div>
 
-<!-- ================= FILTER ================= -->
+<!-- FILTER -->
 <div class="flex flex-col md:flex-row gap-2 md:items-center">
 
 <input id="cari"
 placeholder="Cari nama / rusun / status"
-class="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs md:text-sm w-full md:flex-1">
+class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-xs md:text-sm w-full md:flex-1">
 
 <select id="filterStatus"
-class="px-2 py-1 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
+class="px-3 py-2 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
 <option value="">Semua Status</option>
 <option value="MENUNGGU">MENUNGGU</option>
 <option value="VERIFIKASI">VERIFIKASI</option>
@@ -149,13 +154,13 @@ class="px-2 py-1 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded
 </select>
 
 <select id="sortTanggal"
-class="px-2 py-1 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
+class="px-3 py-2 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
 <option value="desc">Tanggal Terbaru</option>
 <option value="asc">Tanggal Terlama</option>
 </select>
 
 <button onclick="exportXLSX()"
-class="bg-emerald-600 px-3 py-1 rounded text-xs md:text-sm">
+class="bg-emerald-600 px-4 py-2 rounded text-xs md:text-sm">
 Export XLSX
 </button>
 
@@ -170,15 +175,15 @@ Export XLSX
 <option value="100">100</option>
 </select>
 
-<button onclick="prevPage()" class="bg-slate-700 px-2 py-1 rounded">Prev</button>
+<button onclick="prevPage()" class="bg-slate-700 px-3 py-1 rounded">Prev</button>
 <span id="pageInfo"></span>
-<button onclick="nextPage()" class="bg-slate-700 px-2 py-1 rounded">Next</button>
+<button onclick="nextPage()" class="bg-slate-700 px-3 py-1 rounded">Next</button>
 </div>
 
 <!-- TABLE -->
 <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
 <div class="overflow-auto max-h-[70vh]">
-<table id="table" class="min-w-[1100px]"></table>
+<table id="table"></table>
 </div>
 </div>
 
