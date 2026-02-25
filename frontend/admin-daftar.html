@@ -108,42 +108,6 @@ function logout(){
     transform:translateX(0);
   }
 }
-
-/* MOBILE COMPACT */
-@media(max-width:640px){
-
-  .grid > div{
-    padding:10px !important;
-  }
-
-  #sidebar{
-    width:250px;
-  }
-
-  .table-wrap{
-    max-height:68vh;
-  }
-
-}
-
-.table-modern{
-  border-collapse:separate;
-  border-spacing:0;
-}
-.table-modern thead th{
-  background:#1e293b;
-  color:#e5e7eb;
-  font-weight:600;
-}
-.table-modern td{
-  border-bottom:1px solid #1f2937;
-}
-.table-modern tbody tr:nth-child(even){
-  background:#020617;
-}
-.table-modern tbody tr:hover{
-  background:#1e293b;
-}
 </style>
 
 </head>
@@ -151,34 +115,32 @@ function logout(){
 <body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
 
 <!-- SIDEBAR -->
+
 <div id="sidebar"
 class="fixed md:relative top-0 left-0 z-40 w-64 h-full md:h-auto
-bg-slate-900 border-r border-slate-800 flex flex-col
-transition-all duration-300">
+bg-slate-900 border-r border-slate-800
+flex flex-col transition-transform duration-300
+sidebar-base">
 
-  <div class="px-4 py-3 border-b border-slate-800">
-    <div class="text-xl font-bold">Admin Panel</div>
-    <div class="text-xs text-slate-400">Pendaftaran Rusunawa</div>
-  </div>
+<div class="p-4 border-b border-slate-800">
+<div class="text-xl font-bold">Admin Panel</div>
+<div class="text-xs text-slate-400">Pendaftaran Rusunawa</div>
+</div>
 
-  <div class="flex-1 p-3 md:p-4 space-y-1.5 text-sm">
-
-    <a class="active">
-      <span class="menu-icon">📊</span>
-      <span class="menu-text">Data Pendaftaran</span>
-    </a>
-
-    <a href="tracking" target="_blank">
-      <span class="menu-icon">📍</span>
-      <span class="menu-text">Tracking</span>
-    </a>
-
-    <a href="index" target="_blank">
-      <span class="menu-icon">📝</span>
-      <span class="menu-text">Form Daftar</span>
-    </a>
-
-  </div>
+<div class="flex-1 p-4 space-y-2 text-sm">
+<a class="active">
+  <span class="menu-icon">📊</span>
+  <span class="menu-text">Data Pendaftaran</span>
+</a>
+<a href="tracking" target="_blank">
+  <span class="menu-icon">📍</span>
+  <span class="menu-text">Tracking</span>
+</a>
+<a href="index" target="_blank">
+  <span class="menu-icon">📝</span>
+  <span class="menu-text">Form Daftar</span>
+</a>
+</div>
 </div>
 
 <div id="sidebarOverlay"
@@ -189,75 +151,76 @@ onclick="toggleSidebar()"></div>
 <div id="main" class="flex-1 flex flex-col transition-all duration-300">
 
 <!-- HEADER -->
-<div class="bg-slate-900 border-b border-slate-800 px-3 md:px-4 py-2.5 flex items-center gap-3 sticky top-0 z-30">
+<div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3 sticky top-0 z-30">
 <button onclick="toggleSidebar()" class="bg-slate-800 px-3 py-1 rounded">☰</button>
 <button onclick="logout()" class="text-xs bg-red-600 px-2 py-1 rounded">Logout</button>
 <div class="font-semibold flex-1 text-center">Dashboard Admin Pendaftaran</div>
 <div class="text-xs text-slate-400">Realtime aktif</div>
 </div>
 
-<div class="p-3 md:p-4 space-y-3 md:space-y-4 max-w-[1600px] mx-auto w-full">
+<div class="p-4 space-y-4">
 
 <!-- STATISTIK -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
-<div class="bg-slate-900 border border-slate-800 rounded-xl p-3 md:p-4">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
 <div class="text-slate-400 text-sm">Total Data</div>
-<div id="rTotal" class="text-xl md:text-2xl font-bold">0</div>
+<div id="rTotal" class="text-2xl font-bold">0</div>
 </div>
 
-<div class="bg-yellow-500/20 border border-yellow-500 rounded-xl p-3 md:p-4">
+<div class="bg-yellow-500/20 border border-yellow-500 rounded-xl p-4">
 <div class="text-yellow-300 text-sm">Menunggu</div>
-<div id="rPending" class="text-xl md:text-2xl font-bold">0</div>
+<div id="rPending" class="text-2xl font-bold text-yellow-400">0</div>
 </div>
 
-<div class="bg-green-600/20 border border-green-600 rounded-xl p-3 md:p-4">
+<div class="bg-green-600/20 border border-green-600 rounded-xl p-4">
 <div class="text-green-300 text-sm">Diterima</div>
-<div id="rAcc" class="text-xl md:text-2xl font-bold">0</div>
+<div id="rAcc" class="text-2xl font-bold text-green-400">0</div>
 </div>
 
-<div class="bg-red-600/20 border border-red-600 rounded-xl p-3 md:p-4">
+<div class="bg-red-600/20 border border-red-600 rounded-xl p-4">
 <div class="text-red-300 text-sm">Ditolak</div>
-<div id="rReject" class="text-xl md:text-2xl font-bold">0</div>
+<div id="rReject" class="text-2xl font-bold text-red-400">0</div>
 </div>
 
 </div>
 
 <!-- FILTER -->
-<div class="flex flex-col md:flex-row gap-2 md:items-center">
+<div class="flex flex-col md:flex-row gap-2">
 
   <input id="cari"
   placeholder="Cari nama / rusun / status"
-  class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm w-full md:flex-1 h-9">
+  class="bg-slate-800 border border-slate-700 rounded p-2 text-sm w-full md:flex-1">
 
   <div class="flex gap-2 w-full md:w-auto">
 
     <select id="filterStatus"
-    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded h-9">
+    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded">
       <option value="">Semua Status</option>
-      <option>MENUNGGU</option>
-      <option>VERIFIKASI</option>
-      <option>DITERIMA</option>
-      <option>DITOLAK</option>
+      <option value="MENUNGGU">MENUNGGU</option>
+      <option value="VERIFIKASI">VERIFIKASI</option>
+      <option value="DIPROSES">DIPROSES</option>
+      <option value="DITERIMA">DITERIMA</option>
+      <option value="DITOLAK">DITOLAK</option>
     </select>
 
     <select id="sortTanggal"
-    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded h-9">
-      <option value="">Sort Tanggal</option>
-      <option value="desc">Terbaru</option>
-      <option value="asc">Terlama</option>
+    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded">
+      <option value="desc">Tanggal Terbaru</option>
+      <option value="asc">Tanggal Terlama</option>
     </select>
 
     <button onclick="exportXLSX()"
-    class="bg-emerald-600 px-3 h-9 rounded text-sm whitespace-nowrap">
+    class="bg-emerald-600 px-3 py-2 rounded text-sm">
       Export XLSX
     </button>
 
   </div>
+
 </div>
 
 <!-- PAGINATION -->
-<div class="flex flex-wrap gap-2 items-center justify-between">
+<div class="flex flex-wrap gap-2 items-center">
 <select id="rowsPerPage" class="bg-slate-800 border border-slate-700 p-1 rounded">
 <option value="10">10</option>
 <option value="25" selected>25</option>
@@ -271,9 +234,9 @@ onclick="toggleSidebar()"></div>
 </div>
 
 <!-- TABLE -->
-<div class="bg-slate-900 border border-slate-800 rounded-xl text-xs md:text-sm overflow-hidden">
-  <div class="table-wrap overflow-auto max-h-[72vh] md:max-h-[70vh]">
-    <table id="table" class="min-w-[900px] table-modern">
+<div class="bg-slate-900 border border-slate-800 rounded-xl text-xs md:text-sm">
+  <div class="table-wrap overflow-auto max-h-[70vh]">
+    <table id="table" class="min-w-[1100px] table-modern">
 </table>
 </div>
 
