@@ -17,7 +17,7 @@
 
 #sidebar{
   width:260px;
-  transition:all .25s ease;
+  transition:.25s;
   background:#0f172a;
   border-right:1px solid #1f2937;
 }
@@ -32,8 +32,6 @@
   gap:10px;
   padding:9px 12px;
   border-radius:8px;
-  transition:.15s;
-  font-weight:500;
   color:#cbd5e1;
   font-size:13px;
 }
@@ -50,10 +48,9 @@
     z-index:40;
   }
   #sidebar.show{ transform:translateX(0); }
-  #main{ padding-left:0 !important; }
 }
 
-/* ===== TABLE FULL WIDTH & FULL HEIGHT ===== */
+/* ===== TABLE STABIL ===== */
 
 #table{ width:100%; }
 
@@ -63,18 +60,15 @@ table td, table th{
   line-height:1.25;
 }
 
-/* Card stabil */
 .grid > div{ min-height:48px; }
 
 </style>
 </head>
 
-<body class="bg-slate-950 text-white min-h-screen flex md:flex-row overflow-hidden">
+<body class="bg-slate-950 text-white min-h-screen flex">
 
-<!-- SIDEBAR -->
-<div id="sidebar"
-class="fixed md:relative top-0 left-0 z-40 h-full
-bg-slate-900 border-r border-slate-800 flex flex-col">
+<!-- SIDEBAR (NORMAL FLOW) -->
+<div id="sidebar" class="relative min-h-screen flex flex-col">
 
 <div class="p-3 border-b border-slate-800">
 <div class="text-lg font-bold">Admin Panel</div>
@@ -82,103 +76,57 @@ bg-slate-900 border-r border-slate-800 flex flex-col">
 </div>
 
 <div class="flex-1 p-3 space-y-1 text-sm">
-<a class="active"><span>📊</span><span class="menu-text">Data Pendaftaran</span></a>
-<a href="tracking" target="_blank"><span>📍</span><span class="menu-text">Tracking</span></a>
-<a href="index" target="_blank"><span>📝</span><span class="menu-text">Form Daftar</span></a>
+<a class="active">📊 <span class="menu-text">Data Pendaftaran</span></a>
+<a href="tracking" target="_blank">📍 <span class="menu-text">Tracking</span></a>
+<a href="index" target="_blank">📝 <span class="menu-text">Form Daftar</span></a>
 </div>
 </div>
 
-<!-- OVERLAY -->
-<div id="sidebarOverlay"
-class="fixed inset-0 bg-black/50 hidden md:hidden z-30"
-onclick="toggleSidebar()"></div>
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/50 hidden z-30" onclick="toggleSidebar()"></div>
 
 <!-- MAIN -->
 <div id="main" class="flex-1 flex flex-col min-h-screen">
 
 <!-- HEADER -->
-<div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center gap-2 sticky top-0 z-30 text-sm">
+<div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center gap-2 sticky top-0 z-30">
 <button onclick="toggleSidebar()" class="bg-slate-800 px-2 py-1 rounded">☰</button>
-<button onclick="logout()" class="text-xs bg-red-600 px-2 py-1 rounded">Logout</button>
-<div class="font-semibold flex-1 text-center">Dashboard Admin Pendaftaran</div>
-<div class="text-[11px] text-slate-400">Realtime aktif</div>
+<button onclick="logout()" class="bg-red-600 px-2 py-1 rounded text-xs">Logout</button>
+<div class="flex-1 text-center font-semibold">Dashboard Admin Pendaftaran</div>
 </div>
 
-<!-- CONTENT -->
-<div class="flex-1 flex flex-col p-3 md:px-6 md:py-4 space-y-4">
+<div class="p-4 space-y-4">
 
 <!-- CARD -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-
-<div class="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2">
-<div class="text-[11px] text-slate-400">Total Data</div>
-<div id="rTotal" class="text-sm font-semibold">0</div>
+<div class="bg-slate-900 border rounded-lg px-4 py-2">
+<div class="text-xs text-slate-400">Total Data</div>
+<div id="rTotal" class="font-semibold">0</div>
 </div>
-
 <div class="bg-yellow-500/20 border border-yellow-500 rounded-lg px-4 py-2">
-<div class="text-[11px] text-yellow-300">Menunggu</div>
-<div id="rPending" class="text-sm font-semibold text-yellow-400">0</div>
+<div class="text-xs">Menunggu</div>
+<div id="rPending">0</div>
 </div>
-
 <div class="bg-green-600/20 border border-green-600 rounded-lg px-4 py-2">
-<div class="text-[11px] text-green-300">Diterima</div>
-<div id="rAcc" class="text-sm font-semibold text-green-400">0</div>
+<div class="text-xs">Diterima</div>
+<div id="rAcc">0</div>
 </div>
-
 <div class="bg-red-600/20 border border-red-600 rounded-lg px-4 py-2">
-<div class="text-[11px] text-red-300">Ditolak</div>
-<div id="rReject" class="text-sm font-semibold text-red-400">0</div>
+<div class="text-xs">Ditolak</div>
+<div id="rReject">0</div>
 </div>
-
 </div>
 
 <!-- FILTER -->
-<div class="flex flex-col md:flex-row gap-2 md:items-center">
-
-<input id="cari"
-placeholder="Cari nama / rusun / status"
-class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-xs md:text-sm w-full md:flex-1">
-
-<select id="filterStatus"
-class="px-3 py-2 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
-<option value="">Semua Status</option>
-<option value="MENUNGGU">MENUNGGU</option>
-<option value="VERIFIKASI">VERIFIKASI</option>
-<option value="DIPROSES">DIPROSES</option>
-<option value="DITERIMA">DITERIMA</option>
-<option value="DITOLAK">DITOLAK</option>
-</select>
-
-<select id="sortTanggal"
-class="px-3 py-2 text-xs md:text-sm bg-slate-800 border border-slate-700 rounded">
-<option value="desc">Tanggal Terbaru</option>
-<option value="asc">Tanggal Terlama</option>
-</select>
-
-<button onclick="exportXLSX()"
-class="bg-emerald-600 px-4 py-2 rounded text-xs md:text-sm">
-Export XLSX
-</button>
-
+<div class="flex flex-wrap gap-2">
+<input id="cari" placeholder="Cari..." class="bg-slate-800 px-3 py-2 rounded text-sm flex-1">
+<select id="filterStatus" class="bg-slate-800 px-3 py-2 rounded text-sm"></select>
+<select id="sortTanggal" class="bg-slate-800 px-3 py-2 rounded text-sm"></select>
+<button onclick="exportXLSX()" class="bg-emerald-600 px-3 py-2 rounded">Export</button>
 </div>
 
-<!-- PAGINATION -->
-<div class="flex flex-wrap gap-2 items-center text-xs">
-<select id="rowsPerPage" class="bg-slate-800 border border-slate-700 px-2 py-1 rounded">
-<option value="10">10</option>
-<option value="25" selected>25</option>
-<option value="50">50</option>
-<option value="100">100</option>
-</select>
-
-<button onclick="prevPage()" class="bg-slate-700 px-3 py-1 rounded">Prev</button>
-<span id="pageInfo"></span>
-<button onclick="nextPage()" class="bg-slate-700 px-3 py-1 rounded">Next</button>
-</div>
-
-<!-- TABLE FULL HEIGHT -->
-<div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-<div class="h-full overflow-auto">
+<!-- TABLE -->
+<div class="bg-slate-900 border border-slate-800 rounded-xl">
+<div class="overflow-auto max-h-[70vh]">
 <table id="table"></table>
 </div>
 </div>
