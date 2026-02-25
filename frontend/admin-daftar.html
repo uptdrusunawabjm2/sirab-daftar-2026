@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script>
 (async ()=>{
 
@@ -190,6 +191,40 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 
 </div>
 
+<!-- FILTER -->
+<div class="flex flex-col md:flex-row gap-2">
+
+  <input id="cari"
+  placeholder="Cari nama / rusun / status"
+  class="bg-slate-800 border border-slate-700 rounded p-2 text-sm w-full md:flex-1">
+
+  <div class="flex gap-2 w-full md:w-auto">
+
+    <select id="filterStatus"
+    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded">
+      <option value="">Semua Status</option>
+      <option value="MENUNGGU">MENUNGGU</option>
+      <option value="VERIFIKASI">VERIFIKASI</option>
+      <option value="DIPROSES">DIPROSES</option>
+      <option value="DITERIMA">DITERIMA</option>
+      <option value="DITOLAK">DITOLAK</option>
+    </select>
+
+    <select id="sortTanggal"
+    class="p-2 text-sm w-1/2 md:w-auto bg-slate-800 border border-slate-700 rounded">
+      <option value="desc">Tanggal Terbaru</option>
+      <option value="asc">Tanggal Terlama</option>
+    </select>
+
+    <button onclick="exportXLSX()"
+    class="bg-emerald-600 px-3 py-2 rounded text-sm">
+      Export XLSX
+    </button>
+
+  </div>
+
+</div>
+
 <!-- PAGINATION -->
 <div class="flex flex-wrap gap-2 items-center">
 <select id="rowsPerPage" class="bg-slate-800 border border-slate-700 p-1 rounded">
@@ -247,7 +282,7 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 const API = CONFIG.API;
 const KEY = CONFIG.INTERNAL_KEY;
 
-let HEAD=[], DATA=[];
+let HEAD=[], DATA=[], RAW_DATA=[];
 let page=1, rows=25, lastHash="", ROW=null;
 
 /* TAMBAHAN ROLE */
@@ -262,7 +297,8 @@ async function load(){
 
   if(newHash!==lastHash){
     HEAD=j.header;
-    DATA=j.data;
+    RAW_DATA=j.data;       // simpan data asli
+    DATA=[...RAW_DATA];    // data kerja
     lastHash=newHash;
     hitung();
     render();
@@ -308,7 +344,25 @@ function render(){
 
     h+="<tr class='hover:bg-slate-800'>";
 
-    r.forEach(v=>h+=`<td class='p-2 border'>${v||""}</td>`);
+    r.forEach((v,ci)=>{
+
+  // FORMAT KOLOM TANGGAL FORMULIR
+  if(HEAD[ci]==="Tanggal Formulir" && v){
+
+    const d = new Date(v);
+
+    const bulan=[
+      "Januari","Februari","Maret","April","Mei","Juni",
+      "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+
+    if(!isNaN(d)){
+      v = d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+    }
+  }
+
+  h+=`<td class='p-2 border'>${v||""}</td>`;
+});
 
     h+=`<td class='p-2 border space-x-1'>`;
     if(ROLE === "super"){
@@ -445,6 +499,47 @@ function prevPage(){
   }
 }
 
+function applyFilter(){
+
+  const q = (cari.value||"").toLowerCase();
+  const fs = filterStatus.value;
+  const mode = sortTanggal.value;
+
+  let filtered = RAW_DATA.filter(r=>{
+
+    const idxStatus = HEAD.indexOf("Status Verifikasi");
+    const idxNama   = HEAD.indexOf("Nama Pemohon");
+    const idxRusun  = HEAD.indexOf("Rusunawa");
+
+    if(fs && r[idxStatus]!==fs) return false;
+
+    if(!q) return true;
+
+    return (
+      String(r[idxNama]||"").toLowerCase().includes(q) ||
+      String(r[idxRusun]||"").toLowerCase().includes(q) ||
+      String(r[idxStatus]||"").toLowerCase().includes(q)
+    );
+  });
+
+  // SORT TANGGAL
+  const idxTanggal = HEAD.indexOf("Tanggal Formulir");
+
+  filtered.sort((a,b)=>{
+    const ta = new Date(a[idxTanggal]||0).getTime();
+    const tb = new Date(b[idxTanggal]||0).getTime();
+    return mode==="asc" ? ta-tb : tb-ta;
+  });
+
+  DATA = filtered;
+  page=1;
+  render();
+}
+
+cari.oninput=applyFilter;
+filterStatus.onchange=applyFilter;
+sortTanggal.onchange=applyFilter;
+
 rowsPerPage.onchange = ()=>{
   page = 1;
   render();
@@ -469,6 +564,42 @@ function toast(msg,type="ok"){
   setTimeout(()=>t.remove(),2500);
 }
 
+function exportXLSX(){
+
+  if(!DATA.length){
+    alert("Tidak ada data");
+    return;
+  }
+
+  const idxTgl = HEAD.indexOf("Tanggal Formulir");
+
+  const bulan=[
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
+  const wsData=[HEAD];
+
+  DATA.forEach(r=>{
+    const row=[...r];
+
+    if(row[idxTgl]){
+      const d=new Date(row[idxTgl]);
+      if(!isNaN(d)){
+        row[idxTgl]=d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      }
+    }
+
+    wsData.push(row);
+  });
+
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Pendaftaran");
+
+  XLSX.writeFile(wb,"Data_Pendaftaran.xlsx");
+}
+
 /* REALTIME VIA LONG-POLL */
 async function realtime(){
   try{
@@ -482,7 +613,8 @@ async function realtime(){
     const oldPage = page;   // simpan halaman aktif
 
     HEAD=j.header;
-    DATA=j.data;
+    RAW_DATA=j.data;
+    DATA=[...RAW_DATA];
     lastHash=newHash;
     hitung();
 
@@ -562,7 +694,6 @@ function downloadPDF(){
   await load();
   realtime();
 })();
-
 
 </script>
 <div id="modalDetail" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-[9999]">
