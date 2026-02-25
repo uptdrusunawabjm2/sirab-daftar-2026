@@ -571,7 +571,9 @@ function exportXLSX(){
     return;
   }
 
-  const idxTgl = HEAD.indexOf("Tanggal Formulir");
+  const idxTglForm = HEAD.indexOf("Tanggal Formulir");
+  const idxTglVer  = HEAD.indexOf("Tanggal Verifikasi");
+  const idxHP      = HEAD.indexOf("Nomor Telepon/HP/WA");
 
   const bulan=[
     "Januari","Februari","Maret","April","Mei","Juni",
@@ -581,23 +583,52 @@ function exportXLSX(){
   const wsData=[HEAD];
 
   DATA.forEach(r=>{
+
     const row=[...r];
 
-    if(row[idxTgl]){
-      const d=new Date(row[idxTgl]);
+    // FORMAT TANGGAL FORMULIR
+    if(row[idxTglForm]){
+      const d=new Date(row[idxTglForm]);
       if(!isNaN(d)){
-        row[idxTgl]=d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+        row[idxTglForm]=
+          d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
       }
+    }
+
+    // FORMAT TANGGAL VERIFIKASI
+    if(row[idxTglVer]){
+      const d=new Date(row[idxTglVer]);
+      if(!isNaN(d)){
+        row[idxTglVer]=
+          d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      }
+    }
+
+    // NOMOR HP → PAKSA JADI TEXT
+    if(row[idxHP]){
+      row[idxHP] = String(row[idxHP]);
     }
 
     wsData.push(row);
   });
 
-  const ws=XLSX.utils.aoa_to_sheet(wsData);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,"Pendaftaran");
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-  XLSX.writeFile(wb,"Data_Pendaftaran.xlsx");
+  // PAKSA KOLOM HP JADI TEXT (ANTI SCIENTIFIC)
+  if(idxHP !== -1){
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for(let R = 1; R <= range.e.r; ++R){
+      const cell = XLSX.utils.encode_cell({r:R, c:idxHP});
+      if(ws[cell]){
+        ws[cell].t = "s"; // set as string
+      }
+    }
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Pendaftaran");
+
+  XLSX.writeFile(wb, "Data_Pendaftaran.xlsx");
 }
 
 /* REALTIME VIA LONG-POLL */
