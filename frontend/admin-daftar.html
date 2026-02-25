@@ -131,6 +131,58 @@ thead th{
   0%{background:#16a34a55}
   100%{background:transparent}
 }
+
+/* ===== MODERN TABLE STYLE ===== */
+
+.table-modern{
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+/* HEADER */
+.table-modern thead th{
+  background:#1e293b;        /* slate-800 */
+  color:#e5e7eb;
+  font-weight:600;
+  letter-spacing:.3px;
+  border-bottom:1px solid #334155;
+}
+
+/* CELL */
+.table-modern td{
+  border-bottom:1px solid #1f2937;
+  color:#e2e8f0;
+}
+
+/* ZEBRA ROW */
+.table-modern tbody tr:nth-child(even){
+  background:#020617;
+}
+
+/* HOVER EFFECT */
+.table-modern tbody tr:hover{
+  background:#1e293b;
+  transition:.15s;
+}
+
+/* BORDER RADIUS TABLE */
+.table-modern thead th:first-child{
+  border-top-left-radius:10px;
+}
+.table-modern thead th:last-child{
+  border-top-right-radius:10px;
+}
+
+/* ACTION BUTTON LOOK BETTER */
+.table-modern button{
+  font-weight:500;
+  letter-spacing:.2px;
+}
+
+/* SMALL SHADOW INSIDE TABLE */
+.table-modern{
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
 </style>
 
 </head>
@@ -242,7 +294,7 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 <!-- TABLE -->
 <div class="bg-slate-900 border border-slate-800 rounded-xl text-xs md:text-sm">
   <div class="table-wrap overflow-auto max-h-[70vh]">
-    <table id="table" class="min-w-[1100px] border-collapse">
+    <table id="table" class="min-w-[1100px] table-modern">
 </table>
 </div>
 
@@ -332,7 +384,7 @@ function render(){
   const start=(page-1)*rows;
   const slice=DATA.slice(start,start+rows);
 
-  let h="<thead><tr class='bg-slate-800'>";
+  let h="<thead><tr>";
   HEAD.forEach(c=>h+=`<th class='p-2 border'>${c}</th>`);
   h+="<th class='p-2 border'>Aksi</th></tr></thead>";
 
@@ -342,7 +394,7 @@ function render(){
 
     const idx=start+i;
 
-    h+="<tr class='hover:bg-slate-800'>";
+    h+="<tr>";
 
     r.forEach((v,ci)=>{
 
