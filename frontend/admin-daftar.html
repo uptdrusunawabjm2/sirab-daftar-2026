@@ -183,6 +183,47 @@ thead th{
 .table-modern{
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
+
+/* ===== SIDEBAR MODERN ===== */
+
+.sidebar-base{
+  box-shadow:4px 0 12px rgba(0,0,0,.35);
+}
+
+/* MENU */
+#sidebar a{
+  display:block;
+  padding:10px 14px;
+  border-radius:8px;
+  transition:all .15s ease;
+  font-weight:500;
+  letter-spacing:.2px;
+}
+
+/* HOVER */
+#sidebar a:hover{
+  background:#1e293b;
+  transform:translateX(3px);
+}
+
+/* ACTIVE */
+#sidebar .active{
+  background:#2563eb;
+  color:white;
+  box-shadow:0 0 0 1px #3b82f6 inset;
+}
+
+/* MOBILE SLIDE */
+@media(max-width:768px){
+
+  #sidebar{
+    transform:translateX(-100%);
+  }
+
+  #sidebar.show{
+    transform:translateX(0);
+  }
+}
 </style>
 
 </head>
@@ -190,8 +231,16 @@ thead th{
 <body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
 
 <!-- SIDEBAR -->
+
+<div id="sidebarOverlay"
+class="fixed inset-0 bg-black/50 hidden md:hidden z-30"
+onclick="toggleSidebar()"></div>
+
 <div id="sidebar"
-class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300">
+class="fixed md:relative top-0 left-0 z-40 w-64 h-full md:h-auto
+bg-slate-900 border-r border-slate-800
+flex flex-col transition-transform duration-300
+sidebar-base">
 
 <div class="p-4 border-b border-slate-800">
 <div class="text-xl font-bold">Admin Panel</div>
@@ -199,9 +248,9 @@ class="fixed md:relative z-40 w-64 h-full md:h-auto bg-slate-900 border-r border
 </div>
 
 <div class="flex-1 p-4 space-y-2 text-sm">
-<a class="block p-2 rounded bg-slate-800">Data Pendaftaran</a>
-<a href="tracking" target="_blank" class="block p-2 rounded hover:bg-slate-800">Tracking</a>
-<a href="index" target="_blank" class="block p-2 rounded hover:bg-slate-800">Form Daftar</a>
+<a class="active">Data Pendaftaran</a>
+<a href="tracking" target="_blank">
+<a href="index" target="_blank">
 </div>
 </div>
 
@@ -600,11 +649,18 @@ rowsPerPage.onchange = ()=>{
 function toggleSidebar(){
 
   const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
 
-  if(!sidebar) return;
+  if(window.innerWidth <= 768){
 
-  sidebar.classList.toggle("sidebar-hide");
+    sidebar.classList.toggle("show");
+    overlay.classList.toggle("hidden");
 
+  }else{
+
+    sidebar.classList.toggle("sidebar-hide");
+
+  }
 }
 
 function toast(msg,type="ok"){
