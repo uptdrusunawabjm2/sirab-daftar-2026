@@ -41,169 +41,48 @@ function logout(){
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-  font-family: 'Inter', sans-serif;
-  background:#0b1220;
-}
+/* ==============================
+   SIDEBAR ENTERPRISE
+============================== */
 
-/* SCROLL SMOOTH */
-*{scroll-behavior:smooth}
-
-/* SIDEBAR */
-.sidebar{
+#sidebar{
+  width:260px;
   transition:all .25s ease;
+  background:#0f172a;
+  border-right:1px solid #1f2937;
 }
 
-/* TABLE SWIPE MOBILE */
-.table-wrap{
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
+/* DESKTOP COLLAPSE */
+#sidebar.collapsed{
+  width:72px;
 }
 
-/* STICKY HEADER */
-.sticky-top{
-  position:sticky;
-  top:0;
-  z-index:30;
-  backdrop-filter:blur(6px);
+/* HIDE TEXT SAAT COLLAPSE */
+#sidebar.collapsed .menu-text{
+  display:none;
 }
 
-/* STICKY TABLE HEAD */
-thead th{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:#1e293b; /* slate-800 */
+/* ICON CENTER SAAT COLLAPSE */
+#sidebar.collapsed a{
+  justify-content:center;
 }
 
-/* MODAL SMOOTH */
-.modal{
-  transition:all .18s ease;
-}
-.modal.show{
-  opacity:1;
-  transform:scale(1);
-}
-.modal.hide{
-  opacity:0;
-  transform:scale(.95);
-}
-
-@media(max-width:768px){
-
-  body{
-    flex-direction:column;
-  }
-
-  #sidebar{
-    position:relative;
-    top:0;
-    left:0;
-    height:100%;
-    width:260px;
-    z-index:50;
-  }
-
-  main{
-    width:100%;
-    padding:10px;
-  }
-
-  table{
-    font-size:12px;
-  }
-
-  th,td{
-    padding:8px;
-    white-space:nowrap;
-  }
-}
-
-/* Sidebar hidden */
-.sidebar-hide{
-  transform:translateX(-100%);
-}
-
-.row-changed{
-  animation:flash 1s ease;
-}
-@keyframes flash{
-  0%{background:#16a34a55}
-  100%{background:transparent}
-}
-
-/* ===== MODERN TABLE STYLE ===== */
-
-.table-modern{
-  border-collapse:separate;
-  border-spacing:0;
-}
-
-/* HEADER */
-.table-modern thead th{
-  background:#1e293b;        /* slate-800 */
-  color:#e5e7eb;
-  font-weight:600;
-  letter-spacing:.3px;
-  border-bottom:1px solid #334155;
-}
-
-/* CELL */
-.table-modern td{
-  border-bottom:1px solid #1f2937;
-  color:#e2e8f0;
-}
-
-/* ZEBRA ROW */
-.table-modern tbody tr:nth-child(even){
-  background:#020617;
-}
-
-/* HOVER EFFECT */
-.table-modern tbody tr:hover{
-  background:#1e293b;
-  transition:.15s;
-}
-
-/* BORDER RADIUS TABLE */
-.table-modern thead th:first-child{
-  border-top-left-radius:10px;
-}
-.table-modern thead th:last-child{
-  border-top-right-radius:10px;
-}
-
-/* ACTION BUTTON LOOK BETTER */
-.table-modern button{
-  font-weight:500;
-  letter-spacing:.2px;
-}
-
-/* SMALL SHADOW INSIDE TABLE */
-.table-modern{
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-}
-
-/* ===== SIDEBAR MODERN ===== */
-
-.sidebar-base{
-  box-shadow:4px 0 12px rgba(0,0,0,.35);
-}
-
-/* MENU */
+/* MENU ITEM */
 #sidebar a{
-  display:block;
+  display:flex;
+  align-items:center;
+  gap:10px;
   padding:10px 14px;
   border-radius:8px;
   transition:all .15s ease;
   font-weight:500;
-  letter-spacing:.2px;
+  color:#cbd5e1;
 }
 
 /* HOVER */
 #sidebar a:hover{
   background:#1e293b;
-  transform:translateX(3px);
+  transform:translateX(2px);
 }
 
 /* ACTIVE */
@@ -217,11 +96,28 @@ thead th{
 @media(max-width:768px){
 
   #sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
     transform:translateX(-100%);
+    z-index:40;
   }
 
   #sidebar.show{
     transform:translateX(0);
+  }
+}
+
+/* DESKTOP CONTENT SHIFT */
+#sidebar.collapsed + #main{
+  margin-left:72px;
+}
+
+@media(min-width:768px){
+  #main{
+    margin-left:260px;
+    transition:all .25s ease;
   }
 }
 </style>
@@ -231,10 +127,6 @@ thead th{
 <body class="bg-slate-950 text-white min-h-screen flex flex-col md:flex-row">
 
 <!-- SIDEBAR -->
-
-<div id="sidebarOverlay"
-class="fixed inset-0 bg-black/50 hidden md:hidden z-30"
-onclick="toggleSidebar()"></div>
 
 <div id="sidebar"
 class="fixed md:relative top-0 left-0 z-40 w-64 h-full md:h-auto
@@ -248,14 +140,27 @@ sidebar-base">
 </div>
 
 <div class="flex-1 p-4 space-y-2 text-sm">
-<a class="active">Data Pendaftaran</a>
+<a class="active">
+  <span class="menu-icon">📊</span>
+  <span class="menu-text">Data Pendaftaran</span>
+</a>
 <a href="tracking" target="_blank">
+  <span class="menu-icon">📍</span>
+  <span class="menu-text">Tracking</span>
+</a>
 <a href="index" target="_blank">
+  <span class="menu-icon">📝</span>
+  <span class="menu-text">Form Daftar</span>
+</a>
 </div>
 </div>
 
+<div id="sidebarOverlay"
+class="fixed inset-0 bg-black/50 hidden md:hidden z-30"
+onclick="toggleSidebar()"></div>
+
 <!-- MAIN -->
-<div id="main" class="flex-1 flex flex-col transition-all duration-300">
+<div id="main" class="flex-1 flex flex-col transition-all duration-300 md:ml-[260px]">
 
 <!-- HEADER -->
 <div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3 sticky top-0 z-30">
@@ -651,15 +556,27 @@ function toggleSidebar(){
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("sidebarOverlay");
 
+  if(!sidebar) return;
+
+  // MOBILE
   if(window.innerWidth <= 768){
 
-    sidebar.classList.toggle("show");
-    overlay.classList.toggle("hidden");
+    const open = sidebar.classList.contains("show");
 
-  }else{
+    if(open){
+      sidebar.classList.remove("show");
+      overlay.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }else{
+      sidebar.classList.add("show");
+      overlay.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
 
-    sidebar.classList.toggle("sidebar-hide");
-
+  }
+  // DESKTOP
+  else{
+    sidebar.classList.toggle("collapsed");
   }
 }
 
@@ -833,6 +750,18 @@ function downloadPDF(){
   await load();
   realtime();
 })();
+
+// Tutup sidebar saat resize ke desktop
+window.addEventListener("resize", ()=>{
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+
+  if(window.innerWidth > 768){
+    sidebar.classList.remove("show");
+    overlay.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  }
+});
 
 </script>
 <div id="modalDetail" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-[9999]">
