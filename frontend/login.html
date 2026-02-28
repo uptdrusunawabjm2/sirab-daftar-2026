@@ -2,39 +2,112 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
 
-<body class="bg-slate-950 flex items-center justify-center min-h-screen text-white">
+<style>
+*{
+  box-sizing:border-box;
+}
 
-<div class="bg-slate-900 p-8 rounded-xl w-[360px] shadow-lg">
-  <h2 class="text-xl font-bold mb-4 text-center">🔐 Login Sirab Daftar</h2>
+body{
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  background:linear-gradient(160deg,#0ea5e9,#020617);
+  font-family:Segoe UI, sans-serif;
+  color:white;
+}
 
-  <input id="username" placeholder="Username" class="w-full p-2 mb-3 bg-slate-800 rounded">
-  <input id="password" type="password" placeholder="Password" class="w-full p-2 mb-4 bg-slate-800 rounded">
+.card{
+  background:#020617;
+  padding:32px 28px;
+  border-radius:20px;
+  width:340px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,.4);
+}
 
-  <button onclick="doLogin()" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded font-semibold">
-    MASUK
-  </button>
+.icon{
+  font-size:42px;
+  margin-bottom:10px;
+}
 
-  <p id="msg" class="text-red-400 text-sm mt-3 text-center hidden">
-    Username atau password salah
-  </p>
-</div>
+.card h2{
+  margin:0 0 20px 0;
+  letter-spacing:1px;
+}
+
+input{
+  width:100%;
+  height:44px;
+  padding:0 14px;
+  border-radius:12px;
+  border:none;
+  margin-bottom:14px;
+  background:#cbd5e1;
+  font-size:14px;
+  outline:none;
+}
+
+input:focus{
+  box-shadow:0 0 0 2px #38bdf8;
+}
+
+button{
+  width:100%;
+  height:44px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(90deg,#38bdf8,#0ea5e9);
+  font-weight:bold;
+  letter-spacing:.5px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+#msg{
+  margin-top:12px;
+  color:#ef4444;
+  font-size:13px;
+}
+</style>
 
 <script src="config.js"></script>
-<script>
+</head>
+<body>
 
+<div class="card">
+
+<div class="icon">🔐</div>
+<h2>LOGIN SIRAB DAFTAR</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="doLogin()">MASUK</button>
+
+<div id="msg"></div>
+
+</div>
+
+<script>
 async function doLogin(){
 
   const user = username.value.trim();
   const pass = password.value.trim();
-  msg.classList.add("hidden");
+  const msgEl = document.getElementById("msg");
+
+  msgEl.textContent="";
 
   if(!user || !pass){
-    msg.textContent = "Username dan password wajib diisi";
-    msg.classList.remove("hidden");
+    msgEl.textContent = "Username dan password wajib diisi";
     return;
   }
 
@@ -54,22 +127,18 @@ async function doLogin(){
 
     if(json.status){
 
-      // SIMPAN TOKEN LOGIN
       localStorage.setItem("RUSUN_TOKEN",json.token);
       localStorage.setItem("RUSUN_USER",json.user);
       localStorage.setItem("RUSUN_ROLE",json.user);
 
-      // MASUK KE ADMIN
       location.href="admin-daftar";
 
     }else{
-      msg.textContent = "Username atau password salah";
-      msg.classList.remove("hidden");
+      msgEl.textContent = "Username atau password salah";
     }
 
   }catch(e){
-    msg.textContent = "Server error";
-    msg.classList.remove("hidden");
+    msgEl.textContent = "Server error";
   }
 }
 </script>
