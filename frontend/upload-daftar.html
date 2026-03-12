@@ -315,12 +315,9 @@ btn.disabled=true;
 
 document.getElementById("loader").style.display="block";
 
-const fd=new FormData();
+try{
 
-fd.append("action","upload");
-fd.append("no",no.value);
-fd.append("nama",nama.value);
-fd.append("hp",hp.value);
+let uploaded=0;
 
 for(const u of uploads){
 
@@ -329,14 +326,23 @@ if(!f) continue;
 
 const base64=await fileToBase64(f);
 
+const fd=new FormData();
+
+fd.append("action","upload");
+fd.append("no",no.value);
+fd.append("nama",nama.value);
+fd.append("hp",hp.value);
+
 fd.append("file_"+u[0],base64);
 fd.append("type_"+u[0],f.type);
 
-}
-
-try{
-
 await retryUpload(fd);
+
+uploaded++;
+
+btn.innerText=`Mengirim ${uploaded}`;
+
+}
 
 document.getElementById("loader").style.display="none";
 
