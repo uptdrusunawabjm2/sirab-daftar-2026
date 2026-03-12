@@ -319,7 +319,7 @@ try{
 
 let uploaded=0;
 
-for(const u of uploads){
+for(const u of uploads){fd.append("no",document.getElementById("no").value);
 
 const f=document.getElementById(u[0]).files[0];
 if(!f) continue;
@@ -329,9 +329,9 @@ const base64=await fileToBase64(f);
 const fd=new FormData();
 
 fd.append("action","upload");
-fd.append("no",no.value);
-fd.append("nama",nama.value);
-fd.append("hp",hp.value);
+fd.append("no",document.getElementById("no").value);
+fd.append("nama",document.getElementById("nama").value);
+fd.append("hp",document.getElementById("hp").value);
 
 fd.append("file_"+u[0],base64);
 fd.append("type_"+u[0],f.type);
