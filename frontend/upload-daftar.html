@@ -81,6 +81,28 @@ margin-top:10px;
 font-size:13px;
 }
 
+
+.loader{
+display:none;
+margin-top:15px;
+height:6px;
+background:#e5e7eb;
+border-radius:6px;
+overflow:hidden;
+}
+
+.loader span{
+display:block;
+height:100%;
+width:40%;
+background:#16a34a;
+animation:loading 1s infinite;
+}
+
+@keyframes loading{
+0%{margin-left:-40%;}
+100%{margin-left:100%;}
+}
 </style>
 
 </head>
@@ -92,6 +114,10 @@ font-size:13px;
 
 <div class="progress" id="progress">
 Dokumen 0 / 10 selesai
+</div>
+
+<div class="loader" id="loader">
+<span></span>
 </div>
 
 <form id="form">
@@ -262,6 +288,8 @@ document.getElementById("progress").innerText=
 form.addEventListener("submit",async e=>{
 
 e.preventDefault();
+
+document.getElementById("loader").style.display="block";
 
 const fd=new FormData();
 
