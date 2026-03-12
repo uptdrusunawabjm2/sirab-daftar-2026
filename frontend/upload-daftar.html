@@ -319,7 +319,7 @@ try{
 
 let uploaded=0;
 
-for(const u of uploads){fd.append("no",document.getElementById("no").value);
+for(const u of uploads){
 
 const f=document.getElementById(u[0]).files[0];
 if(!f) continue;
@@ -340,7 +340,18 @@ await retryUpload(fd);
 
 uploaded++;
 
-btn.innerText=`Mengirim ${uploaded}`;
+btn.innerText=`Mengirim ${uploaded}/${uploads.length}`;
+
+}
+
+document.getElementById("loader").style.display="none";
+
+btn.innerText="Upload Berhasil ✓";
+btn.style.background="#16a34a";
+
+setTimeout(()=>{
+location.reload();
+},1200);
 
 }
 
