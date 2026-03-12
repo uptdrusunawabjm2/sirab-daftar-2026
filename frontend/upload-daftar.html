@@ -103,6 +103,22 @@ animation:loading 1s infinite;
 0%{margin-left:-40%;}
 100%{margin-left:100%;}
 }
+
+.submit.loading{
+background:#6b7280;
+cursor:not-allowed;
+}
+
+.submit.loading:after{
+content:"...";
+animation:dots 1s infinite;
+}
+
+@keyframes dots{
+0%{content:"."}
+33%{content:".."}
+66%{content:"..."}
+}
 </style>
 
 </head>
@@ -202,7 +218,9 @@ last.innerHTML=`
 <h2>Kirim</h2>
 
 <div class="buttons">
-<button type="submit" class="submit">Upload</button>
+<button type="submit" class="submit" id="uploadBtn">
+Upload
+</button>
 </div>
 `;
 
@@ -289,6 +307,12 @@ form.addEventListener("submit",async e=>{
 
 e.preventDefault();
 
+const btn=document.getElementById("uploadBtn");
+
+btn.classList.add("loading");
+btn.innerText="Mengirim";
+btn.disabled=true;
+
 document.getElementById("loader").style.display="block";
 
 const fd=new FormData();
@@ -310,11 +334,29 @@ fd.append("type_"+u[0],f.type);
 
 }
 
+try{
+
 await retryUpload(fd);
 
-alert("Upload selesai");
+document.getElementById("loader").style.display="none";
 
+btn.innerText="Upload Berhasil ✓";
+btn.style.background="#16a34a";
+
+setTimeout(()=>{
 location.reload();
+},1200);
+
+}catch(err){
+
+document.getElementById("loader").style.display="none";
+
+btn.innerText="Upload Gagal";
+btn.style.background="#dc2626";
+
+alert("Upload gagal. Periksa koneksi lalu coba lagi.");
+
+}
 
 });
 
