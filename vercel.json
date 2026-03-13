@@ -1,11 +1,11 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/frontend/index.html" },
-    { "source": "/login", "destination": "/frontend/login.html" },
-    { "source": "/admin-daftar", "destination": "/frontend/admin-daftar.html" },
-    { "source": "/tracking", "destination": "/frontend/tracking.html" },
-    { "source": "/publik", "destination": "/frontend/publik.html" },
-    { "source": "/upload-daftar", "destination": "/frontend/upload-daftar.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/admin-daftar", "destination": "/admin-daftar.html" },
+    { "source": "/tracking", "destination": "/tracking.html" },
+    { "source": "/publik", "destination": "/publik.html" },
+    { "source": "/upload-daftar", "destination": "/upload-daftar.html" }
   ]
 }
