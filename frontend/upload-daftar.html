@@ -10,7 +10,7 @@
 <script src="config.js"></script>
 
 <script>
-const API_UPLOAD="https://script.google.com/macros/s/AKfycbz7S_e-B8vOOfOyJDgEMVq0GZwYVs3V6Is-2YM1EXNEAQg9LPTrlRnSnuDED04LEjqKLg/exec";
+const API_UPLOAD = CONFIG.API_UPLOAD;
 </script>
 
 <style>
@@ -251,7 +251,7 @@ alert("Nomor pendaftaran wajib diisi");
 return;
 }
 
-const r=await fetch(CONFIG.API+"?action=track&q="+no);
+const r=await fetch(CONFIG.API_DATA+"?action=track&q="+no);
 const j=await r.json();
 
 if(!j.status){
@@ -350,6 +350,8 @@ mode:"cors",
 body:fd,
 signal:controller.signal
 });
+
+clearTimeout(timeout);
 
 if(!r.ok){
 throw new Error("HTTP "+r.status);
