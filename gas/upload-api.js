@@ -1,20 +1,64 @@
 const ROOT_FOLDER = "1g2hpZZ-aM4a6Lv930ozxRh_b7q2lTfolD5DemlGlrsC9GvXxYWsWDAtTA6OPsit2VBO17Ehb";
+const SPREADSHEET_ID = "1i6Kwbc1peAAV_hd_Q4CGhg3by1yeBSCQbtGtphjqSMI";
 
 /* =========================
 ENTRY
 ========================= */
 
+function doGet() {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      status:true,
+      message:"API OK"
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doOptions() {
+  return ContentService
+    .createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
 function doPost(e){
 
 try{
 
-const p = e.parameter || {};
+const action = e.parameter.action;
 
-if(p.action === "upload"){
-return uploadDokumen(p);
+if(action !== "upload"){
+return json({status:false,message:"Invalid action"});
 }
 
-return json({status:false,message:"Unknown action"});
+const no = String(e.parameter.no || "").trim();
+const nama = String(e.parameter.nama || "").trim();
+const hp = String(e.parameter.hp || "").trim();
+const jenis = String(e.parameter.jenis || "").trim();
+
+if(!no || !nama){
+return json({status:false,message:"Data tidak lengkap"});
+}
+
+const blob = e.parameter.file
+  ? e.parameter.file
+  : e.parameters && e.parameters.file
+  ? e.parameters.file[0]
+  : null;
+
+if(!blob){
+return json({status:false,message:"File tidak ditemukan"});
+}
+
+return uploadDokumen({
+no:no,
+nama:nama,
+hp:hp,
+jenis:jenis,
+blob:blob
+});
 
 }catch(err){
 
@@ -30,53 +74,37 @@ UPLOAD DOKUMEN
 
 function uploadDokumen(p){
 
-const no   = String(p.no || "").trim();
-const nama = String(p.nama || "").trim();
-const hp   = String(p.hp || "").trim();
+const lock = LockService.getScriptLock();
+lock.waitLock(20000);
 
-if(!no || !nama){
-return json({status:false,message:"Data tidak lengkap"});
-}
+try{
 
 const root = DriveApp.getFolderById(ROOT_FOLDER);
+const folder = getOrCreateFolder(root,p.no+"_"+p.nama);
 
-const folder = getOrCreateFolder(root,no+"_"+nama);
-
-Object.keys(p).forEach(k=>{
-
-if(!k.startsWith("file_")) return;
-
-const jenis = k.replace("file_","");
-const base64 = p[k];
-
-if(!base64) return;
-
-const mime = p["type_"+jenis] || "image/jpeg";
-
-const ext = mime.includes("pdf") ? ".pdf" : ".jpg";
+const type = p.blob.getContentType() || "";
+const ext = type.includes("pdf") ? ".pdf" : ".jpg";
 
 const filename =
-no+"_"+nama+"_"+hp+"_"+jenis.toUpperCase()+ext;
+p.no+"_"+p.nama+"_"+p.hp+"_"+p.jenis.toUpperCase()+"_"+Date.now()+ext;
 
-/* anti duplikat file */
+const blob = p.blob.setName(filename);
 
-const exist = folder.getFilesByName(filename);
+const file = folder.createFile(blob);
 
-if(exist.hasNext()){
-return;
-}
-
-const blob = Utilities.newBlob(
-Utilities.base64Decode(base64),
-mime,
-filename
-);
-
-folder.createFile(blob);
-
+logUpload({
+no:p.no,
+nama:p.nama,
+hp:p.hp,
+jenis:p.jenis,
+filename:file.getName()
 });
 
 return json({status:true});
+
+} finally {
+lock.releaseLock();
+}
 
 }
 
@@ -104,6 +132,25 @@ function json(o){
 
 return ContentService
 .createTextOutput(JSON.stringify(o))
-.setMimeType(ContentService.MimeType.JSON);
+.setMimeType(ContentService.MimeType.JSON)
+.setHeader("Access-Control-Allow-Origin","*")
+.setHeader("Access-Control-Allow-Methods","GET,POST,OPTIONS")
+.setHeader("Access-Control-Allow-Headers","Content-Type");
+
+}
+
+function logUpload(data){
+
+const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+const sheet = ss.getSheetByName("upload") || ss.getSheets()[0];
+
+sheet.appendRow([
+new Date(),
+data.no,
+data.nama,
+data.hp,
+data.jenis,
+data.filename
+]);
 
 }
