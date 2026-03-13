@@ -336,7 +336,15 @@ fd.append("hp",document.getElementById("hp").value);
 fd.append("file_"+u[0],base64);
 fd.append("type_"+u[0],f.type);
 
-await retryUpload(fd);
+await retryUpload({
+action:"upload",
+no:document.getElementById("no").value,
+nama:document.getElementById("nama").value,
+hp:document.getElementById("hp").value,
+jenis:u[0],
+base64:base64,
+mime:f.type
+});
 
 uploaded++;
 
@@ -366,7 +374,7 @@ alert("Upload gagal. Periksa koneksi lalu coba lagi.");
 
 });
 
-async function retryUpload(fd){
+async function retryUpload(data){
 
 for(let i=0;i<3;i++){
 
@@ -374,7 +382,10 @@ try{
 
 const r = await fetch(API_UPLOAD,{
 method:"POST",
-body:fd
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
 });
 
 const text = await r.text();
