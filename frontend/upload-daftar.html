@@ -338,8 +338,15 @@ fd.append("hp",document.getElementById("hp").value);
 fd.append("jenis",u[0]);
 fd.append("file",f);
 
+const controller = new AbortController();
+
+const timeout = setTimeout(()=>{
+controller.abort();
+},30000); // 30 detik timeout
+
 const r = await fetch(API_UPLOAD,{
 method:"POST",
+mode:"cors",
 body:fd
 });
 
