@@ -274,8 +274,8 @@ function preview(input){
 const file=input.files[0];
 if(!file)return;
 
-if(file.size>3*1024*1024){
-alert("Maksimal 4MB");
+if(file.size>2*1024*1024){
+alert("Maksimal 2MB");
 input.value="";
 return;
 }
@@ -329,17 +329,29 @@ for(const u of uploads){
 const f=document.getElementById(u[0]).files[0];
 if(!f) continue;
 
-const base64=await fileToBase64(f);
+const fd = new FormData();
 
-await retryUpload({
-action:"upload",
-no:document.getElementById("no").value,
-nama:document.getElementById("nama").value,
-hp:document.getElementById("hp").value,
-jenis:u[0],
-base64:base64,
-mime:f.type
+fd.append("action","upload");
+fd.append("no",document.getElementById("no").value);
+fd.append("nama",document.getElementById("nama").value);
+fd.append("hp",document.getElementById("hp").value);
+fd.append("jenis",u[0]);
+fd.append("file",f);
+
+const r = await fetch(API_UPLOAD,{
+method:"POST",
+body:fd
 });
+
+if(!r.ok){
+throw new Error("HTTP "+r.status);
+}
+
+const j = await r.json();
+
+if(!j.status){
+throw new Error(j.message);
+}
 
 uploaded++;
 
@@ -352,9 +364,7 @@ document.getElementById("loader").style.display="none";
 btn.innerText="Upload Berhasil ✓";
 btn.style.background="#16a34a";
 
-setTimeout(()=>{
-location.reload();
-},1200);
+setTimeout(()=>location.reload(),1200);
 
 }catch(err){
 
@@ -363,7 +373,7 @@ document.getElementById("loader").style.display="none";
 btn.innerText="Upload Gagal";
 btn.style.background="#dc2626";
 
-alert("Upload gagal. Periksa koneksi lalu coba lagi.");
+alert(err.message || "Upload gagal");
 
 }
 
@@ -384,7 +394,7 @@ body:JSON.stringify(data)
 });
 
 if(!r.ok){
-throw "HTTP error";
+throw new Error("HTTP "+r.status);
 }
 
 const text = await r.text();
@@ -398,7 +408,9 @@ console.error("Response bukan JSON:",text);
 throw "Response bukan JSON";
 }
 
-if(j.status) return;
+if(j && j.status === true){
+return true;
+}
 
 }catch(e){
 
