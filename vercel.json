@@ -5,6 +5,7 @@
     { "source": "/login", "destination": "/login.html" },
     { "source": "/admin-daftar", "destination": "/admin-daftar.html" },
     { "source": "/tracking", "destination": "/tracking.html" },
-    { "source": "/publik", "destination": "/publik.html" }
+    { "source": "/publik", "destination": "/publik.html" },
+    { "source": "/upload-daftar", "destination": "/upload-daftar.html" }
   ]
 }
