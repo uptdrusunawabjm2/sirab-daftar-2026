@@ -347,7 +347,8 @@ controller.abort();
 const r = await fetch(API_UPLOAD,{
 method:"POST",
 mode:"cors",
-body:fd
+body:fd,
+signal:controller.signal
 });
 
 if(!r.ok){
