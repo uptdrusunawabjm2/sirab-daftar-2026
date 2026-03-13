@@ -397,10 +397,10 @@ try{
 
 const r = await fetch(API_UPLOAD,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(data)
+mode:"cors",
+redirect:"follow",
+body:fd,
+signal:controller.signal
 });
 
 if(!r.ok){
