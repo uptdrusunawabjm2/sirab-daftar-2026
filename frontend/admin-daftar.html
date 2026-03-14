@@ -442,6 +442,7 @@ async function simpan(){
      
     const fd = new URLSearchParams();
     fd.append("action","daftar_update");
+    fd.append("token",token);
     fd.append("key",KEY);
     fd.append("no_lama",noLama);
     fd.append("status",mStatus.value);
