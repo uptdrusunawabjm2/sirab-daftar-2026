@@ -93,27 +93,30 @@ TABLE ENTERPRISE STYLE
 .table-modern{
   width:100%;
   border-collapse:collapse;
-  font-size:10.5px;
-  table-layout:fixed;
+  font-size:11px;
 }
 
+/* HEADER */
 .table-modern th{
   padding:4px 6px;
-  line-height:1.1;
   font-size:10px;
   font-weight:600;
-  white-space:nowrap;
+  white-space:normal;
+  word-break:break-word;
   background:#020617;
   position:sticky;
   top:0;
   z-index:10;
 }
 
+/* CELL */
 .table-modern td{
-  padding:3px 5px;
-  font-size:10px;
-  line-height:1.25;
+  padding:4px 6px;
+  font-size:10.5px;
   vertical-align:top;
+  max-width:240px;
+  white-space:normal;
+  word-break:break-word;
 }
 
 .table-modern th,
@@ -121,18 +124,17 @@ TABLE ENTERPRISE STYLE
   border:1px solid #334155;
 }
 
-/* kolom aksi tidak terpotong */
-.table-modern td:last-child,
-.table-modern th:last-child{
-  min-width:110px;
+/* kolom aksi */
+.table-modern th:last-child,
+.table-modern td:last-child{
+  min-width:150px;
+  text-align:center;
   white-space:nowrap;
 }
 
-/* teks panjang tidak membuat tabel melebar */
-.table-modern td{
-  max-width:220px;
-  white-space:normal;
-  word-break:break-word;
+/* tombol aksi */
+.table-modern td:last-child button{
+  margin:1px;
 }
 
 /* kolom pertama tetap terlihat */
@@ -144,12 +146,12 @@ TABLE ENTERPRISE STYLE
   z-index:11;
 }
 
-/* baris hover seperti dashboard enterprise */
+/* hover */
 .table-modern tbody tr:hover{
   background:#0f172a;
 }
 
-/* scroll lebih halus */
+/* scroll */
 .table-wrap{
   overflow:auto;
   scrollbar-width:thin;
