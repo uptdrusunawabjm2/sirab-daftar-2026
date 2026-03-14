@@ -3,83 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pendaftaran Rusunawa | Form Online</title>
+<title>Pendaftaran Rusunawa</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-  :root {
-    --bg-dark: #0f172a;
-    --card-dark: #1e293b;
-    --accent: #6366f1;
-    --border: #334155;
-  }
-
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg-dark);
-    color: #f8fafc;
-    margin: 0;
-    padding: 0;
-  }
-
-  .step-content {
-    animation: fadeIn 0.4s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .input {
-    width: 100%;
-    background: #020617;
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 16px;
-    color: white;
-    font-size: 16px;
-    transition: all 0.3s;
-  }
-
-  .input:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-  }
-
-  .input.err {
-    border-color: #ef4444;
-    background: rgba(239, 68, 68, 0.05);
-  }
-
-  label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #94a3b8;
-    margin-bottom: 6px;
-    margin-left: 4px;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .btn-primary:active { transform: scale(0.96); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .glass-card {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .hp { display: none; }
-</style>
-
 <script>
+/* === LOGIKA ASLI (TIDAK DIUBAH) === */
 let pasalSudahDibaca = false;
 
 function togglePasal() {
@@ -99,173 +28,261 @@ function checkAgree() {
 
 function updateProgress(step) {
   const progress = (step / 4) * 100;
-  const progressBar = document.getElementById("progressBar");
-  if(progressBar) progressBar.style.width = progress + "%";
+  const bar = document.getElementById("progressBar");
+  if(bar) bar.style.width = progress + "%";
 }
 </script>
+
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --accent: #6366f1;
+    --border: #334155;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg);
+    color: #f8fafc;
+    margin: 0;
+  }
+
+  /* Container & Glassmorphism */
+  .main-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Input Styling Modern untuk Mobile */
+  .input {
+    width: 100%;
+    background: #020617;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    color: white;
+    font-size: 16px; /* Mencegah auto-zoom di iOS */
+    transition: all 0.2s;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+
+  .input.err {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 6px;
+    margin-left: 2px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    padding: 16px;
+    border-radius: 14px;
+    font-weight: 700;
+    width: 100%;
+    transition: all 0.3s;
+  }
+
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .hp { display: none; }
+
+  /* Animasi Step */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-  <div id="mainContainer" class="w-full max-w-xl">
+  <div class="w-full max-w-lg">
     
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg mb-4">
-        <span class="text-2xl font-bold">R</span>
-      </div>
-      <h1 class="text-2xl font-bold tracking-tight">Pendaftaran Rusunawa</h1>
-      <p class="text-slate-400 text-sm mt-1">Lengkapi data untuk permohonan hunian</p>
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-extrabold tracking-tight">FORM PENDAFTARAN</h1>
+      <p class="text-slate-400 text-sm">UPTD Rusunawa Kota Banjarmasin</p>
     </div>
 
-    <div id="intro" class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+    <div id="intro" class="main-card p-6 md:p-8">
       <div class="space-y-6">
-        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4">
-          <h2 class="font-bold text-indigo-400 mb-2 flex items-center gap-2">
-            <span>ℹ️</span> Petunjuk Pendaftaran
-          </h2>
-          <ul class="text-sm text-slate-300 space-y-2 leading-relaxed">
-            <li>• Pastikan semua dokumen fisik (KTP, KK, SKET) sudah siap difoto.</li>
-            <li>• Gunakan nomor WhatsApp aktif untuk konfirmasi petugas.</li>
-            <li>• Satu NIK hanya dapat melakukan satu kali pendaftaran.</li>
-          </ul>
+        <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
+          <p class="text-xs leading-relaxed text-blue-200 font-medium">
+            Silakan baca dan setujui Syarat & Ketentuan di bawah ini untuk memulai pengisian formulir.
+          </p>
         </div>
 
-        <div class="space-y-4">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-500 px-1">Syarat & Ketentuan</p>
-          <div onclick="togglePasal()" class="cursor-pointer bg-slate-800/50 hover:bg-slate-800 border border-slate-700 rounded-2xl p-4 transition text-center">
-            <span class="text-sm font-semibold">Klik untuk Membaca Syarat & Ketentuan</span>
-            <div class="pasalItem hidden mt-4 pt-4 border-t border-slate-700 text-xs text-slate-400 text-left leading-relaxed space-y-3">
-              <p>1. Pemohon bersedia menaati segala peraturan yang berlaku di Rusunawa.</p>
-              <p>2. Data yang diisikan adalah benar dan dapat dipertanggungjawabkan secara hukum.</p>
-              <p>3. Pendaftaran ini bersifat sementara sebelum diverifikasi oleh petugas.</p>
-            </div>
+        <div onclick="togglePasal()" class="cursor-pointer bg-slate-800/80 border border-slate-700 rounded-xl p-4 transition hover:border-indigo-500">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-bold">Syarat & Ketentuan (Klik Baca)</span>
+            <span>⬇️</span>
           </div>
-
-          <div class="space-y-3 px-1">
-            <label class="flex items-start gap-3 cursor-pointer group">
-              <input type="checkbox" id="agree1" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-sm text-slate-300">Saya setuju dengan persyaratan Rusunawa.</span>
-            </label>
-            <label class="flex items-start gap-3 cursor-pointer group">
-              <input type="checkbox" id="agree2" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500">
-              <span class="text-sm text-slate-300">Data yang saya kirimkan adalah valid.</span>
-            </label>
+          <div class="pasalItem hidden mt-4 text-[11px] text-slate-400 space-y-3 border-t border-slate-700 pt-4 leading-relaxed">
+            <p>1. Bersedia mentaati segala aturan Rusunawa.</p>
+            <p>2. Memberikan data asli yang dapat dipertanggungjawabkan.</p>
+            <p>3. Pendaftaran ini akan diverifikasi kembali oleh petugas UPTD.</p>
           </div>
         </div>
 
-        <button id="btnIntroNext" onclick="introNext()" disabled class="btn-primary w-full py-4 rounded-2xl font-bold text-white shadow-lg shadow-indigo-500/20 mt-4">
-          Mulai Pendaftaran 🚀
+        <div class="space-y-3 px-1">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="agree1" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600">
+            <span class="text-sm text-slate-300">Saya memahami dan menyetujui semua persyaratan.</span>
+          </label>
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="agree2" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600">
+            <span class="text-sm text-slate-300">Data yang saya kirimkan adalah benar.</span>
+          </label>
+        </div>
+
+        <button id="btnIntroNext" onclick="introNext()" disabled class="btn-primary shadow-lg shadow-indigo-500/20">
+          MULAI PENDAFTARAN
         </button>
       </div>
     </div>
 
-    <div id="formWrapper" class="hidden space-y-6">
+    <div id="formWrapper" class="hidden space-y-4">
       
-      <div class="w-full bg-slate-800 rounded-full h-1.5 mb-6 overflow-hidden">
+      <div class="w-full bg-slate-800 rounded-full h-1">
         <div id="progressBar" class="bg-indigo-500 h-full transition-all duration-500" style="width: 25%;"></div>
       </div>
 
-      <form id="formPendaftaran" class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+      <form id="formPendaftaran" class="main-card p-6 md:p-8">
         
-        <div id="step1" class="step-content space-y-5">
-          <h2 class="text-xl font-bold mb-4">Identitas Pemohon</h2>
-          <div class="space-y-4">
-            <div>
-              <label for="Nama Pemohon">Nama Lengkap Pemohon</label>
-              <input id="Nama Pemohon" name="Nama Pemohon" class="input" placeholder="Sesuai KTP">
-            </div>
+        <div id="step1" class="fade-in space-y-4">
+          <div class="mb-2">
+            <h2 class="text-lg font-bold">Langkah 1: Identitas Pemohon</h2>
+          </div>
+          
+          <div>
+            <label for="Nama Pemohon">Nama Lengkap</label>
+            <input id="Nama Pemohon" name="Nama Pemohon" class="input" placeholder="Sesuai KTP">
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label for="NIK Pemohon">NIK Pemohon</label>
               <input id="NIK Pemohon" name="NIK Pemohon" class="input" placeholder="16 Digit NIK">
             </div>
             <div>
-              <label for="Nomor Telepon/HP/WA">Nomor Telepon/HP/WA</label>
-              <input id="Nomor Telepon/HP/WA" name="Nomor Telepon/HP/WA" class="input" placeholder="628xxxx">
-            </div>
-            <div>
-              <label for="Rusunawa">Pilihan Rusunawa</label>
-              <select id="Rusunawa" name="Rusunawa" class="input">
-                <option value="">-- Pilih Lokasi --</option>
-                <option>Rusunawa Muara Kelayan</option>
-                <option>Rusunawa Gawi Manuntung</option>
-                <option>Rusunawa Teluk Kelayan</option>
-              </select>
+              <label for="Nomor Telepon/HP/WA">Nomor WhatsApp</label>
+              <input id="Nomor Telepon/HP/WA" name="Nomor Telepon/HP/WA" class="input" placeholder="08xxxx">
             </div>
           </div>
-          <div class="pt-6">
-            <button type="button" onclick="next(1)" class="btn-primary w-full py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut: Data Keluarga</button>
+
+          <div>
+            <label for="Rusunawa">Pilihan Rusunawa</label>
+            <select id="Rusunawa" name="Rusunawa" class="input">
+              <option value="">-- Pilih Lokasi Rusun --</option>
+              <option>Muara Kelayan</option>
+              <option>Teluk Kelayan</option>
+              <option>Alalak</option>
+            </select>
+          </div>
+
+          <div class="pt-4">
+            <button type="button" onclick="next(1)" class="btn-primary">LANJUT</button>
           </div>
         </div>
 
-        <div id="step2" class="step-content hidden space-y-5">
-          <h2 class="text-xl font-bold mb-4">Informasi Keluarga</h2>
-          <div class="space-y-4">
-            <div>
-              <label for="Nomor Kartu Keluarga">Nomor Kartu Keluarga</label>
-              <input id="Nomor Kartu Keluarga" name="Nomor Kartu Keluarga" class="input" placeholder="16 Digit KK">
-            </div>
-            <div>
-              <label for="Pekerjaan Pemohon">Pekerjaan Pemohon</label>
-              <select id="Pekerjaan Pemohon" name="Pekerjaan Pemohon" class="input" onchange="cekLainnya(this)">
-                <option value="">-- Pilih Pekerjaan --</option>
-                <option>Wiraswasta</option><option>Buruh</option><option>Driver/Ojek</option><option>Lainnya</option>
-              </select>
-            </div>
-            <div id="inputLainnya" class="hidden">
-              <label for="Pekerjaan Pemohon Lainnya">Sebutkan Pekerjaan</label>
-              <input id="Pekerjaan Pemohon Lainnya" name="Pekerjaan Pemohon Lainnya" class="input">
-            </div>
-            <div>
-              <label for="Jumlah Jiwa (Anggota Keluarga)">Jumlah Jiwa (Anggota Keluarga)</label>
-              <input id="Jumlah Jiwa (Anggota Keluarga)" name="Jumlah Jiwa (Anggota Keluarga)" type="number" class="input">
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4 pt-6">
-            <button type="button" onclick="prev(2)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold">Kembali</button>
-            <button type="button" onclick="next(2)" class="btn-primary py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut</button>
-          </div>
-        </div>
-
-        <div id="step3" class="step-content hidden space-y-5">
-          <h2 class="text-xl font-bold mb-4">Data Pendukung</h2>
-          <div class="space-y-4">
-            <div>
-              <label for="Penghasilan perbulan Pemohon">Penghasilan perbulan Pemohon (Rp)</label>
-              <input id="Penghasilan perbulan Pemohon" name="Penghasilan perbulan Pemohon" type="number" class="input">
-            </div>
-            <div>
-              <label for="_url_ktp">Link Google Drive Foto/Scan KTP</label>
-              <input id="_url_ktp" name="_url_ktp" class="input" placeholder="https://drive.google.com/...">
-            </div>
-            <div>
-              <label for="Alamat Lengkap Sesuai KTP">Alamat Lengkap Sesuai KTP</label>
-              <textarea id="Alamat Lengkap Sesuai KTP" name="Alamat Lengkap Sesuai KTP" class="input h-24"></textarea>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4 pt-6">
-            <button type="button" onclick="prev(3)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold">Kembali</button>
-            <button type="button" onclick="next(3)" class="btn-primary py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut</button>
-          </div>
-        </div>
-
-        <div id="step4" class="step-content hidden space-y-6">
-          <div class="text-center py-4">
-            <div class="text-5xl mb-4">✅</div>
-            <h2 class="text-xl font-bold">Ringkasan Data</h2>
-            <p class="text-sm text-slate-400 mt-2">Pastikan data yang Anda isi sudah benar sebelum dikirim ke sistem.</p>
-          </div>
+        <div id="step2" class="fade-in hidden space-y-4">
+          <h2 class="text-lg font-bold">Langkah 2: Data Keluarga</h2>
           
-          <div class="bg-slate-800/40 border border-slate-700 rounded-2xl p-4 space-y-3 text-sm">
-            <div class="flex justify-between"><span>Nama:</span> <span id="resNama" class="font-bold text-indigo-400"></span></div>
-            <div class="flex justify-between"><span>NIK:</span> <span id="resNIK" class="font-bold"></span></div>
-            <div class="flex justify-between"><span>Rusun:</span> <span id="resRusun" class="font-bold"></span></div>
+          <div>
+            <label for="Nomor Kartu Keluarga">Nomor Kartu Keluarga</label>
+            <input id="Nomor Kartu Keluarga" name="Nomor Kartu Keluarga" class="input" placeholder="16 Digit KK">
+          </div>
+
+          <div>
+            <label for="Pekerjaan Pemohon">Pekerjaan Pemohon</label>
+            <select id="Pekerjaan Pemohon" name="Pekerjaan Pemohon" class="input" onchange="cekLainnya(this)">
+              <option value="">-- Pilih Pekerjaan --</option>
+              <option>Wiraswasta</option>
+              <option>Buruh</option>
+              <option>Sopir/Ojek</option>
+              <option>Lainnya</option>
+            </select>
+          </div>
+
+          <div id="inputLainnya" class="hidden">
+            <label for="Pekerjaan Pemohon Lainnya">Sebutkan Pekerjaan</label>
+            <input id="Pekerjaan Pemohon Lainnya" name="Pekerjaan Pemohon Lainnya" class="input">
+          </div>
+
+          <div>
+            <label for="Jumlah Jiwa (Anggota Keluarga)">Jumlah Anggota Keluarga</label>
+            <input id="Jumlah Jiwa (Anggota Keluarga)" name="Jumlah Jiwa (Anggota Keluarga)" type="number" class="input">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-4">
+            <button type="button" onclick="prev(2)" class="bg-slate-800 p-4 rounded-xl font-bold">KEMBALI</button>
+            <button type="button" onclick="next(2)" class="btn-primary">LANJUT</button>
+          </div>
+        </div>
+
+        <div id="step3" class="fade-in hidden space-y-4">
+          <h2 class="text-lg font-bold">Langkah 3: Ekonomi & Dokumen</h2>
+
+          <div>
+            <label for="Penghasilan perbulan Pemohon">Penghasilan per Bulan (Rp)</label>
+            <input id="Penghasilan perbulan Pemohon" name="Penghasilan perbulan Pemohon" type="number" class="input">
+          </div>
+
+          <div>
+            <label for="_url_ktp">Link Google Drive Foto/Scan KTP</label>
+            <input id="_url_ktp" name="_url_ktp" class="input" placeholder="https://drive.google.com/...">
+          </div>
+
+          <div>
+            <label for="Alamat Lengkap Sesuai KTP">Alamat Lengkap (Sesuai KTP)</label>
+            <textarea id="Alamat Lengkap Sesuai KTP" name="Alamat Lengkap Sesuai KTP" class="input h-24"></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-4">
+            <button type="button" onclick="prev(3)" class="bg-slate-800 p-4 rounded-xl font-bold">KEMBALI</button>
+            <button type="button" onclick="next(3)" class="btn-primary">VERIFIKASI</button>
+          </div>
+        </div>
+
+        <div id="step4" class="fade-in hidden space-y-6">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
+            <h2 class="text-lg font-bold">Ringkasan Data</h2>
+            <p class="text-xs text-slate-400 mt-1">Periksa kembali data Anda sebelum mengirim.</p>
+          </div>
+
+          <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+            <div class="flex justify-between"><span>Nama:</span> <span id="sumNama" class="font-bold text-indigo-400"></span></div>
+            <div class="flex justify-between"><span>NIK:</span> <span id="sumNIK" class="font-bold"></span></div>
+            <div class="flex justify-between"><span>Lokasi:</span> <span id="sumRusun" class="font-bold"></span></div>
           </div>
 
           <input type="text" name="hp_field" class="hp">
 
           <div class="grid grid-cols-2 gap-4 pt-4">
-            <button type="button" onclick="prev(4)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold">Revisi</button>
-            <button type="button" id="btnKirim" onclick="kirim()" class="bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl font-bold text-white shadow-lg">Kirim 🚀</button>
+            <button type="button" onclick="prev(4)" class="bg-slate-800 p-4 rounded-xl font-bold">REVISI</button>
+            <button type="button" id="btnKirim" onclick="kirim()" class="bg-emerald-600 p-4 rounded-xl font-bold text-white shadow-lg">KIRIM SEKARANG</button>
           </div>
         </div>
 
@@ -281,24 +298,24 @@ function introNext() {
 }
 
 function next(s) {
-  const currentStepDiv = document.getElementById("step" + s);
-  const inputs = currentStepDiv.querySelectorAll("input:not(.hp), select, textarea");
+  const current = document.getElementById("step" + s);
+  const inputs = current.querySelectorAll("input, select, textarea");
   let valid = true;
 
   inputs.forEach(el => {
-    if(el.hasAttribute("name") && !el.value.trim()) {
+    if(el.hasAttribute("name") && !el.value.trim() && el.name !== "hp_field") {
       el.classList.add("err"); valid = false;
     } else {
       el.classList.remove("err");
     }
   });
 
-  if(!valid) return alert("Mohon lengkapi kolom yang wajib diisi.");
+  if(!valid) return alert("Harap lengkapi semua kolom wajib.");
 
   if(s === 3) {
-    document.getElementById("resNama").innerText = document.getElementById("Nama Pemohon").value;
-    document.getElementById("resNIK").innerText = document.getElementById("NIK Pemohon").value;
-    document.getElementById("resRusun").innerText = document.getElementById("Rusunawa").value;
+    document.getElementById("sumNama").innerText = document.getElementById("Nama Pemohon").value;
+    document.getElementById("sumNIK").innerText = document.getElementById("NIK Pemohon").value;
+    document.getElementById("sumRusun").innerText = document.getElementById("Rusunawa").value;
   }
 
   document.getElementById("step" + s).classList.add("hidden");
@@ -314,11 +331,10 @@ function prev(s) {
 
 function cekLainnya(el) {
   const box = document.getElementById("inputLainnya");
-  if(el.value === "Lainnya") box.classList.remove("hidden");
-  else box.classList.add("hidden");
+  box.classList.toggle("hidden", el.value !== "Lainnya");
 }
 
-// Logika Format 62xx (Penting untuk backend)
+// FORMAT OTOMATIS 62XX (HP & NIK)
 ["Nomor Telepon/HP/WA", "NIK Pemohon"].forEach(id => {
   const el = document.getElementById(id);
   if(el) {
@@ -333,23 +349,23 @@ function cekLainnya(el) {
 
 async function kirim() {
   const btn = document.getElementById("btnKirim");
-  btn.disabled = true; btn.innerText = "Mengirim...";
+  btn.disabled = true; btn.innerText = "MENGIRIM...";
 
   const form = document.getElementById("formPendaftaran");
   const data = new URLSearchParams(new FormData(form));
 
   try {
-    // URL Web App GAS Anda
+    // URL Backend Google Apps Script (Tetap dipertahankan untuk manual user)
     await fetch("GANTI_DENGAN_URL_GAS_ANDA", {
       method: "POST",
       body: data,
       mode: "no-cors"
     });
-    alert("Pendaftaran Berhasil! Data Anda telah tersimpan di sistem kami.");
+    alert("Berhasil! Pendaftaran Anda telah kami terima.");
     window.location.reload();
   } catch (e) {
-    alert("Gagal mengirim data. Silakan coba lagi.");
-    btn.disabled = false; btn.innerText = "Kirim 🚀";
+    alert("Gagal mengirim. Periksa koneksi internet Anda.");
+    btn.disabled = false; btn.innerText = "KIRIM SEKARANG";
   }
 }
 </script>
