@@ -96,6 +96,21 @@ select{
     background: #0f172a;
   }
 }
+
+@media (max-width:768px){
+
+.filter-row{
+display:flex;
+gap:6px;
+}
+
+.filter-row select{
+flex:1;
+font-size:12px;
+padding:8px;
+}
+
+}
 </style>
 <meta name="robots" content="noindex,nofollow">
 </head>
@@ -127,11 +142,28 @@ class="p-2 text-sm w-1/2 md:w-auto">
   <option value="DITOLAK">DITOLAK</option>
 </select>
 
-    <select id="sortTanggal"
-    class="p-2 text-sm w-1/2 md:w-auto">
-      <option value="desc">Tanggal Terbaru</option>
-      <option value="asc">Tanggal Terlama</option>
-    </select>
+<select id="filterBulan"
+class="p-2 text-sm w-1/3 md:w-auto">
+<option value="">Semua Bulan</option>
+<option value="0">Januari</option>
+<option value="1">Februari</option>
+<option value="2">Maret</option>
+<option value="3">April</option>
+<option value="4">Mei</option>
+<option value="5">Juni</option>
+<option value="6">Juli</option>
+<option value="7">Agustus</option>
+<option value="8">September</option>
+<option value="9">Oktober</option>
+<option value="10">November</option>
+<option value="11">Desember</option>
+</select>
+
+<select id="sortTanggal"
+  class="p-2 text-sm w-1/2 md:w-auto">
+    <option value="desc">Tanggal Terbaru</option>
+    <option value="asc">Tanggal Terlama</option>
+</select>
 
   </div>
 </div>
@@ -190,9 +222,16 @@ function render(){
 
   const q=cari.value.toLowerCase();
   const fs=filterStatus.value;
+  const fb = filterBulan.value;
 
   const d=DATA.filter(x=>{
     if(fs && (x.status||"").toUpperCase()!==fs) return false;
+    
+    if(fb !== ""){
+    const bulan = new Date(x.tanggal).getMonth();
+    if(String(bulan) !== fb) return false;
+  }
+        
     if(!q) return true;
 
     return (
@@ -273,6 +312,7 @@ else if(r.status==="DITOLAK") warna="text-red-400";
 cari.oninput=render;
 filterStatus.onchange=render;
 sortTanggal.onchange=render;
+filterBulan.onchange = render;
 
 load();
 </script>
