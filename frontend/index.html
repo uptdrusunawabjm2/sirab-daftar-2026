@@ -27,85 +27,159 @@ checkAgree = function(){
 </script>
 
 <style>
+
+/* ===== MOBILE APP THEME ===== */
+
+body{
+background:
+radial-gradient(circle at top,#0f172a,#020617);
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+
+/* ===== MOBILE SCREEN ===== */
+
+.max-w-3xl{
+max-width:420px!important;
+margin:auto;
+}
+
+/* ===== GLASS CARD ===== */
+
+.bg-slate-900{
+background:rgba(15,23,42,.7)!important;
+backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,.06)!important;
+box-shadow:
+0 20px 60px rgba(0,0,0,.6),
+inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* ===== INPUT MODERN ===== */
+
 .input{
 width:100%;
-background:#1e293b;
+background:rgba(2,6,23,.6);
 border:1px solid #334155;
-border-radius:12px;
-padding:10px;
-}
-#formWrapper{display:none;}
-/* honeypot bot */
-.hp{display:none;
+border-radius:16px;
+padding:14px;
+font-size:16px;
+transition:.25s;
 }
 
-/* focus input */
 .input:focus{
-  outline:none;
-  box-shadow:0 0 0 2px #3b82f6;
+outline:none;
+border-color:#6366f1;
+box-shadow:
+0 0 0 2px rgba(99,102,241,.4),
+0 8px 20px rgba(0,0,0,.4);
 }
 
-/* highlight error */
-.err{
-  box-shadow:0 0 0 2px #ef4444 !important;
+/* ===== SELECT ===== */
+
+select{
+background:rgba(2,6,23,.6);
+border-radius:16px;
+padding:14px;
 }
 
-/* label lebih proporsional */
+/* ===== LABEL ===== */
+
 label{
-  font-size:13px;
-  color:#cbd5e1;
-  font-weight:500;
+font-size:13px;
+font-weight:500;
+color:#cbd5e1;
 }
 
-/* placeholder lebih kecil */
-.input::placeholder,
-textarea::placeholder{
-  font-size:12px;
-  color:#94a3b8;
+/* ===== TEXTAREA ===== */
+
+textarea{
+min-height:90px;
 }
 
-/* jarak label lebih rapi */
-.page label{
-  margin-bottom:2px;
+/* ===== PAGE SPACING ===== */
+
+.page{
+max-width:420px;
+margin:auto;
+}
+
+/* ===== PAGE TRANSITION ===== */
+
+.page{
+animation:pageFade .35s ease;
+}
+
+@keyframes pageFade{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ===== FLOATING NAV ===== */
+
+.flex.justify-between{
+position:sticky;
+bottom:10px;
+background:rgba(15,23,42,.9);
+backdrop-filter:blur(14px);
+padding:12px;
+border-radius:18px;
+box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+
+/* ===== BUTTON ===== */
+
+button{
+border-radius:14px;
+padding:14px;
+font-weight:600;
+}
+
+/* ===== PROGRESS BAR ===== */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+height:4px;
+width:30%;
+background:
+linear-gradient(90deg,#6366f1,#38bdf8);
+z-index:9999;
+animation:progressSlide 2s infinite;
+}
+
+@keyframes progressSlide{
+0%{transform:translateX(-100%)}
+100%{transform:translateX(400%)}
+}
+
+/* ===== ERROR FIELD ===== */
+
+.err{
+box-shadow:0 0 0 2px #ef4444!important;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:640px){
+
+body{
+padding:8px;
 }
 
 .page{
-  max-width:540px;
-  margin:auto;
+padding:10px;
 }
 
-.page .input,
-.page textarea,
-.page select{
-  margin-bottom:8px;
 }
 
-textarea{
-  min-height:80px;
-}
-
-@media (max-width:640px){
-  .page{
-    padding:14px;
-  }
-}
-
-/* ===== PERBAIKI DROPDOWN ===== */
-select{
-  width:100%;
-  background:#1e293b;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:10px;
-  color:#fff;
-  font-size:14px;
-}
-
-select:focus{
-  outline:none;
-  border-color:#3b82f6;
-  box-shadow:0 0 0 1px #3b82f6;
-}
 </style>
 
 <script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
