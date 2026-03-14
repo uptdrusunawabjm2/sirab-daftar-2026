@@ -177,7 +177,7 @@ TABLE ENTERPRISE STYLE
 
 /* header lebih terbaca */
 .table-modern th{
-  min-width:120px;
+  min-width:90px;
 }
 
 /* kolom aksi lebih aman */
@@ -191,40 +191,29 @@ TABLE ENTERPRISE STYLE
   display:inline-block;
 }
 
-/* =================================
-FREEZE KOLOM PENTING
-================================= */
+/* ==============================
+FREEZE KOLOM PENTING (RINGAN)
+============================== */
 
-/* kolom 1 : tanggal */
-.table-modern th:nth-child(1),
-.table-modern td:nth-child(1){
-  position:sticky;
-  left:0;
-  background:#020617;
-  z-index:12;
-  min-width:130px;
-}
-
-/* kolom 2 : nama pemohon */
+/* kolom Nama Pemohon */
 .table-modern th:nth-child(2),
 .table-modern td:nth-child(2){
   position:sticky;
-  left:130px;
+  left:0;
   background:#020617;
   z-index:11;
-  min-width:160px;
+  min-width:180px;
 }
 
-/* kolom 3 : NIK */
+/* kolom NIK */
 .table-modern th:nth-child(3),
 .table-modern td:nth-child(3){
   position:sticky;
-  left:290px;
+  left:180px;
   background:#020617;
   z-index:10;
   min-width:160px;
 }
-
 
 /* =================================
 CONTAINER FILTER DESKTOP
