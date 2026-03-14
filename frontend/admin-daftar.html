@@ -71,7 +71,7 @@ padding:6px;
 border:1px solid #334155;
 position:sticky;
 top:0;
-z-index:5;
+z-index:50;
 }
 
 .table-modern td{
@@ -86,34 +86,75 @@ background:#0f172a;
 }
 
 /* =========================
-FREEZE KOLOM UTAMA
+FREEZE KOLOM UTAMA STABIL
 ========================= */
 
 .table-modern th:nth-child(1),
 .table-modern td:nth-child(1){
 position:sticky;
 left:0;
+min-width:150px;
 background:#020617;
-z-index:9;
-min-width:140px;
+z-index:40;
 }
 
 .table-modern th:nth-child(2),
 .table-modern td:nth-child(2){
 position:sticky;
-left:140px;
+left:150px;
+min-width:200px;
 background:#020617;
-z-index:8;
-min-width:180px;
+z-index:39;
 }
 
 .table-modern th:nth-child(3),
 .table-modern td:nth-child(3){
 position:sticky;
-left:320px;
+left:350px;
+min-width:170px;
 background:#020617;
-z-index:7;
+z-index:38;
+}
+
+/* header harus paling atas */
+.table-modern th{
+z-index:40;
+}
+
+/* =========================
+BORDER PEMISAH FREEZE
+========================= */
+
+.table-modern td:nth-child(3),
+.table-modern th:nth-child(3){
+box-shadow:3px 0 6px rgba(0,0,0,0.35);
+}
+
+/* =========================
+KOLOM AKSI
+========================= */
+
+.table-modern th:last-child,
+.table-modern td:last-child{
 min-width:160px;
+white-space:nowrap;
+text-align:center;
+}
+
+/* tombol tidak bertumpuk */
+
+.table-modern td:last-child{
+display:flex;
+gap:4px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.table-modern td:last-child button{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:3px 6px;
 }
 
 /* =========================
