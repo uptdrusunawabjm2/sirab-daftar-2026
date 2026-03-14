@@ -63,7 +63,6 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            /* Ukuran font utama tabel disamakan/diperkecil */
             font-size: 11px; 
         }
 
@@ -126,7 +125,7 @@
             }
             #sidebar.show { left: 0; }
             .grid-stats { grid-template-cols: 1fr 1fr; }
-            .table-modern { font-size: 10px; } /* Lebih kecil lagi di mobile */
+            .table-modern { font-size: 10px; }
         }
     </style>
 </head>
@@ -213,6 +212,12 @@
                 <input id="cari" placeholder="Cari nama, rusun, atau status..." 
                        class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition">
             </div>
+            
+            <select id="sortTanggal" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="desc">Terbaru</option>
+                <option value="asc">Terlama</option>
+            </select>
+
             <select id="filterStatus" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="">Semua Status</option>
                 <option value="MENUNGGU">MENUNGGU</option>
@@ -221,6 +226,7 @@
                 <option value="DITERIMA">DITERIMA</option>
                 <option value="DITOLAK">DITOLAK</option>
             </select>
+            
             <button onclick="exportXLSX()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
                 📥 Export Excel
             </button>
@@ -322,10 +328,9 @@ async function load(){
     if(newHash!==lastHash){
       HEAD=j.header;
       RAW_DATA=j.data;
-      DATA=[...RAW_DATA];
       lastHash=newHash;
+      applyFilter(); // Panggil filter untuk mengurutkan data baru
       hitung();
-      render();
     }
   } catch(e) { console.error("Load failed"); }
 }
@@ -370,12 +375,40 @@ function render(){
       }
     });
     h+=`<td class='flex items-center justify-center gap-2'>`;
-    if(ROLE === "super") h+=`<button onclick='openModal(${idx})' class='px-2 py-1 bg-indigo-600 rounded text-[9px] font-bold'>EDIT</button>`;
-    h+=`<button onclick='lihatDetail(${idx})' class='px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[9px] font-bold'>INFO</button></td></tr>`;
+    if(ROLE === "super") h+=`<button onclick='openModal(${idx})' class='px-2 py-1 bg-indigo-600 rounded text-[9px] font-bold'>UPDATE</button>`;
+    h+=`<button onclick='lihatDetail(${idx})' class='px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[9px] font-bold'>DETAIL</button></td></tr>`;
   });
 
   document.getElementById('table').innerHTML=h;
   document.getElementById('pageInfo').textContent=`${page} / ${maxPage}`;
+}
+
+function applyFilter(){
+  const q = cari.value.toLowerCase();
+  const fs = filterStatus.value;
+  const mode = sortTanggal.value; // Ambil mode urutan
+
+  let filtered = RAW_DATA.filter(r=>{
+    const idxStatus = HEAD.indexOf("Status Verifikasi");
+    const matchStatus = fs ? r[idxStatus] === fs : true;
+    const matchCari = !q || r.some(v => String(v||"").toLowerCase().includes(q));
+    return matchStatus && matchCari;
+  });
+
+  // Logika Pengurutan Tanggal
+  const idxTanggal = HEAD.indexOf("Tanggal Formulir");
+  if(idxTanggal !== -1){
+    filtered.sort((a,b)=>{
+      const da = new Date(a[idxTanggal]).getTime() || 0;
+      const db = new Date(b[idxTanggal]).getTime() || 0;
+      return mode === "asc" ? da - db : db - da;
+    });
+  }
+
+  DATA = filtered;
+  page=1; 
+  render();
+  hitung();
 }
 
 function toggleSidebar(){
@@ -388,7 +421,6 @@ function openModal(i){
   ROW=i;
   const idxStatus = HEAD.indexOf("Status Verifikasi");
   const idxCatatan = HEAD.indexOf("Catatan Verifikasi");
-  const idxTanggal = HEAD.indexOf("Tanggal Verifikasi");
   const idxNo = HEAD.indexOf("No Pendaftaran");
   const idxUnit = HEAD.indexOf("Unit") !== -1 ? HEAD.indexOf("Unit") : HEAD.indexOf("_unit");
 
@@ -414,18 +446,6 @@ async function simpan(){
   if(j.status){ closeModal(); await load(); }
 }
 
-function applyFilter(){
-  const q = cari.value.toLowerCase();
-  const fs = filterStatus.value;
-  DATA = RAW_DATA.filter(r=>{
-    const idxStatus = HEAD.indexOf("Status Verifikasi");
-    const matchStatus = fs ? r[idxStatus] === fs : true;
-    const matchCari = !q || r.some(v => String(v||"").toLowerCase().includes(q));
-    return matchStatus && matchCari;
-  });
-  page=1; render();
-}
-
 function lihatDetail(i){
   const d = DATA[i];
   let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
@@ -443,11 +463,13 @@ function closeDetail(){ modalDetail.classList.add("hidden"); }
 function prevPage(){ if(page > 1){ page--; render(); } }
 function nextPage(){ if(page < Math.ceil(DATA.length/parseInt(rowsPerPage.value))){ page++; render(); } }
 
+// Listeners
 cari.oninput = applyFilter;
 filterStatus.onchange = applyFilter;
+sortTanggal.onchange = applyFilter; // Trigger saat sort diubah
 rowsPerPage.onchange = () => { page=1; render(); };
 
-(async ()=>{ await load(); setInterval(load, 10000); })();
+(async ()=>{ await load(); setInterval(load, 15000); })();
 </script>
 </body>
 </html>
