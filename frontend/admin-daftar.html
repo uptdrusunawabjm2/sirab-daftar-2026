@@ -329,7 +329,7 @@ async function load(){
       HEAD=j.header;
       RAW_DATA=j.data;
       lastHash=newHash;
-      applyFilter(); // Panggil filter untuk mengurutkan data baru
+      applyFilter();
       hitung();
     }
   } catch(e) { console.error("Load failed"); }
@@ -386,7 +386,7 @@ function render(){
 function applyFilter(){
   const q = cari.value.toLowerCase();
   const fs = filterStatus.value;
-  const mode = sortTanggal.value; // Ambil mode urutan
+  const mode = sortTanggal.value;
 
   let filtered = RAW_DATA.filter(r=>{
     const idxStatus = HEAD.indexOf("Status Verifikasi");
@@ -395,7 +395,6 @@ function applyFilter(){
     return matchStatus && matchCari;
   });
 
-  // Logika Pengurutan Tanggal
   const idxTanggal = HEAD.indexOf("Tanggal Formulir");
   if(idxTanggal !== -1){
     filtered.sort((a,b)=>{
@@ -409,6 +408,59 @@ function applyFilter(){
   page=1; 
   render();
   hitung();
+}
+
+function exportXLSX() {
+  if (!DATA.length) return alert("Tidak ada data untuk di-export.");
+
+  const bulan = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  // Identifikasi kolom penting berdasarkan nama Header
+  const colDate = [];
+  const colText = [];
+  HEAD.forEach((h, i) => {
+    const name = h.toLowerCase();
+    if (name.includes("tanggal")) colDate.push(i);
+    if (name.includes("nik") || name.includes("kk") || name.includes("hp") || name.includes("telepon") || name.includes("wa")) colText.push(i);
+  });
+
+  const wsData = [HEAD];
+
+  DATA.forEach(r => {
+    const row = [...r];
+    // 1. Format Kolom Tanggal agar rapi di Excel
+    colDate.forEach(idx => {
+      if (row[idx]) {
+        const d = new Date(row[idx]);
+        if (!isNaN(d)) row[idx] = d.getDate() + " " + bulan[d.getMonth()] + " " + d.getFullYear();
+      }
+    });
+    // 2. Paksa angka panjang menjadi tipe String
+    colText.forEach(idx => {
+      if (row[idx]) row[idx] = String(row[idx]);
+    });
+    wsData.push(row);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // 3. Paksa tipe sel Excel ke 's' (String) untuk kolom angka panjang agar tidak jadi Scientific Notation
+  if (ws['!ref']) {
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let R = 1; R <= range.e.r; ++R) {
+      colText.forEach(C => {
+        const cell = XLSX.utils.encode_cell({ r: R, c: C });
+        if (ws[cell]) ws[cell].t = "s"; 
+      });
+    }
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan Pendaftaran");
+  XLSX.writeFile(wb, `Data_Rusunawa_${new Date().getTime()}.xlsx`);
 }
 
 function toggleSidebar(){
@@ -463,10 +515,9 @@ function closeDetail(){ modalDetail.classList.add("hidden"); }
 function prevPage(){ if(page > 1){ page--; render(); } }
 function nextPage(){ if(page < Math.ceil(DATA.length/parseInt(rowsPerPage.value))){ page++; render(); } }
 
-// Listeners
 cari.oninput = applyFilter;
 filterStatus.onchange = applyFilter;
-sortTanggal.onchange = applyFilter; // Trigger saat sort diubah
+sortTanggal.onchange = applyFilter;
 rowsPerPage.onchange = () => { page=1; render(); };
 
 (async ()=>{ await load(); setInterval(load, 15000); })();
