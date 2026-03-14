@@ -40,7 +40,7 @@
 
         #sidebar.collapsed { width: 85px; }
         #sidebar.collapsed .menu-text, 
-        #sidebar.collapsed .sidebar-footer { display: none; }
+        #sidebar.collapsed .sidebar-footer-text { display: none; }
 
         .nav-link {
             transition: all 0.2s;
@@ -93,19 +93,37 @@
             color: #fff;
         }
 
-        /* FREEZE COLUMN COLORS */
-        .table-modern th:nth-child(1), .table-modern td:nth-child(1),
-        .table-modern th:nth-child(2), .table-modern td:nth-child(2) {
+        /* FIXED COLUMN LOGIC (Freeze Tanggal & Nama) */
+        /* Kolom 1 (Tanggal Formulir) */
+        .table-modern th:nth-child(1), 
+        .table-modern td:nth-child(1) {
             position: sticky;
-            z-index: 40;
+            left: 0;
+            z-index: 45;
+            min-width: 120px;
         }
-        
-        .table-modern td:nth-child(1), .table-modern td:nth-child(2) {
-            background: #020617;
+        /* Kolom 2 (Nama Pemohon) */
+        .table-modern th:nth-child(2), 
+        .table-modern td:nth-child(2) {
+            position: sticky;
+            left: 120px; /* Lebar kolom 1 */
+            z-index: 45;
+            min-width: 180px;
+            border-right: 1px solid #334155;
         }
 
-        .table-modern th:nth-child(1), .table-modern td:nth-child(1) { left: 0; min-width: 120px; }
-        .table-modern th:nth-child(2), .table-modern td:nth-child(2) { left: 120px; min-width: 160px; }
+        /* Higher Z-Index for Headers */
+        .table-modern th:nth-child(1),
+        .table-modern th:nth-child(2) {
+            z-index: 55;
+            background: #1e293b;
+        }
+
+        /* Background Solid for Sticky Cells */
+        .table-modern td:nth-child(1),
+        .table-modern td:nth-child(2) {
+            background: #020617;
+        }
 
         /* STATUS BADGE */
         .badge {
@@ -126,6 +144,7 @@
             #sidebar.show { left: 0; }
             .grid-stats { grid-template-cols: 1fr 1fr; }
             .table-modern { font-size: 10px; }
+            /* Disable sticky on mobile for better accessibility if needed */
         }
     </style>
 </head>
@@ -158,9 +177,10 @@
         </a>
     </nav>
 
-    <div class="p-4 border-t border-slate-800 sidebar-footer">
-        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white py-2 rounded-lg transition text-xs font-semibold">
-            🚪 Keluar Akun
+    <div class="p-4 border-t border-slate-800">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-3 bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white py-3 rounded-xl transition-all duration-300 group">
+            <span class="text-lg group-hover:scale-110 transition">🚪</span>
+            <span class="menu-text font-bold text-xs uppercase tracking-wider sidebar-footer-text">Keluar Akun</span>
         </button>
     </div>
 </div>
@@ -176,12 +196,12 @@
             </button>
             <h2 class="font-semibold text-slate-200">Dashboard</h2>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 text-right">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest text-right">Live Monitoring</span>
+            <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Live Monitoring</span>
         </div>
     </header>
 
@@ -405,61 +425,14 @@ function applyFilter(){
   }
 
   DATA = filtered;
-  page=1; 
-  render();
-  hitung();
+  page=1; render(); hitung();
 }
 
 function exportXLSX() {
-  if (!DATA.length) return alert("Tidak ada data untuk di-export.");
-
-  const bulan = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
-
-  // Identifikasi kolom penting berdasarkan nama Header
-  const colDate = [];
-  const colText = [];
-  HEAD.forEach((h, i) => {
-    const name = h.toLowerCase();
-    if (name.includes("tanggal")) colDate.push(i);
-    if (name.includes("nik") || name.includes("kk") || name.includes("hp") || name.includes("telepon") || name.includes("wa")) colText.push(i);
-  });
-
-  const wsData = [HEAD];
-
-  DATA.forEach(r => {
-    const row = [...r];
-    // 1. Format Kolom Tanggal agar rapi di Excel
-    colDate.forEach(idx => {
-      if (row[idx]) {
-        const d = new Date(row[idx]);
-        if (!isNaN(d)) row[idx] = d.getDate() + " " + bulan[d.getMonth()] + " " + d.getFullYear();
-      }
-    });
-    // 2. Paksa angka panjang menjadi tipe String
-    colText.forEach(idx => {
-      if (row[idx]) row[idx] = String(row[idx]);
-    });
-    wsData.push(row);
-  });
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // 3. Paksa tipe sel Excel ke 's' (String) untuk kolom angka panjang agar tidak jadi Scientific Notation
-  if (ws['!ref']) {
-    const range = XLSX.utils.decode_range(ws["!ref"]);
-    for (let R = 1; R <= range.e.r; ++R) {
-      colText.forEach(C => {
-        const cell = XLSX.utils.encode_cell({ r: R, c: C });
-        if (ws[cell]) ws[cell].t = "s"; 
-      });
-    }
-  }
-
+  if (!DATA.length) return alert("Tidak ada data.");
+  const ws = XLSX.utils.aoa_to_sheet([HEAD, ...DATA]);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Laporan Pendaftaran");
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan");
   XLSX.writeFile(wb, `Data_Rusunawa_${new Date().getTime()}.xlsx`);
 }
 
@@ -467,6 +440,13 @@ function toggleSidebar(){
   const sb = document.getElementById("sidebar");
   if(window.innerWidth <= 768) sb.classList.toggle("show");
   else sb.classList.toggle("collapsed");
+}
+
+function logout(){
+    if(confirm("Apakah Anda yakin ingin keluar?")){
+        localStorage.clear();
+        window.location.href = "login.html"; // Sesuaikan dengan nama file login Anda
+    }
 }
 
 function openModal(i){
