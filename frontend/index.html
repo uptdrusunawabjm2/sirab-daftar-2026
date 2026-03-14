@@ -401,9 +401,8 @@ bottom:10px;
 /* msg info unit */
 
 #msg{
-
 margin-top:18px;
-
+margin-bottom:120px;
 }
 
 /* animasi page */
@@ -435,8 +434,7 @@ PROGRESS STEP INDICATOR
 =============================== */
 
 #formWrapper::before{
-
-content:"STEP 1 / 5";
+content:var(--stepText,"STEP 1 / 5");
 
 position:sticky;
 top:0;
@@ -472,6 +470,29 @@ animation:stepFlash .4s ease;
 0%{opacity:.3}
 100%{opacity:1}
 
+}
+
+/* ===== LOADING SPINNER ===== */
+
+.btnLoading{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.spinner{
+width:16px;
+height:16px;
+border:2px solid rgba(255,255,255,.4);
+border-top:2px solid white;
+border-radius:50%;
+animation:spin .7s linear infinite;
+}
+
+@keyframes spin{
+from{transform:rotate(0deg)}
+to{transform:rotate(360deg)}
 }
 </style>
 
@@ -1017,8 +1038,8 @@ if(wrapper){
 wrapper.classList.remove("stepFlash");
 
 wrapper.style.setProperty(
-"content",
-`STEP ${page+1} / ${pages.length}`
+"--stepText",
+`"STEP ${page+1} / ${pages.length}"`
 );
 
 wrapper.classList.add("stepFlash");
@@ -1074,7 +1095,7 @@ for(const x of inputs){
     setTimeout(()=>{
     window.scrollBy(0,-120);
     },200);
-    
+
     x.focus();
     x.classList.add("err");
     return false;
@@ -1211,7 +1232,18 @@ function nextPage(){
 }
 
 function prevPage(){
-if(page>0){page--;showPage();}
+
+if(page>0){
+page--;
+
+/* reset animasi step */
+document.getElementById("formWrapper")
+.classList.remove("stepFlash");
+
+showPage();
+
+}
+
 }
 
 /* ===== CEK DUPLIKAT NIK & HP KE SERVER ===== */
@@ -1262,6 +1294,10 @@ if(dup.error){
   msg.className="text-red-400";
   msg.innerText="Gagal cek duplikasi. Coba lagi.";
   next.disabled=false;
+
+  next.classList.remove("btnLoading");
+  next.innerText="KIRIM";
+
   return;
 }
 
@@ -1269,6 +1305,10 @@ if(dup.nik){
   msg.className="text-red-400";
   msg.innerText="NIK sudah terdaftar";
   next.disabled=false;
+  
+  next.classList.remove("btnLoading");
+  next.innerText="KIRIM";
+  
   return;
 }
 
@@ -1276,6 +1316,10 @@ if(dup.hp){
   msg.className="text-red-400";
   msg.innerText="Nomor HP sudah digunakan";
   next.disabled=false;
+  
+  next.classList.remove("btnLoading");
+  next.innerText="KIRIM";
+  
   return;
 }
 
@@ -1302,8 +1346,14 @@ if(_unit && (_unit.toUpperCase().startsWith("GM-C0") || _unit.toUpperCase().star
 }
 
 lastSubmit=Date.now();
+
 next.disabled=true;
-msg.innerText="Mengirim...";
+
+/* loading indicator */
+next.classList.add("btnLoading");
+next.innerHTML=`<span class="spinner"></span> Mengirim...`;
+
+msg.innerText="Mengirim data pendaftaran...";
 
 const data={};
 document.querySelectorAll("input,textarea,select").forEach(x=>{
@@ -1392,6 +1442,8 @@ if(j.status){
   msg.className="text-red-400";
   msg.innerText="Gagal mengirim. Coba lagi.";
   next.disabled=false;
+  next.classList.remove("btnLoading");
+  next.innerText="KIRIM";
 }
 }
 
