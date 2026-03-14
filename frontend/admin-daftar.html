@@ -298,6 +298,15 @@ const KEY = CONFIG.INTERNAL_KEY;
 let HEAD=[], DATA=[], RAW_DATA=[], page=1, lastHash="", ROW=null;
 const ROLE = localStorage.getItem("RUSUN_ROLE") || "admin";
 
+// Fungsi pemformatan tanggal Indonesia
+function formatTglIndo(str) {
+  if(!str) return "-";
+  const d = new Date(str);
+  if(isNaN(d.getTime())) return str;
+  const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+}
+
 async function load(){
   try {
     const r = await fetch(API+"?action=daftar_all&key="+KEY);
@@ -335,17 +344,25 @@ function render(){
   slice.forEach((r,i)=>{
     h+="<tr>";
     r.forEach((v,ci)=>{
-      if(HEAD[ci]==="Status Verifikasi"){
-          // Penentuan warna yang lebih detail
+      const headerName = HEAD[ci];
+      
+      // LOGIKA WARNA STATUS
+      if(headerName === "Status Verifikasi"){
           let color = "bg-slate-800/10 text-slate-400 border-slate-700/50";
           if(v === "MENUNGGU") color = "bg-amber-500/10 text-amber-500 border-amber-500/20";
           else if(v === "VERIFIKASI") color = "bg-blue-500/10 text-blue-400 border-blue-500/20";
           else if(v === "DIPROSES") color = "bg-indigo-500/10 text-indigo-400 border-indigo-500/20";
           else if(v === "DITERIMA") color = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
           else if(v === "DITOLAK") color = "bg-rose-500/10 text-rose-400 border-rose-500/20";
-          
           h+=`<td><span class="badge ${color}">${v||""}</span></td>`;
-      } else h+=`<td>${v||""}</td>`;
+      } 
+      // LOGIKA FORMAT TANGGAL
+      else if(headerName === "Tanggal Formulir" || headerName === "Tanggal Verifikasi") {
+          h+=`<td>${formatTglIndo(v)}</td>`;
+      } 
+      else {
+          h+=`<td>${v||""}</td>`;
+      }
     });
     h+=`<td class='flex gap-2 justify-center'>`;
     if(ROLE==="super") h+=`<button onclick='openModal(${start+i})' class='px-2 py-1 bg-indigo-600 hover:bg-indigo-500 rounded text-[9px] font-bold text-white transition'>UPDATE</button>`;
@@ -407,9 +424,11 @@ function lihatDetail(i){
   const d = DATA[i];
   let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
   HEAD.forEach((h,idx)=>{
+    let val = d[idx];
+    if(h === "Tanggal Formulir" || h === "Tanggal Verifikasi") val = formatTglIndo(val);
     html+=`<div class="bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
         <label class="text-[9px] uppercase font-bold text-slate-500 block mb-1">${h}</label>
-        <p class="text-xs text-slate-200 font-medium">${d[idx]||"-"}</p>
+        <p class="text-xs text-slate-200 font-medium">${val||"-"}</p>
       </div>`;
   });
   detailContent.innerHTML = html + `</div>`;
