@@ -71,7 +71,7 @@ padding:6px;
 border:1px solid #334155;
 position:sticky;
 top:0;
-z-index:50;
+z-index:100;
 }
 
 .table-modern td{
@@ -95,7 +95,7 @@ position:sticky;
 left:0;
 min-width:150px;
 background:#020617;
-z-index:60;
+z-index:120;
 }
 
 .table-modern th:nth-child(2),
@@ -104,7 +104,7 @@ position:sticky;
 left:150px;
 min-width:200px;
 background:#020617;
-z-index:59;
+z-index:119;
 }
 
 .table-modern th:nth-child(3),
@@ -113,12 +113,7 @@ position:sticky;
 left:350px;
 min-width:170px;
 background:#020617;
-z-index:58;
-}
-
-/* header harus paling atas */
-.table-modern th{
-z-index:70;
+z-index:118;
 }
 
 /* =========================
@@ -195,7 +190,7 @@ MOBILE
 
 .table-modern{
 font-size:12px;
-min-width:1200px;
+min-width:900px;
 }
 
 .table-modern th{
@@ -492,7 +487,7 @@ function render(){
   h+=`<td class='p-2 border'>${v||""}</td>`;
 });
 
-    h+=`<td class='p-2 border space-x-1'>`;
+    h+=`<td class='p-2 border flex flex-col gap-1 items-center'>`;
     if(ROLE === "super"){
       h+=`
         <button onclick='openModal(${idx})'
