@@ -434,11 +434,12 @@ async function simpan(){
     return;
   }
 
+  const token = localStorage.getItem("RUSUN_TOKEN");
   const noIdx = HEAD.indexOf("No Pendaftaran");
   const noLama = DATA[ROW][noIdx];
 
   try{
-
+     
     const fd = new URLSearchParams();
     fd.append("action","daftar_update");
     fd.append("key",KEY);
