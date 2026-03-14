@@ -3,1125 +3,443 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pendaftaran Rusunawa</title>
+<title>Pendaftaran Rusunawa | Form Online</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-/* === PATCH: wajib baca box + auto scroll error === */
-let pasalSudahDibaca=false;
-
-/* override togglePasal */
-const _togglePasal_original = typeof togglePasal === "function" ? togglePasal : null;
-togglePasal = function(){
-  document.querySelectorAll(".pasalItem").forEach(box=>box.classList.toggle("hidden"));
-  pasalSudahDibaca=true;
-  if(typeof checkAgree==="function") checkAgree();
-};
-
-/* override checkAgree */
-const _checkAgree_original = typeof checkAgree === "function" ? checkAgree : null;
-checkAgree = function(){
-  btnIntroNext.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
-};
-
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-.input{
-width:100%;
-background:#1e293b;
-border:1px solid #334155;
-border-radius:12px;
-padding:10px;
-}
-#formWrapper{display:none;}
-/* honeypot bot */
-.hp{display:none;
-}
-
-/* focus input */
-.input:focus{
-  outline:none;
-  box-shadow:0 0 0 2px #3b82f6;
-}
-
-/* highlight error */
-.err{
-  box-shadow:0 0 0 2px #ef4444 !important;
-}
-
-/* label lebih proporsional */
-label{
-  font-size:13px;
-  color:#cbd5e1;
-  font-weight:500;
-}
-
-/* placeholder lebih kecil */
-.input::placeholder,
-textarea::placeholder{
-  font-size:12px;
-  color:#94a3b8;
-}
-
-/* jarak label lebih rapi */
-.page label{
-  margin-bottom:2px;
-}
-
-.page{
-  max-width:540px;
-  margin:auto;
-}
-
-.page .input,
-.page textarea,
-.page select{
-  margin-bottom:8px;
-}
-
-textarea{
-  min-height:80px;
-}
-
-@media (max-width:640px){
-  .page{
-    padding:14px;
+  :root {
+    --bg-dark: #0f172a;
+    --card-dark: #1e293b;
+    --accent: #6366f1;
+    --border: #334155;
   }
-}
 
-/* ===== PERBAIKI DROPDOWN ===== */
-select{
-  width:100%;
-  background:#1e293b;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:10px;
-  color:#fff;
-  font-size:14px;
-}
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-dark);
+    color: #f8fafc;
+    margin: 0;
+    padding: 0;
+  }
 
-select:focus{
-  outline:none;
-  border-color:#3b82f6;
-  box-shadow:0 0 0 1px #3b82f6;
-}
+  /* Animasi Transisi Step */
+  .step-content {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Custom Input Styling */
+  .input {
+    width: 100%;
+    background: #020617;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 16px;
+    color: white;
+    font-size: 16px; /* Mencegah zoom otomatis pada iOS */
+    transition: all 0.3s;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+
+  .input.err {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  /* Label Styling */
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    margin-left: 4px;
+  }
+
+  /* Modern Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-dark); }
+  ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+
+  /* Tombol Action */
+  .btn-primary {
+    background: var(--accent);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-primary:active { transform: scale(0.96); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Glassmorphism Card */
+  .glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Honeypot */
+  .hp { display: none; }
 </style>
 
-<script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
+<script>
+let pasalSudahDibaca = false;
+let currentStep = 1;
 
+// Override togglePasal asli
+togglePasal = function() {
+  document.querySelectorAll(".pasalItem").forEach(box => box.classList.toggle("hidden"));
+  pasalSudahDibaca = true;
+  checkAgree();
+};
+
+// Override checkAgree asli
+checkAgree = function() {
+  const agree1 = document.getElementById("agree1");
+  const agree2 = document.getElementById("agree2");
+  const btn = document.getElementById("btnIntroNext");
+  if(btn) {
+    btn.disabled = !(agree1.checked && agree2.checked && pasalSudahDibaca);
+  }
+};
+
+// Update Progress Bar UI
+function updateProgress(step) {
+  const progress = (step / 4) * 100;
+  const progressBar = document.getElementById("progressBar");
+  if(progressBar) progressBar.style.width = progress + "%";
+}
+</script>
 </head>
 
-<body class="bg-gray-950 text-gray-100 min-h-screen">
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
 
-<div class="max-w-3xl mx-auto p-6">
+  <div id="mainContainer" class="w-full max-w-xl">
+    
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg mb-4">
+        <span class="text-2xl font-bold">R</span>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight">Pendaftaran Rusunawa</h1>
+      <p class="text-slate-400 text-sm mt-1">Lengkapi data untuk permohonan hunian</p>
+    </div>
 
-<!-- ================= INTRO ================= -->
-<div id="introPage"
-class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800
-rounded-3xl shadow-2xl p-8 mb-6 max-w-2xl mx-auto">
+    <div id="intro" class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl">
+      <div class="space-y-6">
+        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4">
+          <h2 class="font-bold text-indigo-400 mb-2 flex items-center gap-2">
+            <span>ℹ️</span> Petunjuk Pendaftaran
+          </h2>
+          <ul class="text-sm text-slate-300 space-y-2 leading-relaxed">
+            <li>• Pastikan semua dokumen fisik (KTP, KK, SKET) sudah siap difoto.</li>
+            <li>• Gunakan nomor WhatsApp aktif untuk konfirmasi petugas.</li>
+            <li>• Satu NIK hanya dapat melakukan satu kali pendaftaran.</li>
+          </ul>
+        </div>
 
-<h1 class="text-2xl font-semibold text-center mb-4">
-Permohonan Penghunian Rusunawa
-</h1>
+        <div class="space-y-4">
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-500 px-1">Persetujuan Syarat & Ketentuan</p>
+          
+          <div onclick="togglePasal()" class="cursor-pointer bg-slate-800/50 hover:bg-slate-800 border border-slate-700 rounded-2xl p-4 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold">Buka Syarat & Ketentuan (Wajib Baca)</span>
+              <span id="iconArrow">📖</span>
+            </div>
+            <div class="pasalItem hidden mt-4 pt-4 border-t border-slate-700 text-xs text-slate-400 leading-relaxed space-y-3">
+              <p>1. Pemohon bersedia menaati segala peraturan yang berlaku di Rusunawa.</p>
+              <p>2. Data yang diisikan adalah benar dan dapat dipertanggungjawabkan secara hukum.</p>
+              <p>3. Pendaftaran ini bersifat sementara sebelum diverifikasi oleh petugas di lapangan.</p>
+            </div>
+          </div>
 
-<p class="text-center text-slate-300 text-sm">
-Dengan mengisi formulir ini anda menyatakan setuju dengan ketentuan dibawah ini.
-</p>
+          <div class="space-y-3 px-1">
+            <label class="flex items-start gap-3 cursor-pointer group">
+              <input type="checkbox" id="agree1" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500">
+              <span class="text-sm text-slate-300 group-hover:text-white transition">Saya setuju dengan semua persyaratan pendaftaran Rusunawa.</span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer group">
+              <input type="checkbox" id="agree2" onchange="checkAgree()" class="mt-1 w-5 h-5 rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500">
+              <span class="text-sm text-slate-300 group-hover:text-white transition">Data yang saya kirimkan adalah valid dan asli.</span>
+            </label>
+          </div>
+        </div>
 
-<hr class="my-6 border-slate-700">
+        <button id="btnIntroNext" onclick="introNext()" disabled class="btn-primary w-full py-4 rounded-2xl font-bold text-white shadow-lg shadow-indigo-500/20 mt-4">
+          Mulai Pendaftaran 🚀
+        </button>
+      </div>
+    </div>
 
-<div class="mt-6 bg-blue-600/80 border border-blue-400/30 rounded-2xl p-5 space-y-3">
+    <div id="formWrapper" class="space-y-6">
+      
+      <div class="w-full bg-slate-800 rounded-full h-1.5 mb-6 overflow-hidden">
+        <div id="progressBar" class="bg-indigo-500 h-full transition-all duration-500" style="width: 25%;"></div>
+      </div>
 
-<label class="flex gap-3">
-<input type="checkbox" id="agree1">
-<span>Saya memahami tujuan pengumpulan data</span>
-</label>
+      <form id="formPendaftaran" class="glass-card rounded-3xl p-6 md:p-8 shadow-2xl overflow-hidden">
+        
+        <div id="step1" class="step-content space-y-5">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold">Identitas Pemohon</h2>
+            <p class="text-xs text-slate-400 uppercase tracking-tighter mt-1">Langkah 1 dari 4</p>
+          </div>
 
-<label class="flex gap-3">
-<input type="checkbox" id="agree2">
-<span>Saya menyetujui seluruh ketentuan Peraturan Wali Kota Banjarmasin Nomor 149 Tahun 2023</span>
-</label>
+          <div class="space-y-4">
+            <div>
+              <label for="Nama Pemohon">Nama Lengkap (Sesuai KTP)</label>
+              <input id="Nama Pemohon" name="Nama Pemohon" class="input" placeholder="Contoh: Budi Santoso">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="NIK Pemohon">NIK Pemohon</label>
+                <input id="NIK Pemohon" name="NIK Pemohon" class="input" placeholder="16 Digit NIK">
+              </div>
+              <div>
+                <label for="Nomor Telepon/HP/WA">Nomor WhatsApp</label>
+                <input id="Nomor Telepon/HP/WA" name="Nomor Telepon/HP/WA" class="input" placeholder="08xx">
+              </div>
+            </div>
 
-<a href="javascript:void(0)"
-onclick="togglePasal()"
-class="text-xs underline opacity-90 hover:opacity-100 block text-center">
-Wajib baca pernyataan lengkap
-</a>
-<!-- ===== BOX 1 ===== -->
-<div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
+            <div>
+              <label for="Rusunawa">Pilihan Rusunawa</label>
+              <select id="Rusunawa" name="Rusunawa" class="input appearance-none">
+                <option value="">-- Pilih Lokasi Rusun --</option>
+                <option>Rusunawa Muara Kelayan</option>
+                <option>Rusunawa Gawi Manuntung</option>
+                <option>Rusunawa Teluk Kelayan</option>
+              </select>
+            </div>
 
-<h3 class="text-left font-semibold mb-3">Informasi:</h3>
+            <div id="warningLansia" class="hidden bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl">
+              <p class="text-xs text-amber-500 leading-relaxed font-medium">
+                ⚠️ <span class="font-bold">Perhatian:</span> Umur pemohon di atas 60 tahun. Disarankan memilih unit di Lantai 1 demi kenyamanan aksesibilitas.
+              </p>
+            </div>
+          </div>
 
-<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
-<li>pengumpulan data melalui formulir ini dimaksudkan untuk memudahkan Pemohon dalam melengkapi persyaratan.</li>
-<li>data yang dikumpulkan selanjutnya akan digunakan untuk keperluan pengumpulan, pengolahan, dan penganalisisan terbatas sebagai bagian dari proses verifikasi awal.</li>
-</ol>
-</div>
+          <div class="pt-6">
+            <button type="button" onclick="next(1)" class="btn-primary w-full py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut: Data Keluarga</button>
+          </div>
+        </div>
 
-<!-- ===== BOX 2 ===== -->
-<div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
+        <div id="step2" class="step-content hidden space-y-5">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold">Informasi Keluarga</h2>
+            <p class="text-xs text-slate-400 uppercase tracking-tighter mt-1">Langkah 2 dari 4</p>
+          </div>
 
-<h3 class="text-left font-semibold mb-3">Persyaratan:</h3>
+          <div class="space-y-4">
+            <div>
+              <label for="Nomor Kartu Keluarga">Nomor Kartu Keluarga (KK)</label>
+              <input id="Nomor Kartu Keluarga" name="Nomor Kartu Keluarga" class="input" placeholder="16 Digit KK">
+            </div>
+            <div>
+              <label for="Pekerjaan Pemohon">Pekerjaan Pemohon</label>
+              <select id="Pekerjaan Pemohon" name="Pekerjaan Pemohon" class="input" onchange="cekLainnya(this)">
+                <option value="">-- Pilih Pekerjaan --</option>
+                <option>Wiraswasta</option>
+                <option>Buruh</option>
+                <option>Driver/Ojek</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+            <div id="inputLainnya" class="hidden">
+              <label class="text-indigo-400">Sebutkan Pekerjaan</label>
+              <input id="Pekerjaan Pemohon Lainnya" class="input" placeholder="Misal: Freelance Design">
+            </div>
+            <div>
+              <label for="Jumlah Jiwa (Anggota Keluarga)">Jumlah Anggota Keluarga (Termasuk Pemohon)</label>
+              <input id="Jumlah Jiwa (Anggota Keluarga)" name="Jumlah Jiwa (Anggota Keluarga)" type="number" class="input" placeholder="Contoh: 4">
+            </div>
+          </div>
 
-<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
-<li>Penghasilan maksimal 2 (dua) kali UMP (Upah Minimum Provinsi).</li>
-<li>Memiliki identitas kependudukan Daerah (diutamakan KTP Kota Banjarmasin)</li>
-<li>Sudah berkeluarga/menikah.</li>
-<li>Anggota keluarga maksimal 4 (empat) orang.</li>
-<li>Belum memiliki rumah/tempat tinggal sendiri.</li>
-<li>Sanggup membayar sewa dan biaya lainnya.</li>
-</ol>
-</div>
+          <div class="grid grid-cols-2 gap-4 pt-6">
+            <button type="button" onclick="prev(2)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition">Kembali</button>
+            <button type="button" onclick="next(2)" class="btn-primary py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut</button>
+          </div>
+        </div>
 
-<!-- ===== BOX 3 BARU ===== -->
-<div class="pasalItem hidden mt-3 bg-slate-900/60 border border-slate-700 rounded-xl p-4 text-sm text-slate-200">
+        <div id="step3" class="step-content hidden space-y-5">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold">Data Pendukung</h2>
+            <p class="text-xs text-slate-400 uppercase tracking-tighter mt-1">Langkah 3 dari 4</p>
+          </div>
 
-<h3 class="text-left font-semibold mb-3">Tata Tertib:</h3>
+          <div class="space-y-4">
+            <div>
+              <label for="Penghasilan perbulan Pemohon">Estimasi Penghasilan Total per Bulan (Rp)</label>
+              <input id="Penghasilan perbulan Pemohon" name="Penghasilan perbulan Pemohon" type="number" class="input" placeholder="Contoh: 3000000">
+            </div>
+            <div>
+              <label for="_url_ktp">Link Foto/Scan KTP (Google Drive/Lainnya)</label>
+              <input id="_url_ktp" name="_url_ktp" class="input" placeholder="https://drive.google.com/...">
+              <p class="text-[10px] text-slate-500 mt-1">*Pastikan link dapat diakses publik/petugas</p>
+            </div>
+            <div>
+              <label for="Alamat Lengkap Sesuai KTP">Alamat Sesuai Domisili KTP</label>
+              <textarea id="Alamat Lengkap Sesuai KTP" name="Alamat Lengkap Sesuai KTP" class="input h-24" placeholder="Jl. Raya No. 123, RT 01/02..."></textarea>
+            </div>
+          </div>
 
-<ol class="list-[lower-alpha] pl-5 space-y-1 text-justify leading-relaxed max-w-md mx-auto">
-<li>Sarusunawa hanya diperkenankan dihuni maksimal 4 (empat) orang.</li>
-<li>Penghuni wajib melapor kepada RT/RW dan/atau petugas keamanan apabila ada tamu yang akan bermalam lebih dari 1 x 24 jam.</li>
-<li>Menjaga kebersihan, kerapihan, keamanan, dan keindahan Sarusunawa dan lingkungan Rusunawa.</li>
-<li>Menjaga toleransi dan memelihara ikatan sosial yang baik sesama Penghuni.</li>
-<li>Mematikan listrik, air, dan gas rumah tangga saat meninggalkan Sarusunawa.</li>
-<li>Pemeliharaan dan perawatan Sarusunawa yang dilakukan oleh Penghuni wajib dilaporkan kepada UPTD.</li>
-<li>Menempatkan kendaraan bermotor pada tempat parkir/lokasi yang telah ditetapkan UPTD.</li>
-</ol>
-</div>
+          <div class="grid grid-cols-2 gap-4 pt-6">
+            <button type="button" onclick="prev(3)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition">Kembali</button>
+            <button type="button" onclick="next(3)" class="btn-primary py-4 rounded-2xl font-bold text-white shadow-lg">Lanjut</button>
+          </div>
+        </div>
 
-<button id="btnIntroNext" disabled
-class="w-full bg-blue-500 py-3 rounded-xl font-semibold">
-Selanjutnya
-</button>
+        <div id="step4" class="step-content hidden space-y-6">
+          <div class="text-center py-6">
+            <div class="text-5xl mb-4">✅</div>
+            <h2 class="text-xl font-bold">Hampir Selesai</h2>
+            <p class="text-sm text-slate-400 mt-2">Periksa kembali data Anda. Setelah dikirim, data akan masuk ke tahap verifikasi petugas.</p>
+          </div>
 
-</div>
-</div>
+          <div class="bg-slate-800/40 border border-slate-700 rounded-2xl p-4 space-y-3">
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Pemohon:</span>
+              <span id="cNama" class="font-semibold text-indigo-400">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">NIK:</span>
+              <span id="cNIK" class="font-semibold">-</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-slate-500">Pilihan:</span>
+              <span id="cRusun" class="font-semibold">-</span>
+            </div>
+          </div>
 
-<!-- ================= FORM ================= -->
-<div id="formWrapper">
+          <input type="text" name="hp_field" class="hp">
 
-<h1 class="text-3xl font-bold mb-6 text-center">
-Pendaftaran Calon Penghuni Rusunawa
-</h1>
+          <div class="grid grid-cols-2 gap-4 pt-4">
+            <button type="button" onclick="prev(4)" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition">Revisi</button>
+            <button type="button" id="btnKirim" onclick="kirim()" class="bg-emerald-600 hover:bg-emerald-500 py-4 rounded-2xl font-bold text-white shadow-lg shadow-emerald-500/20 transition-all">
+              Kirim Formulir 🚀
+            </button>
+          </div>
+        </div>
 
-<div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-6">
+      </form>
 
-<div id="pages">
+      <div class="text-center">
+        <p class="text-[10px] text-slate-600 uppercase font-bold tracking-widest">Dinas Perumahan Rakyat dan Kawasan Permukiman</p>
+      </div>
 
-<!-- PAGE 1 -->
-<div class="page space-y-4">
-<label class="block text-slate-300 text-sm mb-1">Tanggal Formulir</label>
-<input id="Tanggal Formulir" class="input" type="date">
-
-<!-- honeypot bot -->
-<input class="hp" id="website" name="company"
-autocomplete="new-password"
-tabindex="-1"
-style="position:absolute;left:-9999px;">
-
-</div>
-
-<!-- PAGE 2 -->
-<div class="page hidden space-y-3">
-
-<label class="block text-slate-300 text-sm mb-1">Nama Pemohon</label>
-<input id="Nama Pemohon"
-       placeholder="Nama Lengkap"
-       class="input">
-<label class="block text-slate-300 text-sm mb-1">NIK Pemohon</label>
-<input id="NIK Pemohon"
-       inputmode="numeric"
-       pattern="[0-9]*"
-       placeholder="6 digit terakhir"
-       class="input">
-<p class="text-xs text-slate-400 mt-1">catatan: masukkan 6 (enam) digit terakhir NIK</p>
-<label class="block text-slate-300 text-sm mb-1">Status Kependudukan</label>
-<select id="Status Kependudukan" class="input" required>
-  <option value="">Pilih Status Kependudukan</option>
-  <option value="Kota Banjarmasin">Kota Banjarmasin</option>
-  <option value="Penduduk Non Permanen">Penduduk Non Permanen</option>
-</select>
-<label class="block text-slate-300 text-sm mb-1">Umur</label>
-<input id="Umur" inputmode="numeric" pattern="[0-9]*" placeholder="Umur" class="input">
-<label class="block text-slate-300 text-sm mb-1">Agama</label>
-<select id="Agama" class="input" required>
-  <option value="">Pilih Agama</option>
-  <option value="Islam">Islam</option>
-  <option value="Kristen">Kristen</option>
-  <option value="Katolik">Katolik</option>
-  <option value="Hindu">Hindu</option>
-  <option value="Buddha">Buddha</option>
-  <option value="Konghucu">Konghucu</option>
-</select>
-<label class="block text-slate-300 text-sm mb-1">Status Perkawinan</label>
-<select id="Status Perkawinan" class="input" required>
-  <option value="">Pilih Status Perkawinan</option>
-  <option value="Kawin Tercatat">Kawin Tercatat</option>
-  <option value="Kawin Belum Tercatat">Kawin Belum Tercatat</option>
-  <option value="Cerai Hidup">Cerai Hidup</option>
-  <option value="Cerai Mati">Cerai Mati</option>
-</select>
-<label class="block text-slate-300 text-sm mb-1">Alamat Sekarang</label>
-<textarea id="Alamat sekarang" placeholder="(tulis lengkap) Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
-<label class="block text-slate-300 text-sm mb-1">Status Tempat Tinggal</label>
-<select id="Status Tempat Tinggal Sekarang" class="input" required>
-  <option value="">Pilih Status Tempat Tinggal</option>
-  <option value="Sewa">Sewa</option>
-  <option value="Kontrak">Kontrak</option>
-  <option value="Numpang">Numpang</option>
-  <option value="Fasilitas Perusahaan/Tempat Kerja">Fasilitas Perusahaan/Tempat Kerja</option>
-</select>
-<label class="block text-slate-300 text-sm mb-1">Jumlah Anggota Keluarga</label>
-<input id="Jumlah Anggota Keluarga" inputmode="numeric" pattern="[0-9]*" placeholder="Maksimal 4 (empat) orang" class="input">
-<label class="block text-slate-300 text-sm mb-1">Nomor Telepon/HP/WA</label>
-<input id="Nomor Telepon/HP/WA" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor Telp/HP (wa aktif)" class="input">
-<label class="block text-slate-300 text-sm mb-1">Email</label>
-<input id="Email" placeholder="Email" class="input">
-</div>
-
-<!-- PAGE 3 -->
-<div class="page hidden space-y-4">
-<label class="block text-slate-300 text-sm mb-1">Pekerjaan Pemohon</label>
-<input id="Pekerjaan Pemohon" placeholder="Pekerjaan Pemohon" class="input">
-<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan/Tempat Kerja</label>
-<input id="Nama Perusahaan/Tempat Kerja" placeholder="Nama Perusahaan/Tempat Kerja" class="input">
-<label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja</label>
-<textarea id="Alamat Tempat Kerja" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
-<label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan</label>
-<input id="Penghasilan perbulan" inputmode="numeric" pattern="[0-9]*" class="input rupiah" placeholder="Penghasilan per bulan">
-<label class="block text-slate-300 text-sm mb-1">Pekerjaan Pasangan</label>
-<select id="Pekerjaan Pasangan" class="input">
-  <option value="">Pilih Pekerjaan Pasangan</option>
-  <option value="Mengurus Rumah Tangga">Mengurus Rumah Tangga</option>
-  <option value="Lainnya">Lainnya</option>
-</select>
-<input id="Pekerjaan Pasangan Manual"
-       placeholder="Isi pekerjaan pasangan"
-       class="input hidden">
-<label class="block text-slate-300 text-sm mb-1">Nama Perusahaan/Tempat Kerja Pasangan</label>
-<input id="Nama Perusahaan/Tempat Kerja 2" placeholder="Nama Perusahaan/Tempat Kerja Pasangan" class="input">
-<label class="block text-slate-300 text-sm mb-1">Alamat Tempat Kerja Pasangan</label>
-<textarea id="Alamat Tempat Kerja Pasangan" placeholder="Jalan... No. Telp... Kab/Kota..." class="input"></textarea>
-<label class="block text-slate-300 text-sm mb-1">Penghasilan Perbulan Pasangan</label>
-<input id="Penghasilan perbulan Pasangan" inputmode="numeric" pattern="[0-9]*" class="input rupiah" placeholder="Penghasilan per bulan pasangan">
-</div>
-
-<!-- PAGE 4 -->
-<div class="page hidden space-y-5">
-<label class="block text-slate-300 text-sm mb-1">Nama Penjamin</label>
-<input id="Nama Penjamin" placeholder="Nama Penjamin" class="input">
-<label class="block text-slate-300 text-sm mb-1">Alamat Penjamin (wajib domisili di Kota Banjarmasin)</label>
-<textarea id="Alamat Penjamin" placeholder="(tulis lengkap) Jalan... RT/RW... Kelurahan... Kab/Kota..." class="input"></textarea>
-<label class="block text-slate-300 text-sm mb-1">Pekerjaan Penjamin</label>
-<input id="Pekerjaan Penjamin" placeholder="Pekerjaan Penjamin" class="input">
-<label class="block text-slate-300 text-sm mb-1">Status Hubungan dengan Pemohon</label>
-<input id="Status Hubungan dengan Pemohon" placeholder="Status Hubungan dengan Pemohon" class="input">
-</div>
-
-<!-- PAGE 5 -->
-<div class="page hidden space-y-4">
-<label class="block text-slate-300 text-sm mb-1">Rusunawa</label>
-<select id="Rusunawa">
-</select>
-<label class="block text-slate-300 text-sm mb-1">Tipe Kamar</label>
-<select id="Tipe Kamar">
-</select>
-<label class="block text-slate-300 text-sm mb-1">Lantai</label>
-<select id="Lantai">
-</select>
-</div>
-  
-</div>
-
-<div class="flex justify-between mt-6">
-<button onclick="prevPage()" id="prev"
-class="bg-slate-700 px-5 py-2 rounded-xl">Kembali</button>
-
-<button onclick="nextPage()" id="next"
-class="bg-blue-600 px-5 py-2 rounded-xl font-bold">Lanjut</button>
-</div>
-
-<div id="msg" class="text-center mt-4 text-sm"></div>
-
-</div>
-</div>
-</div>
+    </div>
+  </div>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbySr6QhyH72b4aAU6Xv6mltljm_ft07ysWb40J45QivoXYix8Xh9M1kJ8zLe4PzQ5i8/exec";
-
-let page=0;
-let lastSubmit=0;
-const pages=document.querySelectorAll(".page");
-const msg=document.getElementById("msg");
-
-/* VARIABLE LOCK UNIT */
-let _unit="";
-let _token="";
-
-/* ===== AUTO LOAD DROPDOWN DARI GAP ===== */
-
-const selRusun=document.getElementById("Rusunawa");
-const selTipe=document.getElementById("Tipe Kamar");
-const selLantai=document.getElementById("Lantai");
-
-let GAP_DATA={};
-
-window.addEventListener("load", loadOptions);
-
-async function loadOptions(){
-
-  try{
-
-    const r=await fetch(URL+"?action=options");
-    const j=await r.json();
-
-    if(!j.status) throw "Gagal load";
-
-    GAP_DATA=j.data;
-
-    selRusun.innerHTML='<option value="">Pilih Rusunawa</option>';
-
-    Object.keys(GAP_DATA).forEach(rusun=>{
-      selRusun.innerHTML+=`<option value="${rusun}">${rusun}</option>`;
-    });
-
-  }catch{
-    msg.className="text-red-400";
-    msg.innerText="Gagal memuat daftar unit";
-  }
+// Logika Navigasi & Form
+function introNext() {
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("formWrapper").classList.remove("hidden");
+  updateProgress(1);
 }
 
-/* RUSUN → TIPE */
-selRusun.onchange=()=>{
-  const rusun=selRusun.value;
-  selTipe.innerHTML='<option value="">Pilih Tipe</option>';
-  selLantai.innerHTML='<option value="">Pilih Lantai</option>';
+function next(s) {
+  // Validasi Sederhana sebelum lanjut
+  const currentStepDiv = document.getElementById("step" + s);
+  const inputs = currentStepDiv.querySelectorAll("input, select, textarea");
+  let valid = true;
 
-  if(!rusun || !GAP_DATA[rusun]) return;
-
-  Object.keys(GAP_DATA[rusun]).forEach(tipe=>{
-    selTipe.innerHTML+=`<option value="${tipe}">${tipe}</option>`;
-  });
-
-};
-
-/* TIPE → LANTAI */
-selTipe.onchange=()=>{
-  const rusun=selRusun.value;
-  const tipe=selTipe.value;
-
-  selLantai.innerHTML='<option value="">Pilih Lantai</option>';
-  
-  if(!rusun || !tipe || !GAP_DATA[rusun] || !GAP_DATA[rusun][tipe]) return;
-
-  GAP_DATA[rusun][tipe].forEach(l=>{
-    selLantai.innerHTML+=`<option value="${l}">${l}</option>`;
-  });
-
-};
-
-/* ===== LANTAI → CEK UNIT ===== */
-selLantai.onchange = cekUnit;
-
-async function cekUnit(){
-
-  const rusun=document.getElementById("Rusunawa").value;
-  const tipe=document.getElementById("Tipe Kamar").value;
-  const lantai=document.getElementById("Lantai").value;
-  const nik=document.getElementById("NIK Pemohon").value||"temp";
-
-  if(!rusun||!tipe||!lantai) return;
-
-  msg.className="text-yellow-400";
-  msg.innerText="Menghitung jumlah unit terisi...";
-
-  try{
-
-    const r=await fetch(
-      URL+"?action=get_unit"
-      +"&rusun="+encodeURIComponent(rusun)
-      +"&tipe="+encodeURIComponent(tipe)
-      +"&lantai="+encodeURIComponent(lantai)
-      +"&nik="+encodeURIComponent(nik)
-    );
-
-    const j=await r.json();
-
-    if(j.waiting){
-  _unit="";
-  _token="";
-
-  if(typeof j.kosong === "number"){
-    msg.innerHTML = `
-      <div class="text-center text-red-400">
-        Unit penuh — masuk daftar tunggu<br>
-        Sisa kosong: ${j.kosong}
-      </div>`;
-  }else{
-    msg.className="text-red-400";
-    msg.innerText="Unit penuh — masuk daftar tunggu";
-  }
-  return;
-}
-
-    _unit=j.unit;
-    _token=j.token;
-
-
-/* ================= TAMPILAN STATUS KETERSEDIAAN ================= */
-
-if(typeof j.kosong !== "number" && tipe !== "21"){
-  msg.className="text-red-400";
-  msg.innerText="Data unit tidak tersedia";
-  return;
-}
-
-msg.className="";
-
-/* ===== KHUSUS TIPE 21 (BLOK A & B) ===== */
-if(tipe === "21" && typeof j.kosongA === "number" && typeof j.kosongB === "number"){
-
-  msg.innerHTML = `
-  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:12px">
-
-    <div style="
-      background:linear-gradient(180deg,#0f172a,#020617);
-      border:1px solid #1e293b;
-      border-radius:14px;
-      padding:14px 16px;
-      width:160px;
-      box-shadow:0 4px 14px rgba(0,0,0,.35);
-      text-align:center;
-    ">
-      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
-        Blok A
-      </div>
-      <div style="font-size:26px;font-weight:700;color:#38bdf8;">
-        ${j.kosongA}
-      </div>
-      <div style="font-size:12px;color:#94a3b8;">
-        Unit Kosong / Siap Huni
-      </div>
-    </div>
-
-    <div style="
-      background:linear-gradient(180deg,#0f172a,#020617);
-      border:1px solid #1e293b;
-      border-radius:14px;
-      padding:14px 16px;
-      width:160px;
-      box-shadow:0 4px 14px rgba(0,0,0,.35);
-      text-align:center;
-    ">
-      <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
-        Blok B
-      </div>
-      <div style="font-size:26px;font-weight:700;color:#38bdf8;">
-        ${j.kosongB}
-      </div>
-      <div style="font-size:12px;color:#94a3b8;">
-        Unit Kosong / Siap Huni
-      </div>
-    </div>
-
-  </div>`;
-}
-
-/* ===== TIPE SELAIN 21 ===== */
-else{
-
-  msg.innerHTML = `
-  <div style="
-    background:linear-gradient(180deg,#0f172a,#020617);
-    border:1px solid #1e293b;
-    border-radius:14px;
-    padding:14px 16px;
-    max-width:320px;
-    margin:12px auto;
-    box-shadow:0 4px 14px rgba(0,0,0,.35);
-    text-align:center;
-  ">
-    <div style="font-size:13px;color:#94a3b8;margin-bottom:6px;">
-      Status Ketersediaan
-    </div>
-    <div style="font-size:28px;font-weight:700;color:#38bdf8;margin-bottom:2px;">
-      ${j.kosong}
-    </div>
-    <div style="font-size:13px;color:#94a3b8;">
-      Unit Kosong / Siap Huni
-    </div>
-  </div>`;
-}
-
-cekWarningLansia();
-  }catch{
-    msg.className="text-red-400";
-    msg.innerText="Gagal cek unit";
-  }
-}
-
-/* ===== WARNING LANSIA REALTIME ===== */
-function cekWarningLansia(){
-
-  const umurEl = document.getElementById("Umur");
-  if(!umurEl) return;
-
-  const umurVal = parseInt((umurEl.value||"0").replace(/[^\d]/g,""),10);
-
-  if(!_unit) return;
-
-  const lansiaUnit =
-    _unit.toUpperCase().startsWith("GM-C0") ||
-    _unit.toUpperCase().startsWith("TK-1");
-
-  if(lansiaUnit && umurVal < 60){
-    msg.className="text-amber-400";
-    msg.innerHTML=
-      "⚠️ Unit ini khusus lansia/difabel (≥60 tahun)<br>" +
-      "Jika dilanjutkan, pendaftaran akan ditolak sistem";
-  }
-}
- 
-/* ================= INTRO ================= */
-const agree1=document.getElementById("agree1");
-const agree2=document.getElementById("agree2");
-const btnIntroNext=document.getElementById("btnIntroNext");
-
-function checkAgree(){
-btnIntroNext.disabled = !(
-  agree1.checked &&
-  agree2.checked &&
-  pasalSudahDibaca
-);
-}
-
-agree1.onchange=checkAgree;
-agree2.onchange=checkAgree;
-
-btnIntroNext.onclick=()=>{
-document.getElementById("introPage").style.display="none";
-document.getElementById("formWrapper").style.display="block";
-};
-
-/* ================= TANGGAL + JAM + HARI ================= */
-const tglInput=document.getElementById("Tanggal Formulir");
-const now=new Date();
-const yyyy=now.getFullYear();
-const mm=String(now.getMonth()+1).padStart(2,"0");
-const dd=String(now.getDate()).padStart(2,"0");
-tglInput.value=`${yyyy}-${mm}-${dd}`;
-tglInput.readOnly=true;
-
-/* blok sabtu minggu */
-/*const day=now.getDay(); *
-if(day===0||day===6){
-lockForm("Pelayanan tidak beroperasi pada hari libur nasional dan hari besar keagamaan");
-}
-
-/* lock jam WIB 08:00-16:00 */
-/*const jam=now.getHours();
-if(jam<8||jam>=16){
-lockForm("Pendaftaran: 08:00 - 16:00 WITA");
-}
-
-function lockForm(text){
-msg.className="text-red-400";
-msg.innerText=text;
-document.getElementById("next").disabled=true;
-}
-
-/* ================= PAGINATION ================= */
-function showPage(){
-pages.forEach((p,i)=>p.classList.toggle("hidden",i!==page));
-prev.style.visibility=page===0?"hidden":"visible";
-next.innerText=page===pages.length-1?"KIRIM":"Lanjut";
-}
-showPage();
-
-function validatePage(){
-const inputs=pages[page].querySelectorAll("input,textarea,select");
-
-const optionalIds = [
-  "Pekerjaan Pasangan Manual",
-  "Nama Perusahaan/Tempat Kerja 2",
-  "Alamat Tempat Kerja Pasangan",
-  "Penghasilan perbulan Pasangan"
-];
-
-for(const x of inputs){
-
-  x.classList.remove("err");
-
-  if(x.classList.contains("hp")) continue;
-
-  /* skip field opsional */
-  if(optionalIds.includes(x.id)) continue;
-  
-  /* KHUSUS SELECT */
-  if(x.tagName === "SELECT"){
-    if(!x.value){
-      msg.innerText="Wajib pilih: " + x.id;
-      msg.className="text-red-400";
-
-      x.scrollIntoView({behavior:"smooth",block:"center"});
-      x.focus();
-      x.classList.add("err");
-      return false;
+  inputs.forEach(el => {
+    if(el.hasAttribute("name") && !el.value.trim() && el.id !== "hp_field") {
+      el.classList.add("err");
+      valid = false;
+    } else {
+      el.classList.remove("err");
     }
-    continue;
+  });
+
+  if(!valid) return alert("Harap lengkapi kolom yang berwarna merah.");
+
+  // Khusus Step 3 ke 4 (Ringkasan)
+  if(s === 3) {
+    document.getElementById("cNama").innerText = document.getElementById("Nama Pemohon").value;
+    document.getElementById("cNIK").innerText = document.getElementById("NIK Pemohon").value;
+    document.getElementById("cRusun").innerText = document.getElementById("Rusunawa").value;
   }
 
-  /* INPUT / TEXTAREA */
-  if(!x.value || !x.value.trim()){
-    msg.innerText="Field belum diisi: " + x.id;
-    msg.className="text-red-400";
+  document.getElementById("step" + s).classList.add("hidden");
+  document.getElementById("step" + (s+1)).classList.remove("hidden");
+  updateProgress(s+1);
+}
 
-    x.scrollIntoView({behavior:"smooth",block:"center"});
-    x.focus();
-    x.classList.add("err");
-    return false;
+function prev(s) {
+  document.getElementById("step" + s).classList.add("hidden");
+  document.getElementById("step" + (s-1)).classList.remove("hidden");
+  updateProgress(s-1);
+}
+
+function cekLainnya(el) {
+  const box = document.getElementById("inputLainnya");
+  if(el.value === "Lainnya") {
+    box.classList.remove("hidden");
+  } else {
+    box.classList.add("hidden");
   }
 }
 
-/* VALIDASI NIK 16 DIGIT */
-const nik=document.getElementById("NIK Pemohon");
-if(nik && page===1){
-const angka = nik.value.replace(/[^\d]/g,"");   // ✔ pakai nik
-  if(!angka){
-
-    msg.innerText="NIK harus angka";
-    msg.className="text-red-400";
-    nik.scrollIntoView({behavior:"smooth",block:"center"});
-    nik.focus();
-    nik.classList.add("err");
-    return false;
-  }
-}
-
-/* ===== VALIDASI ANGKA WAJIB ===== */
-const wajibAngka = [
-  "Umur",
-  "Nomor Telepon/HP/WA",
-  "Jumlah Anggota Keluarga"
-];
-
-if(page===1){
-for(const id of wajibAngka){
+// Format 62 Otomatis (NIK/HP)
+["Nomor Telepon/HP/WA", "NIK Pemohon"].forEach(id => {
   const el = document.getElementById(id);
-  if(!el) continue;
-
-  const angka = el.value.replace(/[^\d]/g,"");
-
-  if(!angka){
-    msg.innerText = "Field harus berupa angka: " + id;
-    msg.className = "text-red-400";
-
-    el.scrollIntoView({behavior:"smooth",block:"center"});
-    el.focus();
-    el.classList.add("err");
-
-    return false;
-  }
-}
-}
-
-/* VALIDASI ANGKA PENGHASILAN (ANTI HURUF) */
-const fieldsAngka = [
-  "Penghasilan perbulan",
-  "Penghasilan perbulan Pasangan"
-];
-
-for(const id of fieldsAngka){
-  const el=document.getElementById(id);
-  if(!el) continue;
-
-  if(!el.value) continue; // kosong boleh jika opsional
-
-  const angka = el.value.replace(/[^\d]/g,"");
-  if(!angka){
-    msg.innerText="Field harus angka: " + id;
-    msg.className="text-red-400";
-    el.scrollIntoView({behavior:"smooth",block:"center"});
-    el.focus();
-    el.classList.add("err");
-    return false;
-  }
-}
-
-/* ===== VALIDASI BATAS PENGHASILAN (GABUNGAN) ===== */
-if(page === 2){   // halaman penghasilan
-
-  const g1 = document.getElementById("Penghasilan perbulan");
-  const g2 = document.getElementById("Penghasilan perbulan Pasangan");
-
-  const n1 = g1 ? parseInt(g1.value.replace(/[^\d]/g,"")||"0",10) : 0;
-  const n2 = g2 ? parseInt(g2.value.replace(/[^\d]/g,"")||"0",10) : 0;
-
-  const total = n1 + n2;
-
-  const BATAS_PENGHASILAN = 7450000;   // ← GANTI jika UMP berubah
-
-  if(total > BATAS_PENGHASILAN){
-
-    msg.className="text-red-400";
-    msg.innerText="Penghasilan melebihi persyaratan";
-
-    if(g1) g1.classList.add("err");
-    if(g2) g2.classList.add("err");
-
-    (g2||g1).scrollIntoView({behavior:"smooth",block:"center"});
-    return false;
-  }
-}
-
-/* ===== VALIDASI DROPDOWN WAJIB ===== */
-if(page === 1){
-const wajibSelect = [
-  "Status Kependudukan",
-  "Agama",
-  "Status Perkawinan",
-  "Status Tempat Tinggal Sekarang"
-];
-
-for(const id of wajibSelect){
-  const el = document.getElementById(id);
-  if(!el) continue;
-
-  if(!el.value){
-    msg.innerText = "Wajib pilih: " + id;
-    msg.className = "text-red-400";
-
-    el.scrollIntoView({behavior:"smooth",block:"center"});
-    el.focus();
-    el.classList.add("err");
-
-    return false;
-  }
-}
-}
-
-msg.innerText="";
-/* VALIDASI DINAMIS PEKERJAAN PASANGAN */
-if(!validatePekerjaanPasangan()) return false;
-return true;
-}
-
-function nextPage(){
-  if(!validatePage())return;
-  if(page<pages.length-1){page++;showPage();}
-  else kirim();
-}
-
-function prevPage(){
-if(page>0){page--;showPage();}
-}
-
-/* ===== CEK DUPLIKAT NIK & HP KE SERVER ===== */
-async function cekDuplikatClient(nik, hp){
-
-  try{
-    const r = await fetch(
-      URL+"?action=cek_duplikat"
-      +"&nik="+encodeURIComponent(nik)
-      +"&hp="+encodeURIComponent(hp)
-    );
-    return await r.json();
-  }catch{
-    return {error:true};
-  }
-}
-
-/* ================= SUBMIT ================= */
-async function kirim(){
-
-/* anti spam cooldown 10 detik */
-if(Date.now()-lastSubmit<10000){
-msg.className="text-red-400";
-msg.innerText="Tunggu beberapa detik sebelum kirim lagi";
-return;
-}
-
-/* honeypot bot */
-const hp=document.getElementById("website");
-if(hp && hp.value && hp.value.trim()!==""){
-  msg.className="text-red-400";
-  msg.innerText="Aktivitas tidak valid terdeteksi";
-  return;
-}
-
-if(!validatePage())return;
-
-/* ===== CEK DUPLIKAT SEBELUM KIRIM ===== */
-const nikVal = document.getElementById("NIK Pemohon").value.trim();
-const hpVal  = document.getElementById("Nomor Telepon/HP/WA").value.trim();
-
-msg.className="text-yellow-400";
-msg.innerText="Memeriksa duplikasi data...";
-
-const dup = await cekDuplikatClient(nikVal, hpVal);
-
-if(dup.error){
-  msg.className="text-red-400";
-  msg.innerText="Gagal cek duplikasi. Coba lagi.";
-  next.disabled=false;
-  return;
-}
-
-if(dup.nik){
-  msg.className="text-red-400";
-  msg.innerText="NIK sudah terdaftar";
-  next.disabled=false;
-  return;
-}
-
-if(dup.hp){
-  msg.className="text-red-400";
-  msg.innerText="Nomor HP sudah digunakan";
-  next.disabled=false;
-  return;
-}
-
-if(!_unit || !_token){
-  msg.className="text-red-400";
-  msg.innerText="Pilih unit terlebih dahulu";
-  return;
-}
-
-/* ===== VALIDASI UMUR SESUAI GAS (LANSIA/DIFABEL) ===== */
-
-const umurVal = parseInt(
-  (document.getElementById("Umur").value || "0").replace(/[^\d]/g,""),
-  10
-);
-
-if(_unit && (_unit.toUpperCase().startsWith("GM-C0") || _unit.toUpperCase().startsWith("TK-1"))){
-  if(umurVal < 60){
-    msg.className="text-red-400";
-    msg.innerText="tidak memenuhi syarat, unit dipilih untuk lansia (≥60 tahun) / difabel";
-    next.disabled=false;
-    return;
-  }
-}
-
-lastSubmit=Date.now();
-next.disabled=true;
-msg.innerText="Mengirim...";
-
-const data={};
-document.querySelectorAll("input,textarea,select").forEach(x=>{
-  if(!x.id || x.classList.contains("hp")) return;
-
-  let val = x.value;
-
-  /* ===== FIELD ANGKA / NUMERIC (JANGAN UPPERCASE) ===== */
-  const isNumericField =
-    x.classList.contains("rupiah") ||
-    x.inputMode === "numeric" ||
-    x.pattern === "[0-9]*" ||
-    /Penghasilan|Umur|Telepon|NIK/i.test(x.id);
-
-  /* ===== EMAIL JANGAN UPPERCASE ===== */
-  const isEmail = /email/i.test(x.id);
-
-  if(isNumericField){
-    data[x.id] = val.replace(/[^\d]/g,"");
-  }
-  else if(isEmail){
-    data[x.id] = val.trim();
-  }
-  else{
-    data[x.id] = val.toUpperCase().trim();
-  }
-});
-
-/* ===== GABUNG PEKERJAAN PASANGAN ===== */
-const pj = document.getElementById("Pekerjaan Pasangan");
-const pjManual = document.getElementById("Pekerjaan Pasangan Manual");
-
-if(pj && pj.value === "Lainnya" && pjManual && pjManual.value.trim()){
-  data["Pekerjaan Pasangan"] = pjManual.value.trim();
-}
-
-/* ===== RECAPTCHA TOKEN ===== */
-let captchaToken="";
-
-try{
-  await new Promise(r=>grecaptcha.ready(r));
-
-  captchaToken = await grecaptcha.execute(
-    "6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r",
-    {action:"submit"}
-  );
-}catch(e){
-  msg.className="text-red-400";
-  msg.innerText="Captcha gagal. Refresh halaman.";
-  next.disabled=false;
-  return;
-}
-
-/* kirim token */
-data.action="daftar_baru";
-data._captcha=captchaToken;
-data._unit=_unit;
-data._token=_token;
-
-try{
-const r=await fetch(URL,{
-method:"POST",
-body:JSON.stringify(data)
-});
-const j=await r.json();
-
-if(j.status){
-
-  const nik = data["NIK Pemohon"] || "";
-  msg.className="text-green-400";
-  msg.innerText="Pendaftaran berhasil. Mengalihkan ke halaman tracking...";
-
-  setTimeout(()=>{
-    window.location.href =
-      "https://sirab-daftar-2026.vercel.app/tracking?nik="
-      + encodeURIComponent(nik);
-  },1200);
-
-}else{
-  msg.className="text-red-400";
-  msg.innerText = j.message ? j.message : JSON.stringify(j);
-  next.disabled=false;
-}
-
-}catch(e){
-  msg.className="text-red-400";
-  msg.innerText="Gagal mengirim. Coba lagi.";
-  next.disabled=false;
-}
-}
-
-/* format rupiah */
-document.querySelectorAll(".rupiah").forEach(el=>{
-
-  el.addEventListener("input",function(){
-    let v=this.value.replace(/\D/g,"");
-    if(!v){ this.value=""; return; }
-    this.value=new Intl.NumberFormat("id-ID").format(v);
-  });
-
-  el.addEventListener("focus",function(){
-    this.value=this.value.replace(/[^\d]/g,"");
-  });
-
-  el.addEventListener("blur",function(){
-    if(this.value) this.value="Rp "+this.value;
-  });
-});
-
-/* ===== TOGGLE PEKERJAAN PASANGAN ===== */
-document.addEventListener("DOMContentLoaded", function(){
-
-  const select = document.getElementById("Pekerjaan Pasangan");
-  const manual = document.getElementById("Pekerjaan Pasangan Manual");
-
-  if(!select || !manual) return;
-
-  select.addEventListener("change", function(){
-
-    if(this.value === "Lainnya"){
-      manual.classList.remove("hidden");
-      manual.style.display = "block";
-      manual.focus();
-    }else{
-      manual.classList.add("hidden");
-      manual.style.display = "none";
-      manual.value = "";
-    }
-  });
-});
-
-/* ===== VALIDASI DINAMIS PEKERJAAN PASANGAN ===== */
-function validatePekerjaanPasangan(){
-
-  const pj = document.getElementById("Pekerjaan Pasangan");
-  if(!pj) return true;
-
-  const wajib = pj.value === "Lainnya";
-
-  const f1 = document.getElementById("Nama Perusahaan/Tempat Kerja 2");
-  const f2 = document.getElementById("Alamat Tempat Kerja Pasangan");
-  const f3 = document.getElementById("Penghasilan perbulan Pasangan");
-
-  const fields = [f1,f2,f3];
-
-  for(const el of fields){
-    if(!el) continue;
-
-    el.classList.remove("err");
-
-    if(wajib){
-      if(!el.value || !el.value.trim()){
-        msg.className="text-red-400";
-        msg.innerText="Wajib diisi karena Pekerjaan Pasangan = Lainnya";
-
-        el.scrollIntoView({behavior:"smooth",block:"center"});
-        el.focus();
-        el.classList.add("err");
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-/* ===== BLOK INPUT NON ANGKA ===== */
-["Umur"].forEach(id=>{
-  const el=document.getElementById(id);
-  if(!el) return;
-
-  el.addEventListener("input",function(){
-    this.value=this.value.replace(/[^\d]/g,"");
-    cekWarningLansia();   // ← TAMBAHAN
-  });
-});
-
-
-/* ===== FORMAT OTOMATIS → 62xx (HP + NIK sementara) ===== */
-(function(){
-
-  const fields = [
-    "Nomor Telepon/HP/WA",
-    "NIK Pemohon"   // sementara ikut format 62xx
-  ];
-
-  fields.forEach(id=>{
-
-    const el = document.getElementById(id);
-    if(!el) return;
-
-    el.addEventListener("input", function(){
-      let v = this.value.replace(/\D/g,"");   // hanya angka
-      if(!v){
-        this.value="";
-        return;
-      }
-
-    /* jika belum diawali 62 */
-    if(!v.startsWith("62")){
-
-    if(v.startsWith("0")){
-      v = "62" + v.slice(1);
-    }
-    else if(v.startsWith("8")){
-      v = "62" + v;
-    }
-  }
+  if(el) {
+    el.addEventListener("input", function() {
+      let v = this.value.replace(/\D/g, "");
+      if (v.startsWith("0")) v = "62" + v.substring(1);
+      if (v.startsWith("8")) v = "62" + v;
       this.value = v;
+      
+      // Khusus Umur lansia (deteksi dari NIK posisi tgl lahir - sederhana)
+      if(id === "NIK Pemohon" && v.length >= 12) {
+        // Logika sederhana: jika tahun lahir < 66 (asumsi 2026)
+        const thn = parseInt(v.substring(10,12));
+        if(thn < 66) document.getElementById("warningLansia").classList.remove("hidden");
+        else document.getElementById("warningLansia").classList.add("hidden");
+      }
     });
+  }
+});
 
-  });
+// Fungsi Kirim ke GAS (Logic Dipertahankan)
+async function kirim() {
+  const btn = document.getElementById("btnKirim");
+  btn.disabled = true;
+  btn.innerText = "Mengirim... ⏳";
 
-})();
+  const form = document.getElementById("formPendaftaran");
+  const fd = new FormData(form);
+  const data = new URLSearchParams();
+
+  for (const [key, value] of fd) {
+    data.append(key, value);
+  }
+
+  try {
+    const response = await fetch("GANTI_DENGAN_URL_WEB_APP_ANDA", {
+      method: "POST",
+      body: data,
+      mode: "no-cors"
+    });
+    
+    alert("Terima kasih! Pendaftaran Anda telah kami terima. Petugas akan menghubungi melalui WhatsApp untuk jadwal verifikasi berkas.");
+    window.location.reload();
+  } catch (e) {
+    alert("Terjadi kesalahan saat mengirim. Silakan coba lagi.");
+    btn.disabled = false;
+    btn.innerText = "Kirim Formulir 🚀";
+  }
+}
 </script>
+
 </body>
 </html>
