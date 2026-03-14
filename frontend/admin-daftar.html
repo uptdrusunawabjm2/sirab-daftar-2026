@@ -32,15 +32,19 @@
         /* SIDEBAR MODERN */
         #sidebar {
             width: 260px;
+            height: 100vh; /* Memastikan sidebar setinggi layar */
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: #020617;
             border-right: 1px solid #334155;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
         }
 
         #sidebar.collapsed { width: 85px; }
-        #sidebar.collapsed .menu-text, 
-        #sidebar.collapsed .sidebar-footer-text { display: none; }
+        #sidebar.collapsed .menu-text { display: none; }
 
         .nav-link {
             transition: all 0.2s;
@@ -93,37 +97,16 @@
             color: #fff;
         }
 
-        /* FIXED COLUMN LOGIC (Freeze Tanggal & Nama) */
-        /* Kolom 1 (Tanggal Formulir) */
-        .table-modern th:nth-child(1), 
-        .table-modern td:nth-child(1) {
-            position: sticky;
-            left: 0;
-            z-index: 45;
-            min-width: 120px;
+        /* FIXED COLUMNS */
+        .table-modern th:nth-child(1), .table-modern td:nth-child(1) {
+            position: sticky; left: 0; z-index: 45; min-width: 120px;
         }
-        /* Kolom 2 (Nama Pemohon) */
-        .table-modern th:nth-child(2), 
-        .table-modern td:nth-child(2) {
-            position: sticky;
-            left: 120px; /* Lebar kolom 1 */
-            z-index: 45;
-            min-width: 180px;
+        .table-modern th:nth-child(2), .table-modern td:nth-child(2) {
+            position: sticky; left: 120px; z-index: 45; min-width: 180px;
             border-right: 1px solid #334155;
         }
-
-        /* Higher Z-Index for Headers */
-        .table-modern th:nth-child(1),
-        .table-modern th:nth-child(2) {
-            z-index: 55;
-            background: #1e293b;
-        }
-
-        /* Background Solid for Sticky Cells */
-        .table-modern td:nth-child(1),
-        .table-modern td:nth-child(2) {
-            background: #020617;
-        }
+        .table-modern th:nth-child(1), .table-modern th:nth-child(2) { z-index: 55; background: #1e293b; }
+        .table-modern td:nth-child(1), .table-modern td:nth-child(2) { background: #020617; }
 
         /* STATUS BADGE */
         .badge {
@@ -144,25 +127,24 @@
             #sidebar.show { left: 0; }
             .grid-stats { grid-template-cols: 1fr 1fr; }
             .table-modern { font-size: 10px; }
-            /* Disable sticky on mobile for better accessibility if needed */
         }
     </style>
 </head>
 
 <body class="min-h-screen flex overflow-hidden">
 
-<div id="sidebar" class="flex flex-col shadow-2xl">
-    <div class="p-6 border-b border-slate-800">
+<div id="sidebar" class="shadow-2xl">
+    <div class="p-6 border-b border-slate-800 shrink-0">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold">R</div>
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold text-white">R</div>
             <div class="menu-text">
-                <h1 class="font-bold tracking-tight">Rusunawa</h1>
+                <h1 class="font-bold tracking-tight text-white">Rusunawa</h1>
                 <p class="text-[10px] text-slate-500 uppercase">Management System</p>
             </div>
         </div>
     </div>
 
-    <nav class="flex-1 p-4 space-y-2">
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
         <a class="nav-link active flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer">
             <span class="text-xl">📊</span>
             <span class="menu-text font-medium text-sm">Data Pendaftaran</span>
@@ -177,10 +159,10 @@
         </a>
     </nav>
 
-    <div class="p-4 border-t border-slate-800">
+    <div class="p-4 border-t border-slate-800 shrink-0">
         <button onclick="logout()" class="w-full flex items-center justify-center gap-3 bg-rose-500/10 hover:bg-rose-600 text-rose-500 hover:text-white py-3 rounded-xl transition-all duration-300 group">
             <span class="text-lg group-hover:scale-110 transition">🚪</span>
-            <span class="menu-text font-bold text-xs uppercase tracking-wider sidebar-footer-text">Keluar Akun</span>
+            <span class="menu-text font-bold text-xs uppercase tracking-wider">Keluar Akun</span>
         </button>
     </div>
 </div>
@@ -230,15 +212,13 @@
             <div class="relative flex-1">
                 <span class="absolute left-3 top-2.5 text-slate-500">🔍</span>
                 <input id="cari" placeholder="Cari nama, rusun, atau status..." 
-                       class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition">
+                       class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition text-white">
             </div>
-            
-            <select id="sortTanggal" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="sortTanggal" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 text-white">
                 <option value="desc">Terbaru</option>
                 <option value="asc">Terlama</option>
             </select>
-
-            <select id="filterStatus" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="filterStatus" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 text-white">
                 <option value="">Semua Status</option>
                 <option value="MENUNGGU">MENUNGGU</option>
                 <option value="VERIFIKASI">VERIFIKASI</option>
@@ -246,8 +226,7 @@
                 <option value="DITERIMA">DITERIMA</option>
                 <option value="DITOLAK">DITOLAK</option>
             </select>
-            
-            <button onclick="exportXLSX()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+            <button onclick="exportXLSX()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 text-white">
                 📥 Export Excel
             </button>
         </div>
@@ -268,7 +247,6 @@
                     <button onclick="nextPage()" class="p-1.5 hover:bg-slate-800 rounded-lg transition text-xs">▶</button>
                 </div>
             </div>
-            
             <div class="table-wrap">
                 <table id="table" class="table-modern"></table>
             </div>
@@ -279,13 +257,11 @@
 
 <div id="modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
-        <h2 class="text-xl font-bold flex items-center gap-2">
-            <span class="text-indigo-500">✏️</span> Update Verifikasi
-        </h2>
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">✏️ Update Verifikasi</h2>
         <div class="space-y-3">
             <div>
                 <label class="text-[10px] uppercase font-bold text-slate-500 ml-1">Status Verifikasi</label>
-                <select id="mStatus" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                <select id="mStatus" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 text-white outline-none">
                     <option>MENUNGGU</option>
                     <option>VERIFIKASI</option>
                     <option>DIPROSES</option>
@@ -295,26 +271,145 @@
             </div>
             <div>
                 <label class="text-[10px] uppercase font-bold text-slate-500 ml-1">Catatan</label>
-                <textarea id="mCatatan" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 h-24 outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="Tulis alasan atau catatan..."></textarea>
+                <textarea id="mCatatan" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 h-24 text-white outline-none"></textarea>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-slate-500 ml-1">Tanggal</label>
-                    <input type="date" id="mTanggal" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-slate-500 ml-1">Unit</label>
-                    <input id="mUnit" class="w-full mt-1 p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm" placeholder="Contoh: A.101">
-                </div>
+                <input type="date" id="mTanggal" class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm">
+                <input id="mUnit" class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm" placeholder="Unit">
             </div>
             <input id="mNo" type="hidden">
         </div>
         <div class="flex gap-3 pt-4">
-            <button onclick="simpan()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition active:scale-95 text-sm">Simpan Perubahan</button>
-            <button onclick="closeModal()" class="px-6 bg-slate-800 hover:bg-slate-700 py-3 rounded-xl font-medium transition text-sm">Batal</button>
+            <button onclick="simpan()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold text-white transition">Simpan</button>
+            <button onclick="closeModal()" class="px-6 bg-slate-800 py-3 rounded-xl font-medium text-white transition">Batal</button>
         </div>
     </div>
 </div>
+
+<script>
+const API = CONFIG.API;
+const KEY = CONFIG.INTERNAL_KEY;
+let HEAD=[], DATA=[], RAW_DATA=[], page=1, lastHash="", ROW=null;
+const ROLE = localStorage.getItem("RUSUN_ROLE") || "admin";
+
+async function load(){
+  try {
+    const r = await fetch(API+"?action=daftar_all&key="+KEY);
+    const j = await r.json();
+    if(JSON.stringify(j.data)!==lastHash){
+      HEAD=j.header; RAW_DATA=j.data; lastHash=JSON.stringify(j.data);
+      applyFilter(); hitung();
+    }
+  } catch(e) { console.error(e); }
+}
+
+function hitung(){
+  const idx=HEAD.indexOf("Status Verifikasi");
+  let p=0,a=0,rj=0;
+  DATA.forEach(d=>{
+    if(d[idx]==="DITERIMA") a++; else if(d[idx]==="DITOLAK") rj++; else p++;
+  });
+  rTotal.textContent=DATA.length; rPending.textContent=p; rAcc.textContent=a; rReject.textContent=rj;
+}
+
+function render(){
+  const currentRows = parseInt(rowsPerPage.value);
+  const start=(page-1)*currentRows;
+  const slice=DATA.slice(start,start+currentRows);
+  let h="<thead><tr>";
+  HEAD.forEach(c=>h+=`<th>${c}</th>`);
+  h+="<th class='text-center'>Aksi</th></tr></thead><tbody>";
+  slice.forEach((r,i)=>{
+    h+="<tr>";
+    r.forEach((v,ci)=>{
+      if(HEAD[ci]==="Status Verifikasi"){
+          let color = v==="DITERIMA"?"bg-emerald-500/10 text-emerald-400":v==="DITOLAK"?"bg-rose-500/10 text-rose-400":"bg-yellow-500/10 text-yellow-500";
+          h+=`<td><span class="badge ${color}">${v||""}</span></td>`;
+      } else h+=`<td>${v||""}</td>`;
+    });
+    h+=`<td class='flex gap-2 justify-center'>`;
+    if(ROLE==="super") h+=`<button onclick='openModal(${start+i})' class='px-2 py-1 bg-indigo-600 rounded text-[9px] font-bold'>UPDATE</button>`;
+    h+=`<button onclick='lihatDetail(${start+i})' class='px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[9px] font-bold'>DETAIL</button></td></tr>`;
+  });
+  table.innerHTML=h;
+  pageInfo.textContent=`${page} / ${Math.ceil(DATA.length/currentRows)||1}`;
+}
+
+function applyFilter(){
+  const q = cari.value.toLowerCase();
+  const fs = filterStatus.value;
+  const mode = sortTanggal.value;
+  let f = RAW_DATA.filter(r=> (fs ? r[HEAD.indexOf("Status Verifikasi")] === fs : true) && (!q || r.some(v => String(v||"").toLowerCase().includes(q))));
+  const idxTgl = HEAD.indexOf("Tanggal Formulir");
+  if(idxTgl!==-1) f.sort((a,b)=> mode==="asc" ? new Date(a[idxTgl])-new Date(b[idxTgl]) : new Date(b[idxTgl])-new Date(a[idxTgl]));
+  DATA = f; page=1; render(); hitung();
+}
+
+function toggleSidebar(){
+  const sb = document.getElementById("sidebar");
+  window.innerWidth <= 768 ? sb.classList.toggle("show") : sb.classList.toggle("collapsed");
+}
+
+function logout(){
+  if(confirm("Keluar dari sistem?")){
+    localStorage.clear();
+    window.location.href = "login.html";
+  }
+}
+
+function openModal(i){
+  ROW=i;
+  mStatus.value = DATA[i][HEAD.indexOf("Status Verifikasi")] || "MENUNGGU";
+  mCatatan.value = DATA[i][HEAD.indexOf("Catatan Verifikasi")] || "";
+  mNo.value = DATA[i][HEAD.indexOf("No Pendaftaran")] || "";
+  mUnit.value = DATA[i][HEAD.indexOf("Unit")] || DATA[i][HEAD.indexOf("_unit")] || "";
+  modal.classList.remove("hidden"); modal.classList.add("flex");
+}
+
+function closeModal(){ modal.classList.add("hidden"); }
+
+async function simpan(){
+  const fd = new URLSearchParams();
+  fd.append("action","daftar_update"); fd.append("token",localStorage.getItem("RUSUN_TOKEN"));
+  fd.append("key",KEY); fd.append("no_lama",DATA[ROW][HEAD.indexOf("No Pendaftaran")]);
+  fd.append("status",mStatus.value); fd.append("catatan",mCatatan.value);
+  fd.append("tanggal",mTanggal.value); fd.append("no_baru",mNo.value); fd.append("unit",mUnit.value);
+  const r = await fetch(API,{ method:"POST", body:fd });
+  const j = await r.json();
+  if(j.status){ closeModal(); await load(); }
+}
+
+function exportXLSX() {
+  const ws = XLSX.utils.aoa_to_sheet([HEAD, ...DATA]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+  XLSX.writeFile(wb, `Data_Rusunawa_${Date.now()}.xlsx`);
+}
+
+function lihatDetail(i){
+  const d = DATA[i];
+  let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+  HEAD.forEach((h,idx)=>{
+    html+=`<div class="bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
+        <label class="text-[9px] uppercase font-bold text-slate-500 block mb-1">${h}</label>
+        <p class="text-xs text-slate-200 font-medium">${d[idx]||"-"}</p>
+      </div>`;
+  });
+  detailContent.innerHTML = html + `</div>`;
+  modalDetail.classList.remove("hidden"); modalDetail.classList.add("flex");
+}
+
+function closeDetail(){ modalDetail.classList.add("hidden"); }
+function prevPage(){ if(page>1){ page--; render(); } }
+function nextPage(){ if(page < Math.ceil(DATA.length/parseInt(rowsPerPage.value))){ page++; render(); } }
+
+cari.oninput = applyFilter;
+filterStatus.onchange = applyFilter;
+sortTanggal.onchange = applyFilter;
+rowsPerPage.onchange = render;
+
+(async ()=>{ await load(); setInterval(load, 15000); })();
+</script>
 
 <div id="modalDetail" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 z-[9999]">
     <div class="bg-slate-900 border border-slate-700 text-slate-200 rounded-3xl p-8 w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
@@ -332,175 +427,5 @@
     </div>
 </div>
 
-<script>
-const API = CONFIG.API;
-const KEY = CONFIG.INTERNAL_KEY;
-
-let HEAD=[], DATA=[], RAW_DATA=[];
-let page=1, lastHash="", ROW=null;
-const ROLE = localStorage.getItem("RUSUN_ROLE") || "admin";
-
-async function load(){
-  try {
-    const r = await fetch(API+"?action=daftar_all&key="+KEY);
-    const j = await r.json();
-    const newHash = JSON.stringify(j.data);
-    if(newHash!==lastHash){
-      HEAD=j.header;
-      RAW_DATA=j.data;
-      lastHash=newHash;
-      applyFilter();
-      hitung();
-    }
-  } catch(e) { console.error("Load failed"); }
-}
-
-function hitung(){
-  const idx=HEAD.indexOf("Status Verifikasi");
-  let p=0,a=0,rj=0;
-  DATA.forEach(d=>{
-    if(d[idx]==="DITERIMA") a++;
-    else if(d[idx]==="DITOLAK") rj++;
-    else p++;
-  });
-  document.getElementById('rTotal').textContent=DATA.length;
-  document.getElementById('rPending').textContent=p;
-  document.getElementById('rAcc').textContent=a;
-  document.getElementById('rReject').textContent=rj;
-}
-
-function render(){
-  const currentRows = parseInt(rowsPerPage.value);
-  const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
-  if(page > maxPage) page = maxPage;
-  const start=(page-1)*currentRows;
-  const slice=DATA.slice(start,start+currentRows);
-
-  let h="<thead><tr>";
-  HEAD.forEach(c=>h+=`<th>${c}</th>`);
-  h+="<th class='text-center'>Aksi</th></tr></thead><tbody>";
-
-  slice.forEach((r,i)=>{
-    const idx=start+i;
-    h+="<tr>";
-    r.forEach((v,ci)=>{
-      if(HEAD[ci]==="Status Verifikasi"){
-          let color = "bg-slate-800 text-slate-400 border border-slate-700";
-          if(v === "DITERIMA") color = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-          if(v === "DITOLAK") color = "bg-rose-500/10 text-rose-400 border border-rose-500/30";
-          if(v === "MENUNGGU") color = "bg-yellow-500/10 text-yellow-500 border border-yellow-500/30";
-          h+=`<td><span class="badge ${color}">${v||""}</span></td>`;
-      } else {
-          h+=`<td>${v||""}</td>`;
-      }
-    });
-    h+=`<td class='flex items-center justify-center gap-2'>`;
-    if(ROLE === "super") h+=`<button onclick='openModal(${idx})' class='px-2 py-1 bg-indigo-600 rounded text-[9px] font-bold'>UPDATE</button>`;
-    h+=`<button onclick='lihatDetail(${idx})' class='px-2 py-1 bg-slate-800 border border-slate-700 rounded text-[9px] font-bold'>DETAIL</button></td></tr>`;
-  });
-
-  document.getElementById('table').innerHTML=h;
-  document.getElementById('pageInfo').textContent=`${page} / ${maxPage}`;
-}
-
-function applyFilter(){
-  const q = cari.value.toLowerCase();
-  const fs = filterStatus.value;
-  const mode = sortTanggal.value;
-
-  let filtered = RAW_DATA.filter(r=>{
-    const idxStatus = HEAD.indexOf("Status Verifikasi");
-    const matchStatus = fs ? r[idxStatus] === fs : true;
-    const matchCari = !q || r.some(v => String(v||"").toLowerCase().includes(q));
-    return matchStatus && matchCari;
-  });
-
-  const idxTanggal = HEAD.indexOf("Tanggal Formulir");
-  if(idxTanggal !== -1){
-    filtered.sort((a,b)=>{
-      const da = new Date(a[idxTanggal]).getTime() || 0;
-      const db = new Date(b[idxTanggal]).getTime() || 0;
-      return mode === "asc" ? da - db : db - da;
-    });
-  }
-
-  DATA = filtered;
-  page=1; render(); hitung();
-}
-
-function exportXLSX() {
-  if (!DATA.length) return alert("Tidak ada data.");
-  const ws = XLSX.utils.aoa_to_sheet([HEAD, ...DATA]);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-  XLSX.writeFile(wb, `Data_Rusunawa_${new Date().getTime()}.xlsx`);
-}
-
-function toggleSidebar(){
-  const sb = document.getElementById("sidebar");
-  if(window.innerWidth <= 768) sb.classList.toggle("show");
-  else sb.classList.toggle("collapsed");
-}
-
-function logout(){
-    if(confirm("Apakah Anda yakin ingin keluar?")){
-        localStorage.clear();
-        window.location.href = "login.html"; // Sesuaikan dengan nama file login Anda
-    }
-}
-
-function openModal(i){
-  ROW=i;
-  const idxStatus = HEAD.indexOf("Status Verifikasi");
-  const idxCatatan = HEAD.indexOf("Catatan Verifikasi");
-  const idxNo = HEAD.indexOf("No Pendaftaran");
-  const idxUnit = HEAD.indexOf("Unit") !== -1 ? HEAD.indexOf("Unit") : HEAD.indexOf("_unit");
-
-  mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
-  mCatatan.value = DATA[i][idxCatatan] || "";
-  mNo.value = DATA[i][idxNo] || "";
-  mUnit.value = DATA[i][idxUnit] || "";
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-}
-
-function closeModal(){ modal.classList.add("hidden"); }
-
-async function simpan(){
-  const fd = new URLSearchParams();
-  fd.append("action","daftar_update"); fd.append("token",localStorage.getItem("RUSUN_TOKEN"));
-  fd.append("key",KEY); fd.append("no_lama",DATA[ROW][HEAD.indexOf("No Pendaftaran")]);
-  fd.append("status",mStatus.value); fd.append("catatan",mCatatan.value);
-  fd.append("tanggal",mTanggal.value); fd.append("no_baru",mNo.value); fd.append("unit",mUnit.value);
-  
-  const r = await fetch(API,{ method:"POST", body:fd });
-  const j = await r.json();
-  if(j.status){ closeModal(); await load(); }
-}
-
-function lihatDetail(i){
-  const d = DATA[i];
-  let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
-  HEAD.forEach((h,idx)=>{
-    html+=`<div class="bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
-        <label class="text-[9px] uppercase font-bold text-slate-500 block mb-1">${h}</label>
-        <p class="text-xs text-slate-200 font-medium">${d[idx]||"-"}</p>
-      </div>`;
-  });
-  detailContent.innerHTML = html + `</div>`;
-  modalDetail.classList.remove("hidden"); modalDetail.classList.add("flex");
-}
-
-function closeDetail(){ modalDetail.classList.add("hidden"); }
-function prevPage(){ if(page > 1){ page--; render(); } }
-function nextPage(){ if(page < Math.ceil(DATA.length/parseInt(rowsPerPage.value))){ page++; render(); } }
-
-cari.oninput = applyFilter;
-filterStatus.onchange = applyFilter;
-sortTanggal.onchange = applyFilter;
-rowsPerPage.onchange = () => { page=1; render(); };
-
-(async ()=>{ await load(); setInterval(load, 15000); })();
-</script>
 </body>
 </html>
