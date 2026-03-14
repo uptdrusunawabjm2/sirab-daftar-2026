@@ -190,6 +190,63 @@ TABLE ENTERPRISE STYLE
 .table-modern td:last-child button{
   display:inline-block;
 }
+
+/* =================================
+FREEZE KOLOM PENTING
+================================= */
+
+/* kolom 1 : tanggal */
+.table-modern th:nth-child(1),
+.table-modern td:nth-child(1){
+  position:sticky;
+  left:0;
+  background:#020617;
+  z-index:12;
+  min-width:130px;
+}
+
+/* kolom 2 : nama pemohon */
+.table-modern th:nth-child(2),
+.table-modern td:nth-child(2){
+  position:sticky;
+  left:130px;
+  background:#020617;
+  z-index:11;
+  min-width:160px;
+}
+
+/* kolom 3 : NIK */
+.table-modern th:nth-child(3),
+.table-modern td:nth-child(3){
+  position:sticky;
+  left:290px;
+  background:#020617;
+  z-index:10;
+  min-width:160px;
+}
+
+
+/* =================================
+CONTAINER FILTER DESKTOP
+================================= */
+
+@media (min-width:1024px){
+
+  #main .p-4{
+    max-width:1600px;
+    margin:auto;
+  }
+
+  #cari{
+    max-width:420px;
+  }
+
+  #filterStatus,
+  #sortTanggal{
+    min-width:150px;
+  }
+
+}
 </style>
 
 </head>
