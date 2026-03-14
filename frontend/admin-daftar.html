@@ -121,12 +121,18 @@ TABLE ENTERPRISE STYLE
   border:1px solid #334155;
 }
 
+/* kolom aksi tidak terpotong */
+.table-modern td:last-child,
+.table-modern th:last-child{
+  min-width:110px;
+  white-space:nowrap;
+}
+
 /* teks panjang tidak membuat tabel melebar */
 .table-modern td{
-  max-width:130px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  max-width:220px;
+  white-space:normal;
+  word-break:break-word;
 }
 
 /* kolom pertama tetap terlihat */
