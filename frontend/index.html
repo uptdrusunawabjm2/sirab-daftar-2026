@@ -332,6 +332,147 @@ transform:translateY(0);
 
 }
 
+/* ===============================
+FULL SCREEN MOBILE LAYOUT
+=============================== */
+
+/* container full screen */
+
+@media (max-width:640px){
+
+.max-w-3xl{
+max-width:100%!important;
+margin:0!important;
+padding:0 14px!important;
+}
+
+/* intro full screen */
+
+#introPage{
+
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+
+border-radius:0!important;
+border-left:none!important;
+border-right:none!important;
+
+}
+
+/* form full screen */
+
+#formWrapper{
+
+min-height:100vh;
+
+}
+
+/* form card */
+
+#formWrapper .bg-slate-900{
+
+border-radius:22px;
+margin-bottom:80px;
+
+}
+
+/* input lebih nyaman mobile */
+
+.input{
+
+font-size:16px;
+padding:16px;
+
+}
+
+/* tombol bawah */
+
+.flex.justify-between{
+
+width:92%;
+left:50%;
+transform:translateX(-50%);
+bottom:10px;
+
+}
+
+/* msg info unit */
+
+#msg{
+
+margin-top:18px;
+
+}
+
+/* animasi page */
+
+.page{
+
+animation:pageSlideMobile .3s ease;
+
+}
+
+@keyframes pageSlideMobile{
+
+from{
+opacity:0;
+transform:translateX(15px);
+}
+
+to{
+opacity:1;
+transform:translateX(0);
+}
+
+}
+
+}
+
+/* ===============================
+PROGRESS STEP INDICATOR
+=============================== */
+
+#formWrapper::before{
+
+content:"STEP 1 / 5";
+
+position:sticky;
+top:0;
+
+display:block;
+text-align:center;
+
+background:rgba(15,23,42,.9);
+backdrop-filter:blur(12px);
+
+padding:10px 0;
+margin-bottom:12px;
+
+font-size:13px;
+letter-spacing:.5px;
+
+border-bottom:1px solid rgba(255,255,255,.05);
+
+z-index:50;
+
+}
+
+/* animasi step */
+
+.stepFlash{
+
+animation:stepFlash .4s ease;
+
+}
+
+@keyframes stepFlash{
+
+0%{opacity:.3}
+100%{opacity:1}
+
+}
 </style>
 
 <script src="https://www.google.com/recaptcha/api.js?render=6LctlGQsAAAAANCxu-nYP1AxckjL--7GeEC_WE8r"></script>
@@ -860,9 +1001,30 @@ document.getElementById("next").disabled=true;
 
 /* ================= PAGINATION ================= */
 function showPage(){
+
 pages.forEach((p,i)=>p.classList.toggle("hidden",i!==page));
+
 prev.style.visibility=page===0?"hidden":"visible";
+
 next.innerText=page===pages.length-1?"KIRIM":"Lanjut";
+
+/* ===== UPDATE STEP INDICATOR ===== */
+
+const wrapper=document.getElementById("formWrapper");
+
+if(wrapper){
+
+wrapper.classList.remove("stepFlash");
+
+wrapper.style.setProperty(
+"content",
+`STEP ${page+1} / ${pages.length}`
+);
+
+wrapper.classList.add("stepFlash");
+
+}
+
 }
 showPage();
 
@@ -904,7 +1066,15 @@ for(const x of inputs){
     msg.innerText="Field belum diisi: " + x.id;
     msg.className="text-red-400";
 
-    x.scrollIntoView({behavior:"smooth",block:"center"});
+    x.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+    });
+
+    setTimeout(()=>{
+    window.scrollBy(0,-120);
+    },200);
+    
     x.focus();
     x.classList.add("err");
     return false;
