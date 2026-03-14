@@ -95,7 +95,7 @@ position:sticky;
 left:0;
 min-width:150px;
 background:#020617;
-z-index:40;
+z-index:60;
 }
 
 .table-modern th:nth-child(2),
@@ -104,7 +104,7 @@ position:sticky;
 left:150px;
 min-width:200px;
 background:#020617;
-z-index:39;
+z-index:59;
 }
 
 .table-modern th:nth-child(3),
@@ -113,12 +113,12 @@ position:sticky;
 left:350px;
 min-width:170px;
 background:#020617;
-z-index:38;
+z-index:58;
 }
 
 /* header harus paling atas */
 .table-modern th{
-z-index:40;
+z-index:70;
 }
 
 /* =========================
@@ -145,9 +145,9 @@ text-align:center;
 
 .table-modern td:last-child{
 display:flex;
+flex-direction:column;
 gap:4px;
-justify-content:center;
-flex-wrap:wrap;
+align-items:center;
 }
 
 .table-modern td:last-child button{
@@ -195,6 +195,7 @@ MOBILE
 
 .table-modern{
 font-size:12px;
+min-width:1200px;
 }
 
 .table-modern th{
@@ -203,6 +204,10 @@ font-size:11px;
 
 .table-modern td{
 font-size:12px;
+}
+
+.table-modern td:last-child{
+flex-direction:column;
 }
 
 .table-wrap{
