@@ -28,40 +28,40 @@ checkAgree = function(){
 
 <style>
 
-/* ===== MOBILE APP THEME ===== */
+/* ===== MOBILE BANKING STYLE ===== */
 
 body{
 background:
 radial-gradient(circle at top,#0f172a,#020617);
-font-family:system-ui,-apple-system,Segoe UI,Roboto;
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
 }
 
-/* ===== MOBILE SCREEN ===== */
+/* ===== APP SCREEN ===== */
 
 .max-w-3xl{
 max-width:420px!important;
 margin:auto;
 }
 
-/* ===== GLASS CARD ===== */
+/* ===== CARD ===== */
 
 .bg-slate-900{
-background:rgba(15,23,42,.7)!important;
-backdrop-filter:blur(16px);
-border:1px solid rgba(255,255,255,.06)!important;
+background:rgba(15,23,42,.75)!important;
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.05)!important;
 box-shadow:
-0 20px 60px rgba(0,0,0,.6),
-inset 0 1px 0 rgba(255,255,255,.05);
+0 30px 80px rgba(0,0,0,.6),
+inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-/* ===== INPUT MODERN ===== */
+/* ===== INPUT ===== */
 
 .input{
 width:100%;
 background:rgba(2,6,23,.6);
 border:1px solid #334155;
-border-radius:16px;
-padding:14px;
+border-radius:18px;
+padding:15px;
 font-size:16px;
 transition:.25s;
 }
@@ -70,16 +70,16 @@ transition:.25s;
 outline:none;
 border-color:#6366f1;
 box-shadow:
-0 0 0 2px rgba(99,102,241,.4),
-0 8px 20px rgba(0,0,0,.4);
+0 0 0 3px rgba(99,102,241,.35),
+0 10px 30px rgba(0,0,0,.5);
 }
 
 /* ===== SELECT ===== */
 
 select{
 background:rgba(2,6,23,.6);
-border-radius:16px;
-padding:14px;
+border-radius:18px;
+padding:15px;
 }
 
 /* ===== LABEL ===== */
@@ -93,54 +93,60 @@ color:#cbd5e1;
 /* ===== TEXTAREA ===== */
 
 textarea{
-min-height:90px;
+min-height:100px;
 }
 
-/* ===== PAGE SPACING ===== */
+/* ===== PAGE COMPACT ===== */
 
 .page{
 max-width:420px;
 margin:auto;
+gap:10px;
 }
 
 /* ===== PAGE TRANSITION ===== */
 
 .page{
-animation:pageFade .35s ease;
+animation:pageSlide .35s ease;
 }
 
-@keyframes pageFade{
-from{
+@keyframes pageSlide{
+0%{
 opacity:0;
-transform:translateY(10px);
+transform:translateX(20px);
 }
-to{
+100%{
 opacity:1;
-transform:translateY(0);
+transform:translateX(0);
 }
 }
 
-/* ===== FLOATING NAV ===== */
+/* ===== BOTTOM NAVIGATION ===== */
 
 .flex.justify-between{
-position:sticky;
-bottom:10px;
-background:rgba(15,23,42,.9);
-backdrop-filter:blur(14px);
+position:fixed;
+bottom:12px;
+left:50%;
+transform:translateX(-50%);
+width:390px;
+background:rgba(15,23,42,.95);
+backdrop-filter:blur(16px);
 padding:12px;
-border-radius:18px;
-box-shadow:0 10px 40px rgba(0,0,0,.6);
+border-radius:22px;
+box-shadow:
+0 20px 50px rgba(0,0,0,.7);
+z-index:999;
 }
 
 /* ===== BUTTON ===== */
 
 button{
-border-radius:14px;
+border-radius:16px;
 padding:14px;
 font-weight:600;
 }
 
-/* ===== PROGRESS BAR ===== */
+/* ===== STEP PROGRESS ===== */
 
 body::before{
 content:"";
@@ -148,16 +154,16 @@ position:fixed;
 top:0;
 left:0;
 height:4px;
-width:30%;
+width:20%;
 background:
-linear-gradient(90deg,#6366f1,#38bdf8);
+linear-gradient(90deg,#6366f1,#22d3ee);
 z-index:9999;
-animation:progressSlide 2s infinite;
+animation:stepProgress 3s infinite;
 }
 
-@keyframes progressSlide{
+@keyframes stepProgress{
 0%{transform:translateX(-100%)}
-100%{transform:translateX(400%)}
+100%{transform:translateX(500%)}
 }
 
 /* ===== ERROR FIELD ===== */
@@ -166,16 +172,16 @@ animation:progressSlide 2s infinite;
 box-shadow:0 0 0 2px #ef4444!important;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== MOBILE KEYBOARD SAFE ===== */
 
 @media(max-width:640px){
 
 body{
-padding:8px;
+padding:6px;
 }
 
 .page{
-padding:10px;
+padding-bottom:120px;
 }
 
 }
