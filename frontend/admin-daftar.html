@@ -42,7 +42,7 @@ function logout(){
 
 <style>
 /* ==============================
-   SIDEBAR ENTERPRISE
+SIDEBAR
 ============================== */
 
 #sidebar{
@@ -52,22 +52,18 @@ function logout(){
   border-right:1px solid #1f2937;
 }
 
-/* DESKTOP COLLAPSE */
 #sidebar.collapsed{
   width:72px;
 }
 
-/* HIDE TEXT SAAT COLLAPSE */
 #sidebar.collapsed .menu-text{
   display:none;
 }
 
-/* ICON CENTER SAAT COLLAPSE */
 #sidebar.collapsed a{
   justify-content:center;
 }
 
-/* MENU ITEM */
 #sidebar a{
   display:flex;
   align-items:center;
@@ -79,34 +75,96 @@ function logout(){
   color:#cbd5e1;
 }
 
-/* HOVER */
 #sidebar a:hover{
   background:#1e293b;
   transform:translateX(2px);
 }
 
-/* ACTIVE */
 #sidebar .active{
   background:#2563eb;
   color:white;
   box-shadow:0 0 0 1px #3b82f6 inset;
 }
 
-/* MOBILE SLIDE */
-@media(max-width:768px){
+/* ==============================
+TABLE ENTERPRISE STYLE
+============================== */
 
-  #sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    height:100%;
-    transform:translateX(-100%);
-    z-index:40;
+.table-modern{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10.5px;
+  table-layout:fixed;
+}
+
+.table-modern th{
+  padding:4px 6px;
+  line-height:1.1;
+  font-size:10px;
+  font-weight:600;
+  white-space:nowrap;
+  background:#020617;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.table-modern td{
+  padding:3px 5px;
+  font-size:10px;
+  line-height:1.25;
+  vertical-align:top;
+}
+
+.table-modern th,
+.table-modern td{
+  border:1px solid #334155;
+}
+
+/* teks panjang tidak membuat tabel melebar */
+.table-modern td{
+  max-width:130px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* kolom pertama tetap terlihat */
+.table-modern th:first-child,
+.table-modern td:first-child{
+  position:sticky;
+  left:0;
+  background:#020617;
+  z-index:11;
+}
+
+/* baris hover seperti dashboard enterprise */
+.table-modern tbody tr:hover{
+  background:#0f172a;
+}
+
+/* scroll lebih halus */
+.table-wrap{
+  overflow:auto;
+  scrollbar-width:thin;
+}
+
+/* desktop compact */
+@media (min-width:1024px){
+
+  .table-modern{
+    font-size:10px;
   }
 
-  #sidebar.show{
-    transform:translateX(0);
+  .table-modern th{
+    font-size:9.5px;
+    padding:3px 4px;
   }
+
+  .table-modern td{
+    padding:2px 4px;
+  }
+
 }
 </style>
 
