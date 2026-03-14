@@ -1,313 +1,393 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <title>Dashboard Admin Pendaftaran</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<script>
-(async ()=>{
-  const token = localStorage.getItem("RUSUN_TOKEN");
-  if(!token){
-    location.href="login";
-    return;
-  }
-  const fd = new URLSearchParams();
-  fd.append("action","cek_token");
-  fd.append("token",token);
-  const r = await fetch(CONFIG.API,{method:"POST",body:fd});
-  const j = await r.json();
-  if(!j.status){
-    localStorage.removeItem("RUSUN_TOKEN");
-    location.href="login";
-  }
-})();
-
-function logout(){
-  localStorage.removeItem("RUSUN_TOKEN");
-  localStorage.removeItem("RUSUN_USER");
-  location.href="login";
-}
-</script>
-
 <style>
-  body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-  /* ==============================
-  SIDEBAR MODERN
-  ============================== */
-  #sidebar {
-    width: 260px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: #0f172a;
-    border-right: 1px solid #1e293b;
-  }
-  #sidebar.collapsed { width: 80px; }
-  #sidebar.collapsed .menu-text, #sidebar.collapsed .admin-info { display: none; }
-  #sidebar a {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 16px; margin: 4px 12px;
-    border-radius: 12px; color: #94a3b8;
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-  #sidebar a:hover { background: #1e293b; color: #f8fafc; transform: translateX(4px); }
-  #sidebar a.active { 
-    background: linear-gradient(135deg, #2563eb, #1d4ed8); 
-    color: #ffffff; 
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); 
-  }
+body{
+font-family:'Plus Jakarta Sans',sans-serif;
+}
 
-  /* ==============================
-  TABLE MODERN STYLE
-  ============================== */
-  .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
-  .table-modern th {
-    background: #020617; color: #94a3b8;
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.05em; padding: 14px 16px;
-    text-align: left; border-bottom: 1px solid #334155;
-    position: sticky; top: 0; z-index: 10;
-  }
-  .table-modern td {
-    padding: 12px 16px; font-size: 13px; color: #cbd5e1;
-    border-bottom: 1px solid #1e293b; vertical-align: middle;
-    word-break: break-word;
-  }
-  .table-modern tbody tr:hover td { background: #0f172a; }
-  
-  /* STICKY COLUMNS */
-  .table-modern th:first-child, .table-modern td:first-child,
-  .table-modern th:nth-child(2), .table-modern td:nth-child(2) {
-    position: sticky; background: #020617; z-index: 5;
-  }
-  .table-modern th:first-child, .table-modern td:first-child { left: 0; }
-  .table-modern th:nth-child(2), .table-modern td:nth-child(2) { left: 50px; border-right: 2px solid #1e293b; }
-  .table-modern tbody tr:hover td:nth-child(-n+2) { background: #0f172a; }
+/* =========================
+SIDEBAR
+========================= */
 
-  /* SCROLLBAR */
-  .table-wrap { overflow: auto; scrollbar-width: thin; scrollbar-color: #334155 transparent; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+#sidebar{
+width:260px;
+transition:all .3s;
+background:#0f172a;
+border-right:1px solid #1e293b;
+}
 
-  /* BADGES */
-  .badge { padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-  .badge-waiting { background: rgba(234, 179, 8, 0.1); color: #fbbf24; border: 1px solid rgba(234, 179, 8, 0.2); }
-  .badge-success { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
-  .badge-danger { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-  .badge-info { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+#sidebar.collapsed{
+width:80px;
+}
+
+#sidebar.collapsed .menu-text{
+display:none;
+}
+
+/* =========================
+MAIN LAYOUT
+========================= */
+
+#main{
+width:100%;
+flex:1;
+}
+
+.container-admin{
+width:100%;
+max-width:none;
+}
+
+/* =========================
+TABLE ENTERPRISE
+========================= */
+
+.table-modern{
+width:100%;
+border-collapse:collapse;
+font-size:11px;
+}
+
+.table-modern th{
+background:#020617;
+color:#94a3b8;
+font-size:10px;
+font-weight:700;
+text-transform:uppercase;
+padding:6px;
+border:1px solid #334155;
+position:sticky;
+top:0;
+z-index:5;
+}
+
+.table-modern td{
+padding:6px;
+border:1px solid #1e293b;
+vertical-align:top;
+word-break:break-word;
+}
+
+.table-modern tbody tr:hover{
+background:#0f172a;
+}
+
+/* =========================
+FREEZE KOLOM UTAMA
+========================= */
+
+.table-modern th:nth-child(1),
+.table-modern td:nth-child(1){
+position:sticky;
+left:0;
+background:#020617;
+z-index:9;
+min-width:140px;
+}
+
+.table-modern th:nth-child(2),
+.table-modern td:nth-child(2){
+position:sticky;
+left:140px;
+background:#020617;
+z-index:8;
+min-width:180px;
+}
+
+.table-modern th:nth-child(3),
+.table-modern td:nth-child(3){
+position:sticky;
+left:320px;
+background:#020617;
+z-index:7;
+min-width:160px;
+}
+
+/* =========================
+SCROLL TABLE
+========================= */
+
+.table-wrap{
+overflow:auto;
+max-height:70vh;
+}
+
+/* =========================
+DESKTOP COMPACT
+========================= */
+
+@media (min-width:1200px){
+
+.table-modern{
+font-size:10px;
+}
+
+.table-modern th{
+font-size:9px;
+padding:4px;
+}
+
+.table-modern td{
+padding:4px;
+}
+
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media (max-width:768px){
+
+.table-modern{
+font-size:12px;
+}
+
+.table-modern th{
+font-size:11px;
+}
+
+.table-modern td{
+font-size:12px;
+}
+
+.table-wrap{
+overflow-x:auto;
+}
+
+}
+
 </style>
+
 </head>
 
-<body class="bg-[#020617] text-slate-200 min-h-screen flex flex-col md:flex-row">
+<body class="bg-[#020617] text-white min-h-screen flex">
 
-<aside id="sidebar" class="fixed md:relative top-0 left-0 z-40 h-full md:h-screen flex flex-col -translate-x-full md:translate-x-0">
-  <div class="p-6 mb-4 admin-info">
-    <div class="text-xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">RUSUN ADMIN</div>
-    <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Management Portal</div>
-  </div>
+<!-- SIDEBAR -->
 
-  <nav class="flex-1 space-y-1">
-    <a class="active" title="Data Pendaftaran">
-      <span class="text-lg">📊</span><span class="menu-text">Data Pendaftaran</span>
-    </a>
-    <a href="tracking" target="_blank" title="Tracking">
-      <span class="text-lg">📍</span><span class="menu-text">Tracking Status</span>
-    </a>
-    <a href="index" target="_blank" title="Form Pendaftaran">
-      <span class="text-lg">📝</span><span class="menu-text">Form Pendaftaran</span>
-    </a>
-  </nav>
+<div id="sidebar" class="flex flex-col">
 
-  <div class="p-4 border-t border-slate-800">
-    <button onclick="logout()" class="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition">
-      <span>🚪</span><span class="menu-text font-medium text-sm">Keluar Sesi</span>
-    </button>
-  </div>
-</aside>
-
-<div id="sidebarOverlay" class="fixed inset-0 bg-black/60 hidden z-30" onclick="toggleSidebar()"></div>
-
-<main id="main" class="flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300">
-  
-  <header class="h-16 flex items-center justify-between px-6 bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
-    <div class="flex items-center gap-4">
-      <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-800 rounded-lg">☰</button>
-      <h1 class="text-sm font-semibold text-slate-300">Dashboard Admin Pendaftaran</h1>
-    </div>
-    <div class="flex items-center gap-3">
-      <span class="flex items-center gap-2">
-        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Realtime Aktif</span>
-      </span>
-    </div>
-  </header>
-
-  <div class="flex-1 overflow-y-auto p-6 space-y-6">
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-slate-900/50 border border-slate-800 p-5 rounded-2xl relative overflow-hidden group">
-        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Total Pendaftar</div>
-        <div id="rTotal" class="text-3xl font-bold text-white">0</div>
-        <div class="absolute -right-2 -bottom-2 text-5xl opacity-5 group-hover:opacity-10 transition">📁</div>
-      </div>
-      <div class="bg-amber-500/5 border border-amber-500/20 p-5 rounded-2xl relative overflow-hidden group">
-        <div class="text-amber-500 text-xs font-bold uppercase mb-1">Menunggu Verifikasi</div>
-        <div id="rPending" class="text-3xl font-bold text-amber-400">0</div>
-        <div class="absolute -right-2 -bottom-2 text-5xl opacity-5 group-hover:opacity-10 transition text-amber-500">⏳</div>
-      </div>
-      <div class="bg-emerald-500/5 border border-emerald-500/20 p-5 rounded-2xl relative overflow-hidden group">
-        <div class="text-emerald-500 text-xs font-bold uppercase mb-1">Pendaftaran Diterima</div>
-        <div id="rAcc" class="text-3xl font-bold text-emerald-400">0</div>
-        <div class="absolute -right-2 -bottom-2 text-5xl opacity-5 group-hover:opacity-10 transition text-emerald-500">✅</div>
-      </div>
-      <div class="bg-rose-500/5 border border-rose-500/20 p-5 rounded-2xl relative overflow-hidden group">
-        <div class="text-rose-500 text-xs font-bold uppercase mb-1">Pendaftaran Ditolak</div>
-        <div id="rReject" class="text-3xl font-bold text-rose-400">0</div>
-        <div class="absolute -right-2 -bottom-2 text-5xl opacity-5 group-hover:opacity-10 transition text-rose-500">❌</div>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-col lg:flex-row gap-4 shadow-sm">
-      <div class="relative flex-1">
-        <span class="absolute left-3 top-2.5 text-slate-500">🔍</span>
-        <input id="cari" placeholder="Cari nama pemohon, rusunawa, atau status..." class="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition">
-      </div>
-      <div class="flex flex-wrap gap-2">
-        <select id="filterStatus" class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-          <option value="">Semua Status</option>
-          <option value="MENUNGGU">MENUNGGU</option>
-          <option value="VERIFIKASI">VERIFIKASI</option>
-          <option value="DIPROSES">DIPROSES</option>
-          <option value="DITERIMA">DITERIMA</option>
-          <option value="DITOLAK">DITOLAK</option>
-        </select>
-        <select id="sortTanggal" class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm">
-          <option value="desc">Urut Terbaru</option>
-          <option value="asc">Urut Terlama</option>
-        </select>
-        <button onclick="exportXLSX()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition shadow-lg shadow-emerald-900/20">
-          Export Excel
-        </button>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-      <div class="table-wrap max-h-[60vh]">
-        <table id="table" class="table-modern"></table>
-      </div>
-      
-      <div class="p-4 border-t border-slate-800 flex flex-wrap justify-between items-center gap-4 bg-slate-900/50">
-        <div class="flex items-center gap-3">
-          <label class="text-xs text-slate-500 font-medium">Tampilkan:</label>
-          <select id="rowsPerPage" class="bg-slate-800 border-none rounded-lg px-2 py-1 text-xs font-bold">
-            <option value="10">10</option>
-            <option value="25" selected>25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-          <span id="pageInfo" class="text-xs font-bold text-slate-400 ml-2"></span>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="prevPage()" class="p-2 px-4 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition">Prev</button>
-          <button onclick="nextPage()" class="p-2 px-4 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition">Next</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-
-<div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-[9999]">
-  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
-    <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-      <h2 class="text-lg font-bold">Update Verifikasi</h2>
-      <button onclick="closeModal()" class="text-slate-500 hover:text-white transition">✕</button>
-    </div>
-    
-    <div class="space-y-4">
-      <div>
-        <label class="text-[10px] uppercase text-slate-500 font-black mb-1 block">Status Pendaftaran</label>
-        <select id="mStatus" class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
-          <option>MENUNGGU</option><option>VERIFIKASI</option><option>DIPROSES</option><option>DITERIMA</option><option>DITOLAK</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-[10px] uppercase text-slate-500 font-black mb-1 block">Catatan Verifikasi</label>
-        <textarea id="mCatatan" class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm h-24 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan alasan atau catatan..."></textarea>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="text-[10px] uppercase text-slate-500 font-black mb-1 block">Tanggal Verif</label>
-          <input type="date" id="mTanggal" class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm outline-none">
-        </div>
-        <div>
-          <label class="text-[10px] uppercase text-slate-500 font-black mb-1 block">Unit Rusun</label>
-          <input id="mUnit" class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm outline-none" placeholder="Contoh: A.101">
-        </div>
-      </div>
-      <div>
-        <label class="text-[10px] uppercase text-slate-500 font-black mb-1 block">No Pendaftaran</label>
-        <input id="mNo" class="w-full p-3 rounded-xl bg-slate-800 border border-slate-700 text-sm outline-none">
-      </div>
-    </div>
-
-    <div class="flex gap-3 pt-4">
-      <button onclick="simpan()" class="flex-1 bg-blue-600 hover:bg-blue-500 p-3 rounded-xl font-bold shadow-lg shadow-blue-900/20 transition active:scale-95">Simpan Perubahan</button>
-      <button onclick="closeModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 p-3 rounded-xl font-bold transition">Batal</button>
-    </div>
-  </div>
+<div class="p-4 border-b border-slate-800">
+<div class="text-xl font-bold">Admin Panel</div>
+<div class="text-xs text-slate-400">Pendaftaran Rusunawa</div>
 </div>
 
-<div id="modalDetail" class="fixed inset-0 bg-[#020617]/95 backdrop-blur-md hidden items-center justify-center p-4 z-[9999]">
-  <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-    <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-      <div>
-        <h2 class="text-2xl font-black text-white">Detail Pemohon</h2>
-        <p class="text-slate-400 text-xs">Informasi lengkap data pendaftaran rusunawa</p>
-      </div>
-      <button onclick="closeDetail()" class="w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-rose-500/20 hover:text-rose-500 rounded-full transition font-bold">✕</button>
-    </div>
-    
-    <div id="detailContent" class="flex-1 overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-2 gap-3">
-      </div>
+<div class="flex-1 p-4 space-y-2">
 
-    <div class="mt-6 pt-6 border-t border-slate-800 flex gap-4">
-      <button onclick="downloadPDF()" class="flex-1 bg-white hover:bg-slate-200 text-slate-950 font-black py-4 rounded-2xl transition shadow-xl flex items-center justify-center gap-2">
-        <span>🖨️</span> Cetak Data (PDF)
-      </button>
-    </div>
-  </div>
+<a class="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded">
+📊 <span class="menu-text">Data Pendaftaran</span>
+</a>
+
+<a href="tracking" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800">
+📍 <span class="menu-text">Tracking</span>
+</a>
+
+<a href="index" target="_blank" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800">
+📝 <span class="menu-text">Form Daftar</span>
+</a>
+
+</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div id="main" class="flex flex-col">
+
+<div class="bg-slate-900 border-b border-slate-800 p-3 flex items-center gap-3">
+
+<button onclick="toggleSidebar()" class="bg-slate-800 px-3 py-1 rounded">
+☰
+</button>
+
+<button onclick="logout()" class="bg-red-600 px-2 py-1 rounded text-xs">
+Logout
+</button>
+
+<div class="flex-1 text-center font-semibold">
+Dashboard Admin Pendaftaran
+</div>
+
+<div class="text-xs text-slate-400">
+Realtime aktif
+</div>
+
+</div>
+
+<div class="p-4 container-admin space-y-4">
+
+<!-- STATISTIK -->
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+<div class="bg-slate-900 border border-slate-800 rounded p-4">
+<div class="text-slate-400 text-sm">Total</div>
+<div id="rTotal" class="text-xl font-bold">0</div>
+</div>
+
+<div class="bg-yellow-500/20 border border-yellow-500 rounded p-4">
+<div class="text-yellow-300 text-sm">Menunggu</div>
+<div id="rPending" class="text-xl font-bold text-yellow-400">0</div>
+</div>
+
+<div class="bg-green-600/20 border border-green-600 rounded p-4">
+<div class="text-green-300 text-sm">Diterima</div>
+<div id="rAcc" class="text-xl font-bold text-green-400">0</div>
+</div>
+
+<div class="bg-red-600/20 border border-red-600 rounded p-4">
+<div class="text-red-300 text-sm">Ditolak</div>
+<div id="rReject" class="text-xl font-bold text-red-400">0</div>
+</div>
+
+</div>
+
+<!-- FILTER -->
+
+<div class="flex flex-col md:flex-row gap-2">
+
+<input id="cari"
+placeholder="Cari nama / rusun / status"
+class="bg-slate-800 border border-slate-700 rounded p-2 text-sm w-full md:flex-1">
+
+<select id="filterStatus"
+class="bg-slate-800 border border-slate-700 rounded p-2 text-sm">
+
+<option value="">Semua Status</option>
+<option value="MENUNGGU">MENUNGGU</option>
+<option value="VERIFIKASI">VERIFIKASI</option>
+<option value="DIPROSES">DIPROSES</option>
+<option value="DITERIMA">DITERIMA</option>
+<option value="DITOLAK">DITOLAK</option>
+
+</select>
+
+<select id="sortTanggal"
+class="bg-slate-800 border border-slate-700 rounded p-2 text-sm">
+
+<option value="desc">Tanggal Terbaru</option>
+<option value="asc">Tanggal Terlama</option>
+
+</select>
+
+<button onclick="exportXLSX()"
+class="bg-emerald-600 px-4 py-2 rounded text-sm">
+Export XLSX
+</button>
+
+</div>
+
+<!-- PAGINATION -->
+
+<div class="flex items-center gap-2">
+
+<select id="rowsPerPage" class="bg-slate-800 border border-slate-700 p-1 rounded">
+
+<option value="10">10</option>
+<option value="25" selected>25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+
+</select>
+
+<button onclick="prevPage()" class="bg-slate-700 px-3 py-1 rounded">
+Prev
+</button>
+
+<span id="pageInfo"></span>
+
+<button onclick="nextPage()" class="bg-slate-700 px-3 py-1 rounded">
+Next
+</button>
+
+</div>
+
+<!-- TABLE -->
+
+<div class="bg-slate-900 border border-slate-800 rounded">
+
+<div class="table-wrap">
+
+<table id="table" class="table-modern"></table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-[9999]">
+<div class="bg-slate-900 border border-slate-800 rounded-xl p-4 w-full max-w-md space-y-2 max-h-[90vh] overflow-auto">
+
+<h2 class="font-bold">Update Verifikasi</h2>
+
+<select id="mStatus" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
+<option>MENUNGGU</option>
+<option>VERIFIKASI</option>
+<option>DIPROSES</option>
+<option>DITERIMA</option>
+<option>DITOLAK</option>
+</select>
+
+<textarea id="mCatatan" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Catatan"></textarea>
+
+<input type="date" id="mTanggal" class="w-full p-2 rounded bg-slate-800 border border-slate-700">
+
+<input id="mNo" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="No Pendaftaran">
+<input id="mUnit" class="w-full p-2 rounded bg-slate-800 border border-slate-700" placeholder="Unit">
+
+<div class="flex gap-2 pt-2">
+<button onclick="simpan()" class="flex-1 bg-blue-600 p-2 rounded active:scale-95 transition">Simpan</button>
+<button onclick="closeModal()" class="flex-1 bg-slate-700 p-2 rounded">Batal</button>
+</div>
+
+</div>
 </div>
 
 <script>
-/* ============================================================
-   LOGIKA SISTEM (UTUH & TANPA POTONGAN)
-   ============================================================ */
 const API = CONFIG.API;
 const KEY = CONFIG.INTERNAL_KEY;
 
 let HEAD=[], DATA=[], RAW_DATA=[];
 let page=1, rows=25, lastHash="", ROW=null;
+
+/* TAMBAHAN ROLE */
 const ROLE = localStorage.getItem("RUSUN_ROLE") || "admin";
 
+/* LOAD */
 async function load(){
   const r = await fetch(API+"?action=daftar_all&key="+KEY);
   const j = await r.json();
+
   const newHash = JSON.stringify(j.data);
+
   if(newHash!==lastHash){
     HEAD=j.header;
-    RAW_DATA=j.data;       
-    DATA=[...RAW_DATA];    
+    RAW_DATA=j.data;       // simpan data asli
+    DATA=[...RAW_DATA];    // data kerja
     lastHash=newHash;
     hitung();
     render();
-  }
+}
 }
 
+/* STATISTIK */
 function hitung(){
   const idx=HEAD.indexOf("Status Verifikasi");
   let p=0,a=0,rj=0;
@@ -322,9 +402,12 @@ function hitung(){
   rReject.textContent=rj;
 }
 
+/* TABLE */
 function render(){
+
+  rows=parseInt(rowsPerPage.value);
+
   const currentRows = parseInt(rowsPerPage.value);
-  rows = currentRows;
   const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
   if(page > maxPage) page = maxPage;
 
@@ -332,57 +415,82 @@ function render(){
   const slice=DATA.slice(start,start+rows);
 
   let h="<thead><tr>";
-  HEAD.forEach(c=>h+=`<th>${c}</th>`);
-  h+="<th class='text-center'>Aksi</th></tr></thead><tbody>";
+  HEAD.forEach(c=>h+=`<th class='p-2 border'>${c}</th>`);
+  h+="<th class='p-2 border'>Aksi</th></tr></thead>";
+
+  h+="<tbody>";
 
   slice.forEach((r,i)=>{
+
     const idx=start+i;
-    h+="<tr class='transition-colors'>";
+
+    h+="<tr>";
+
     r.forEach((v,ci)=>{
-      let display = v || "-";
-      
-      // Format Tanggal
-      if(HEAD[ci]==="Tanggal Formulir" && v){
-        const d = new Date(v);
-        const bulan=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-        if(!isNaN(d)) display = d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
-      }
 
-      // Format Status Badge
-      if(HEAD[ci]==="Status Verifikasi"){
-        let cls = "badge-waiting";
-        if(v === "DITERIMA") cls = "badge-success";
-        if(v === "DITOLAK") cls = "badge-danger";
-        if(v === "VERIFIKASI" || v === "DIPROSES") cls = "badge-info";
-        display = `<span class="badge ${cls}">${v || "MENUNGGU"}</span>`;
-      }
-      h+=`<td>${display}</td>`;
-    });
+  // FORMAT KOLOM TANGGAL FORMULIR
+  if(HEAD[ci]==="Tanggal Formulir" && v){
 
-    h+=`<td class='text-center whitespace-nowrap space-x-1'>`;
-    if(ROLE === "super"){
-      h+=`<button onclick='openModal(${idx})' class='bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition'>Update</button>`;
+    const d = new Date(v);
+
+    const bulan=[
+      "Januari","Februari","Maret","April","Mei","Juni",
+      "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+
+    if(!isNaN(d)){
+      v = d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
     }
-    h+=`<button onclick='lihatDetail(${idx})' class='bg-emerald-600/10 text-emerald-400 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition'>Detail</button></td></tr>`;
+  }
+
+  h+=`<td class='p-2 border'>${v||""}</td>`;
+});
+
+    h+=`<td class='p-2 border space-x-1'>`;
+    if(ROLE === "super"){
+      h+=`
+        <button onclick='openModal(${idx})'
+          class='bg-blue-600 px-2 py-1 rounded text-xs'>
+          Update
+        </button>
+      `;
+    }
+
+    h+=`
+      <button onclick='lihatDetail(${idx})'
+        class='bg-emerald-600 px-2 py-1 rounded text-xs'>
+        Detail
+      </button>
+    </td>`;
+
+    h+="</tr>";
   });
 
   h+="</tbody>";
+
   table.innerHTML=h;
-  pageInfo.textContent=`Hal ${page} / ${maxPage} (Total ${DATA.length})`;
+
+  pageInfo.textContent=`Page ${page}/${maxPage} | Total ${DATA.length}`;
 }
 
+/* MODAL */
 function openModal(i){
+
   ROW=i;
+
   const idxStatus = HEAD.indexOf("Status Verifikasi");
   const idxCatatan = HEAD.indexOf("Catatan Verifikasi");
   const idxTanggal = HEAD.indexOf("Tanggal Verifikasi");
   const idxNo = HEAD.indexOf("No Pendaftaran");
+
   let idxUnit = HEAD.indexOf("_unit");
   if(idxUnit===-1) idxUnit = HEAD.indexOf("Unit");
 
+  /* ===== AMBIL DATA DARI DATABASE ===== */
   mStatus.value = DATA[i][idxStatus] || "MENUNGGU";
   mCatatan.value = DATA[i][idxCatatan] || "";
 
+  /* FORMAT datetime-local */
   const tgl = DATA[i][idxTanggal];
   if(tgl){
     const d = new Date(tgl);
@@ -390,22 +498,36 @@ function openModal(i){
     const mm = String(d.getMonth()+1).padStart(2,"0");
     const dd = String(d.getDate()).padStart(2,"0");
     mTanggal.value = `${yyyy}-${mm}-${dd}`;
-  } else { mTanggal.value = ""; }
+  }else{
+    mTanggal.value = "";
+  }
 
   mNo.value = DATA[i][idxNo] || "";
   mUnit.value = DATA[i][idxUnit] || "";
+
   modal.classList.remove("hidden");
-  modal.classList.add("flex");
+  modal.classList.add("show");
 }
 
-function closeModal(){ modal.classList.add("hidden"); modal.classList.remove("flex"); }
+function closeModal(){
+  modal.classList.add("hidden");
+  modal.classList.remove("show");
+}
 
+/* UPDATE */
 async function simpan(){
-  if(ROLE !== "super"){ alert("Akses ditolak."); return; }
+
+  if(ROLE !== "super"){
+    alert("Anda tidak memiliki hak akses untuk update.");
+    return;
+  }
+
   const token = localStorage.getItem("RUSUN_TOKEN");
   const noIdx = HEAD.indexOf("No Pendaftaran");
   const noLama = DATA[ROW][noIdx];
-  try {
+
+  try{
+     
     const fd = new URLSearchParams();
     fd.append("action","daftar_update");
     fd.append("token",token);
@@ -417,168 +539,326 @@ async function simpan(){
     fd.append("no_baru",mNo.value);
     fd.append("unit",mUnit.value);
 
-    const r = await fetch(API,{method:"POST",body:fd});
+    const r = await fetch(API,{
+      method:"POST",
+      body:fd
+    });
+
     const j = await r.json();
-    if(!j || j.status!==true){ alert("Gagal update!"); return; }
+
+    if(!j || j.status!==true){
+      alert("Gagal update ke database!");
+      return;
+    }
+
     closeModal();
     await load();
-    toast("Berhasil memperbarui data");
-  } catch(err){ alert("Koneksi gagal!"); }
+    toast("Berhasil update data");
+
+  }catch(err){
+    alert("Koneksi gagal!");
+  }
+}
+
+function nextPage(){
+
+  rows = parseInt(rowsPerPage.value);   // ← WAJIB
+
+  const currentRows = parseInt(rowsPerPage.value);
+  const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));;
+
+  if(page < maxPage){
+    page++;
+    render();
+  }
+}
+
+function prevPage(){
+
+  rows = parseInt(rowsPerPage.value);   // ← WAJIB
+
+  if(page > 1){
+    page--;
+    render();
+  }
 }
 
 function applyFilter(){
+
   const q = (cari.value||"").toLowerCase();
   const fs = filterStatus.value;
   const mode = sortTanggal.value;
+
   let filtered = RAW_DATA.filter(r=>{
+
     const idxStatus = HEAD.indexOf("Status Verifikasi");
     const idxNama   = HEAD.indexOf("Nama Pemohon");
     const idxRusun  = HEAD.indexOf("Rusunawa");
+
     if(fs && r[idxStatus]!==fs) return false;
+
     if(!q) return true;
-    return String(r[idxNama]||"").toLowerCase().includes(q) || String(r[idxRusun]||"").toLowerCase().includes(q) || String(r[idxStatus]||"").toLowerCase().includes(q);
+
+    return (
+      String(r[idxNama]||"").toLowerCase().includes(q) ||
+      String(r[idxRusun]||"").toLowerCase().includes(q) ||
+      String(r[idxStatus]||"").toLowerCase().includes(q)
+    );
   });
+
+  // SORT TANGGAL
   const idxTanggal = HEAD.indexOf("Tanggal Formulir");
+
   filtered.sort((a,b)=>{
     const ta = new Date(a[idxTanggal]||0).getTime();
     const tb = new Date(b[idxTanggal]||0).getTime();
     return mode==="asc" ? ta-tb : tb-ta;
   });
-  DATA = filtered; page=1; render();
-}
 
-function nextPage(){
-  const currentRows = parseInt(rowsPerPage.value);
-  const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
-  if(page < maxPage){ page++; render(); }
+  DATA = filtered;
+  page=1;
+  render();
 }
-
-function prevPage(){ if(page > 1){ page--; render(); }}
 
 cari.oninput=applyFilter;
 filterStatus.onchange=applyFilter;
 sortTanggal.onchange=applyFilter;
-rowsPerPage.onchange = ()=>{ page = 1; render(); };
+
+rowsPerPage.onchange = ()=>{
+  page = 1;
+  render();
+};
 
 function toggleSidebar(){
+
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("sidebarOverlay");
+
+  if(!sidebar) return;
+
+  // MOBILE
   if(window.innerWidth <= 768){
-    if(sidebar.classList.contains("-translate-x-full")){
-      sidebar.classList.remove("-translate-x-full");
-      overlay.classList.remove("hidden");
-    } else {
-      sidebar.classList.add("-translate-x-full");
+
+    const open = sidebar.classList.contains("show");
+
+    if(open){
+      sidebar.classList.remove("show");
       overlay.classList.add("hidden");
+      document.body.classList.remove("overflow-hidden");
+    }else{
+      sidebar.classList.add("show");
+      overlay.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
     }
-  } else {
+
+  }
+  // DESKTOP
+  else{
     sidebar.classList.toggle("collapsed");
   }
 }
 
-function toast(msg){
+function toast(msg,type="ok"){
   const t=document.createElement("div");
-  t.className="fixed bottom-6 right-6 px-6 py-3 rounded-2xl shadow-2xl z-[10000] text-sm font-bold bg-emerald-600 text-white animate-bounce";
+  t.className="fixed bottom-4 right-4 px-4 py-2 rounded shadow-lg z-50 text-sm "
+    +(type==="ok"?"bg-green-600":"bg-red-600");
   t.textContent=msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3000);
+  setTimeout(()=>t.remove(),2500);
 }
 
 function exportXLSX(){
-  if(!DATA.length){ alert("Tidak ada data"); return; }
+
+  if(!DATA.length){
+    alert("Tidak ada data");
+    return;
+  }
+
   const idxTglForm = HEAD.indexOf("Tanggal Formulir");
   const idxTglVer  = HEAD.indexOf("Tanggal Verifikasi");
   const idxHP      = HEAD.indexOf("Nomor Telepon/HP/WA");
-  const bulan=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+
+  const bulan=[
+    "Januari","Februari","Maret","April","Mei","Juni",
+    "Juli","Agustus","September","Oktober","November","Desember"
+  ];
+
   const wsData=[HEAD];
+
   DATA.forEach(r=>{
+
     const row=[...r];
+
+    // FORMAT TANGGAL FORMULIR
     if(row[idxTglForm]){
       const d=new Date(row[idxTglForm]);
-      if(!isNaN(d)) row[idxTglForm]=d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      if(!isNaN(d)){
+        row[idxTglForm]=
+          d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      }
     }
+
+    // FORMAT TANGGAL VERIFIKASI
     if(row[idxTglVer]){
       const d=new Date(row[idxTglVer]);
-      if(!isNaN(d)) row[idxTglVer]=d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      if(!isNaN(d)){
+        row[idxTglVer]=
+          d.getDate()+" "+bulan[d.getMonth()]+" "+d.getFullYear();
+      }
     }
-    if(row[idxHP]) row[idxHP] = String(row[idxHP]);
+
+    // NOMOR HP → PAKSA JADI TEXT
+    if(row[idxHP]){
+      row[idxHP] = String(row[idxHP]);
+    }
+
     wsData.push(row);
   });
+
   const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // PAKSA KOLOM HP JADI TEXT (ANTI SCIENTIFIC)
   if(idxHP !== -1){
     const range = XLSX.utils.decode_range(ws["!ref"]);
     for(let R = 1; R <= range.e.r; ++R){
       const cell = XLSX.utils.encode_cell({r:R, c:idxHP});
-      if(ws[cell]) ws[cell].t = "s";
+      if(ws[cell]){
+        ws[cell].t = "s"; // set as string
+      }
     }
   }
+
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Pendaftaran");
+
   XLSX.writeFile(wb, "Data_Pendaftaran.xlsx");
 }
 
+/* REALTIME VIA LONG-POLL */
 async function realtime(){
   try{
     const r = await fetch(API+"?action=daftar_all&key="+KEY+"&t="+Date.now());
     const j = await r.json();
+
     const newHash = JSON.stringify(j.data);
+
     if(newHash !== lastHash){
-      const oldPage = page;
-      HEAD=j.header;
-      RAW_DATA=j.data;
-      DATA=[...RAW_DATA];
-      lastHash=newHash;
-      hitung();
-      const currentRows = parseInt(rowsPerPage.value);
-      const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
-      page = oldPage <= maxPage ? oldPage : maxPage;
-      render();
+
+    const oldPage = page;   // simpan halaman aktif
+
+    HEAD=j.header;
+    RAW_DATA=j.data;
+    DATA=[...RAW_DATA];
+    lastHash=newHash;
+    hitung();
+
+    const currentRows = parseInt(rowsPerPage.value);
+    const maxPage = Math.max(1, Math.ceil(DATA.length / currentRows));
+    if(oldPage <= maxPage){
+      page = oldPage;       // kembali ke halaman sebelumnya
+    }else{
+      page = maxPage;       // jika page sudah tidak ada → pakai max
     }
+
+    render();
+}
+
   }catch(e){}
-  setTimeout(realtime,3000);
+
+  setTimeout(realtime,2000);   // refresh 2 detik (lebih cepat & ringan)
 }
 
 let CURRENT_DETAIL=null;
+
 function lihatDetail(i){
+
   CURRENT_DETAIL = DATA[i];
+
   let html="";
   HEAD.forEach((h,idx)=>{
-    html+=`
-    <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/30">
-      <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-1">${h}</div>
-      <div class="text-sm text-slate-200 font-semibold">${CURRENT_DETAIL[idx]||"-"}</div>
-    </div>`;
+    html+=`<div><strong>${h}</strong> : ${CURRENT_DETAIL[idx]||"-"}</div>`;
   });
+
   detailContent.innerHTML=html;
+
   modalDetail.classList.remove("hidden");
   modalDetail.classList.add("flex");
 }
 
-function closeDetail(){ modalDetail.classList.add("hidden"); modalDetail.classList.remove("flex"); }
-
-function downloadPDF(){
-  if(!CURRENT_DETAIL) return;
-  const win = window.open("", "_blank");
-  let html = `<html><head><title>Detail</title><style>body{font-family:sans-serif;padding:40px}h2{text-align:center}table{width:100%;border-collapse:collapse}td{border:1px solid #eee;padding:10px;font-size:12px}.lbl{font-weight:bold;width:40%}</style></head><body><h2>DETAIL PENDAFTARAN RUSUNAWA</h2><table>`;
-  HEAD.forEach((h,idx)=>{ html+=`<tr><td class="lbl">${h}</td><td>${CURRENT_DETAIL[idx]||"-"}</td></tr>`; });
-  html+=`</table></body></html>`;
-  win.document.write(html); win.document.close();
-  setTimeout(()=>win.print(),500);
+function closeDetail(){
+  modalDetail.classList.add("hidden");
+  modalDetail.classList.remove("flex");
 }
 
-(async ()=>{ await load(); realtime(); })();
+function downloadPDF(){
 
+  if(!CURRENT_DETAIL) return;
+
+  const win = window.open("", "_blank");
+
+  let html = `
+  <html>
+  <head>
+    <title>Detail Pendaftaran</title>
+    <style>
+      body{font-family:Arial;padding:30px}
+      h2{text-align:center}
+      table{width:100%;border-collapse:collapse}
+      td{border:1px solid #ccc;padding:6px;font-size:12px}
+      td:first-child{font-weight:bold;width:40%}
+    </style>
+  </head>
+  <body>
+    <h2>Detail Pendaftaran Rusunawa</h2>
+    <table>
+  `;
+
+  HEAD.forEach((h,idx)=>{
+    html+=`<tr><td>${h}</td><td>${CURRENT_DETAIL[idx]||"-"}</td></tr>`;
+  });
+
+  html+=`</table></body></html>`;
+
+  win.document.write(html);
+  win.document.close();
+  setTimeout(()=>win.print(),300);
+}
+
+(async ()=>{
+  await load();
+  realtime();
+})();
+
+// Tutup sidebar saat resize ke desktop
 window.addEventListener("resize", ()=>{
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("sidebarOverlay");
+
   if(window.innerWidth > 768){
-    sidebar.classList.remove("-translate-x-full");
+    sidebar.classList.remove("show");
     overlay.classList.add("hidden");
     document.body.classList.remove("overflow-hidden");
-  } else {
-    sidebar.classList.add("-translate-x-full");
   }
 });
+
 </script>
+<div id="modalDetail" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-[9999]">
+  <div class="bg-white text-black rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto">
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-bold text-lg">Detail Pendaftaran</h2>
+      <button onclick="closeDetail()" class="text-red-600 font-bold">X</button>
+    </div>
+
+    <div id="detailContent" class="text-sm space-y-1"></div>
+
+    <div class="mt-4 flex gap-2">
+      <button onclick="downloadPDF()" class="bg-blue-600 text-white px-4 py-2 rounded">
+        Download PDF
+      </button>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
