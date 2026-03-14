@@ -215,16 +215,34 @@ FREEZE KOLOM PENTING (RINGAN)
   min-width:160px;
 }
 
-/* =================================
-CONTAINER FILTER DESKTOP
-================================= */
+/* ==============================
+MAIN LAYOUT RESPONSIVE
+============================== */
 
-@media (min-width:1024px){
+#main{
+  width:100%;
+}
 
-  #main .p-4{
-    max-width:1600px;
-    margin:auto;
-  }
+/* container utama */
+#main .p-4{
+  width:100%;
+  max-width:none;
+}
+
+/* saat sidebar collapse desktop */
+#sidebar.collapsed + #main{
+  width:100%;
+}
+
+/* ==============================
+FILTER RESPONSIVE
+============================== */
+
+#cari{
+  width:100%;
+}
+
+@media (min-width:768px){
 
   #cari{
     max-width:420px;
@@ -232,7 +250,31 @@ CONTAINER FILTER DESKTOP
 
   #filterStatus,
   #sortTanggal{
-    min-width:150px;
+    min-width:160px;
+  }
+
+}
+
+/* ==============================
+TABLE RESPONSIVE MOBILE
+============================== */
+
+@media (max-width:768px){
+
+  .table-modern{
+    font-size:11px;
+  }
+
+  .table-modern th{
+    font-size:10px;
+  }
+
+  .table-modern td{
+    font-size:11px;
+  }
+
+  .table-wrap{
+    overflow-x:auto;
   }
 
 }
